@@ -5289,6 +5289,14 @@
 	            'Use v-bind:style instead.'
 	          )
 	        }
+	
+	        // warn class
+	        if (attr === 'class') {
+	          _.warn(
+	            raw + 'do not use interpolation for class attribute. ' +
+	            'Prefer v-bind:class.'
+	          )
+	        }
 	      }
 	    }
 	  },
@@ -5995,7 +6003,7 @@
 	        // v-for scope if present
 	        scope: this._scope,
 	        // only fire callback when reference has changed
-	        sync: true
+	        refOnly: true
 	      }
 	    )
 	
@@ -6013,7 +6021,9 @@
 	          childKey,
 	          function (val) {
 	            parentWatcher.set(val)
-	          }, { sync: true }
+	          }, {
+	            refOnly: true
+	          }
 	        )
 	      })
 	    }
