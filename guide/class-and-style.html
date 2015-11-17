@@ -192,7 +192,9 @@
         <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
     </div>
     <p>数据绑定一个常见需求是操作元素的 class 列表和它的内联样式。因为它们都是属性，我们可以用 <code>v-bind</code> 处理它们：我们只需要计算出表达式最终的字符串。不过，字符串拼接麻烦又易错。因此，在<code>v-bind</code>用于 <code>class</code> 和 <code>style</code> 时，Vue.js 专门增强了它。除了字符串，表达式的结果也可以是对象或数组。</p>
-<h2 id="绑定_HTML_Class">绑定 HTML Class</h2><h3 id="对象语法">对象语法</h3><p>我们可以传给 <code>v-bind:class</code> 一个对象，以动态地切换 class。注意  <code>v-bind:class</code> 指令可以与普通的 <code>class</code>特性共存：</p>
+<h2 id="绑定_HTML_Class">绑定 HTML Class</h2><p class="tip">尽管可以用 Mustache 标签绑定 class，比如 <code>class="{{ className }}"</code>，不推荐与 <code>v-bind:class</code> 一起用。两者只能选其一！</p>
+
+<h3 id="对象语法">对象语法</h3><p>我们可以传给 <code>v-bind:class</code> 一个对象，以动态地切换 class。注意  <code>v-bind:class</code> 指令可以与普通的 <code>class</code>特性共存：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"static"</span> <span class="attribute">v-bind:class</span>=<span class="value">"&#123; 'class-a': isA, 'class-b': isB &#125;"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">data: &#123;</span><br><span class="line">  isA: <span class="literal">true</span>,</span><br><span class="line">  isB: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>渲染为：</p>
