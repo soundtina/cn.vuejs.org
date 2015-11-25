@@ -355,7 +355,10 @@
 <p>Vue 实例的数据对象。Vue.js 会递归地将它全部属性转为 getter/setter，从而让它能响应数据变化。<strong>这个对象必须是普通对象</strong>：原生对象，getter/setter 及原型属性会被忽略。不推荐观察复杂对象。</p>
 <p>在实例创建之后，可以用 <code>vm.$data</code> 访问原始数据对象。Vue 实例也代理了数据对象所有的属性。</p>
 <p>名字以 <code>_</code> 或 <code>$</code>开始的属性<strong>不会</strong>被 Vue 实例代理，因为它们可能与 Vue 的内置属性与 API 方法冲突。用 <code>vm.$data._property</code> 访问它们。</p>
+<p>可以通过将 <code>vm.$data</code> 传入 <code>JSON.parse(JSON.stringify(...))</code> 得到原始数据对象。</p>
 </li>
+</ul>
+<ul>
 <li><p><strong>示例：</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123; a: <span class="number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接创建一个实例</span></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: data</span><br><span class="line">&#125;)</span><br><span class="line">vm.a <span class="comment">// -&gt; 1</span></span><br><span class="line">vm.$data === data <span class="comment">// -&gt; true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 Vue.extend() 中必须是函数</span></span><br><span class="line"><span class="keyword">var</span> Component = Vue.extend(&#123;</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; a: <span class="number">1</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 </li>
