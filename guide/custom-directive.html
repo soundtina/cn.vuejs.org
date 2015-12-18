@@ -191,9 +191,9 @@
     <div id="ad">
         <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
     </div>
-    <h2 id="基础">基础</h2><p>除了内置指令，Vue.js 也允许注册自定义指令。自定义指令提供一种机制将数据的变化映射为 DOM 行为。</p>
+    <h2 id="u57FA_u7840"><a href="#u57FA_u7840" class="headerlink" title="基础"></a>基础</h2><p>除了内置指令，Vue.js 也允许注册自定义指令。自定义指令提供一种机制将数据的变化映射为 DOM 行为。</p>
 <p>可以用 <code>Vue.directive(id, definition)</code> 方法注册一个全局自定义指令，它接收两个参数<strong>指令 ID</strong> 与<strong>定义对象</strong>。也可以用组件的 <code>directives</code> 选项注册一个局部自定义指令。</p>
-<h3 id="钩子函数">钩子函数</h3><p>定义对象可以提供几个钩子函数（都是可选的）：</p>
+<h3 id="u94A9_u5B50_u51FD_u6570"><a href="#u94A9_u5B50_u51FD_u6570" class="headerlink" title="钩子函数"></a>钩子函数</h3><p>定义对象可以提供几个钩子函数（都是可选的）：</p>
 <ul>
 <li><p><strong>bind</strong>：只调用一次，在指令第一次绑定到元素上时调用。</p>
 </li>
@@ -208,7 +208,7 @@
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>=<span class="value">"someValue"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>当只需要 <code>update</code> 函数时，可以传入一个函数替代定义对象：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'my-directive'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 这个函数用作 update()</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="指令实例属性">指令实例属性</h3><p>所有的钩子函数将被复制到实际的<strong>指令对象</strong>中，钩子内 <code>this</code> 指向这个指令对象。这个对象暴露了一些有用的属性：</p>
+<h3 id="u6307_u4EE4_u5B9E_u4F8B_u5C5E_u6027"><a href="#u6307_u4EE4_u5B9E_u4F8B_u5C5E_u6027" class="headerlink" title="指令实例属性"></a>指令实例属性</h3><p>所有的钩子函数将被复制到实际的<strong>指令对象</strong>中，钩子内 <code>this</code> 指向这个指令对象。这个对象暴露了一些有用的属性：</p>
 <ul>
 <li><strong>el</strong>: 指令绑定的元素。</li>
 <li><strong>vm</strong>: 拥有该指令的上下文 ViewModel。</li>
@@ -247,13 +247,13 @@ var demo = new Vue({
 })
 </script>
 
-<h3 id="对象字面量">对象字面量</h3><p>如果指令需要多个值，可以传入一个 JavaScript 对象字面量。记住，指令可以使用任意合法的 JavaScript 表达式：</p>
+<h3 id="u5BF9_u8C61_u5B57_u9762_u91CF"><a href="#u5BF9_u8C61_u5B57_u9762_u91CF" class="headerlink" title="对象字面量"></a>对象字面量</h3><p>如果指令需要多个值，可以传入一个 JavaScript 对象字面量。记住，指令可以使用任意合法的 JavaScript 表达式：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-demo</span>=<span class="value">"&#123; color: 'white', text: 'hello!' &#125;"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'demo'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(value.color) <span class="comment">// "white"</span></span><br><span class="line">  <span class="built_in">console</span>.log(value.text) <span class="comment">// "hello!"</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="字面修饰符">字面修饰符</h3><p>当指令使用了字面修饰符，它的值将按普通字符串处理并传递给 <code>update</code> 方法。<code>update</code> 方法将只调用一次，因为普通字符串不能响应数据变化。</p>
+<h3 id="u5B57_u9762_u4FEE_u9970_u7B26"><a href="#u5B57_u9762_u4FEE_u9970_u7B26" class="headerlink" title="字面修饰符"></a>字面修饰符</h3><p>当指令使用了字面修饰符，它的值将按普通字符串处理并传递给 <code>update</code> 方法。<code>update</code> 方法将只调用一次，因为普通字符串不能响应数据变化。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-demo.literal</span>=<span class="value">"foo bar baz"</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'demo'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(value) <span class="comment">// "foo bar baz"</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="元素指令">元素指令</h3><p>有时我们想以自定义元素的形式使用指令，而不是以特性的形式。这与 Angular 的 “E” 指令非常相似。元素指令可以看做是一个轻量组件。可以像下面这样注册一个自定义元素指令：</p>
+<h3 id="u5143_u7D20_u6307_u4EE4"><a href="#u5143_u7D20_u6307_u4EE4" class="headerlink" title="元素指令"></a>元素指令</h3><p>有时我们想以自定义元素的形式使用指令，而不是以特性的形式。这与 Angular 的 “E” 指令非常相似。元素指令可以看做是一个轻量组件。可以像下面这样注册一个自定义元素指令：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.elementDirective(<span class="string">'my-directive'</span>, &#123;</span><br><span class="line">  <span class="comment">// API 同普通指令</span></span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 操作 this.el...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>不这样写：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -261,22 +261,22 @@ var demo = new Vue({
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">my-directive</span>&gt;</span><span class="tag">&lt;/<span class="title">my-directive</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>元素指令不能接受参数或表达式，但是它可以读取元素的特性从而决定它的行为。</p>
 <p>迥异于普通指令，元素指令是<strong>终结性</strong>的，这意味着，一旦 Vue 遇到一个元素指令，它将跳过该元素及其子元素——只有该元素指令本身可以操作该元素及其子元素。</p>
-<h2 id="高级选项">高级选项</h2><h3 id="params">params</h3><p>自定义指令可以接收一个 <code>params</code> 数组，指定一个特性列表，Vue 编译器将自动提取绑定元素的这些特性。例如：</p>
+<h2 id="u9AD8_u7EA7_u9009_u9879"><a href="#u9AD8_u7EA7_u9009_u9879" class="headerlink" title="高级选项"></a>高级选项</h2><h3 id="params"><a href="#params" class="headerlink" title="params"></a>params</h3><p>自定义指令可以接收一个 <code>params</code> 数组，指定一个特性列表，Vue 编译器将自动提取绑定元素的这些特性。例如：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-example</span> <span class="attribute">a</span>=<span class="value">"hi"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  params: [<span class="string">'a'</span>],</span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.params.a) <span class="comment">// -&gt; "hi"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>此 API 也支持动态属性。<code>this.params[key]</code> 会自动保持更新。另外，可以指定一个回调，在值变化时调用：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-example</span> <span class="attribute">v-bind:a</span>=<span class="value">"someValue"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  params: [<span class="string">'a'</span>],</span><br><span class="line">  paramWatchers: &#123;</span><br><span class="line">    a: <span class="function"><span class="keyword">function</span> (<span class="params">val, oldVal</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'a changed!'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="deep">deep</h3><p>如果自定义指令用在一个对象上，当对象内部属性变化时要触发 <code>update</code>，则在指令定义对象中指定 <code>deep: true</code>。</p>
+<h3 id="deep"><a href="#deep" class="headerlink" title="deep"></a>deep</h3><p>如果自定义指令用在一个对象上，当对象内部属性变化时要触发 <code>update</code>，则在指令定义对象中指定 <code>deep: true</code>。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>=<span class="value">"obj"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'my-directive'</span>, &#123;</span><br><span class="line">  deep: <span class="literal">true</span>,</span><br><span class="line">  update: <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在 `obj` 的嵌套属性变化时调用</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="twoWay">twoWay</h3><p>如果指令想向 Vue 实例写回数据，则在指令定义对象中指定 <code>twoWay: true</code> 。该选项允许在指令中使用 <code>this.set(value)</code>:</p>
+<h3 id="twoWay"><a href="#twoWay" class="headerlink" title="twoWay"></a>twoWay</h3><p>如果指令想向 Vue 实例写回数据，则在指令定义对象中指定 <code>twoWay: true</code> 。该选项允许在指令中使用 <code>this.set(value)</code>:</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  twoWay: <span class="literal">true</span>,</span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.handler = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 将数据写回 vm</span></span><br><span class="line">      <span class="comment">// 如果指令这样绑定 v-example="a.b.c"</span></span><br><span class="line">      <span class="comment">// 它将用给定值设置 `vm.a.b.c`	  </span></span><br><span class="line">      <span class="keyword">this</span>.set(<span class="keyword">this</span>.el.value)</span><br><span class="line">    &#125;.bind(<span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">this</span>.el.addEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.el.removeEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="acceptStatement">acceptStatement</h3><p>传入 <code>acceptStatement:true</code> 可以让自定义指令接受内联语句，就像 <code>v-on</code> 那样：</p>
+<h3 id="acceptStatement"><a href="#acceptStatement" class="headerlink" title="acceptStatement"></a>acceptStatement</h3><p>传入 <code>acceptStatement:true</code> 可以让自定义指令接受内联语句，就像 <code>v-on</code> 那样：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>=<span class="value">"a++"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'my-directive'</span>, &#123;</span><br><span class="line">  acceptStatement: <span class="literal">true</span>,</span><br><span class="line">  update: <span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 传入值是一个函数</span></span><br><span class="line">    <span class="comment">// 在调用它时将在所属实例作用域内计算 "a++" 语句</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>明智地使用，因为通常你要在模板中避免副效应。</p>
-<h3 id="priority">priority</h3><p>可以给指令指定一个优先级（默认是 1000）。同一个元素上优先级高的指令会比其它指令处理得早一些。优先级一样的指令按照它在元素特性列表中出现的顺序依次处理，但是不能保证这个顺序在不同的浏览器中是一致的。</p>
+<h3 id="priority"><a href="#priority" class="headerlink" title="priority"></a>priority</h3><p>可以给指令指定一个优先级（默认是 1000）。同一个元素上优先级高的指令会比其它指令处理得早一些。优先级一样的指令按照它在元素特性列表中出现的顺序依次处理，但是不能保证这个顺序在不同的浏览器中是一致的。</p>
 <p>可以在 <a href="/api/#指令">API</a> 中查看内置指令的优先级。另外，流程控制指令 <code>v-if</code> 和 <code>v-for</code> 在编译过程中始终拥有最高的优先级。</p>
 
     
@@ -289,7 +289,12 @@ var demo = new Vue({
         
       </div>
     
-    <div class="footer">发现错误？想参与编辑？<a href="https://github.com/vuejs/cn.vuejs.org" target="_blank">来 Github 上 fork 此站点！</a></div>
+    <div class="footer">
+      发现错误？想参与编辑？
+      <a href="https://github.com/vuejs/cn.vuejs.org/blob/master/src/guide/custom-directive.md" target="_blank">
+        在 Github 上编辑此页！
+      </a>
+    </div>
 </div>
 
                 

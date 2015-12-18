@@ -139,7 +139,7 @@
 	
 	var _utilIndex = __webpack_require__(4);
 	
-	_instanceVue2['default'].version = '1.0.10';
+	_instanceVue2['default'].version = '1.0.12';
 	
 	/**
 	 * Vue and every constructor that extends Vue has an
@@ -164,9 +164,11 @@
 	
 	// devtools global hook
 	/* istanbul ignore if */
-	if (true) {
-	  if (_utilIndex.inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+	if (("development") !== 'production' && _utilIndex.inBrowser) {
+	  if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
 	    window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', _instanceVue2['default']);
+	  } else if (/Chrome\/\d+/.test(navigator.userAgent)) {
+	    console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
 	  }
 	}
 	module.exports = exports['default'];
@@ -477,6 +479,7 @@
 	      vm._digest();
 	    }
 	  }
+	  return val;
 	}
 	
 	/**
@@ -933,6 +936,7 @@
 	exports.inDoc = inDoc;
 	exports.getAttr = getAttr;
 	exports.getBindAttr = getBindAttr;
+	exports.hasBindAttr = hasBindAttr;
 	exports.before = before;
 	exports.after = after;
 	exports.remove = remove;
@@ -940,6 +944,7 @@
 	exports.replace = replace;
 	exports.on = on;
 	exports.off = off;
+	exports.setClass = setClass;
 	exports.addClass = addClass;
 	exports.removeClass = removeClass;
 	exports.extractContent = extractContent;
@@ -955,6 +960,8 @@
 	var _config = __webpack_require__(8);
 	
 	var _config2 = _interopRequireDefault(_config);
+	
+	var _env = __webpack_require__(6);
 	
 	var _debug = __webpack_require__(12);
 	
@@ -1027,6 +1034,18 @@
 	    val = getAttr(node, 'v-bind:' + name);
 	  }
 	  return val;
+	}
+	
+	/**
+	 * Check the presence of a bind attribute.
+	 *
+	 * @param {Node} node
+	 * @param {String} name
+	 * @return {Boolean}
+	 */
+	
+	function hasBindAttr(node, name) {
+	  return node.hasAttribute(name) || node.hasAttribute(':' + name) || node.hasAttribute('v-bind:' + name);
 	}
 	
 	/**
@@ -1119,10 +1138,29 @@
 	}
 	
 	/**
+	 * In IE9, setAttribute('class') will result in empty class
+	 * if the element also has the :class attribute; However in
+	 * PhantomJS, setting `className` does not work on SVG elements...
+	 * So we have to do a conditional check here.
+	 *
+	 * @param {Element} el
+	 * @param {String} cls
+	 */
+	
+	function setClass(el, cls) {
+	  /* istanbul ignore if */
+	  if (_env.isIE9 && !(el instanceof SVGElement)) {
+	    el.className = cls;
+	  } else {
+	    el.setAttribute('class', cls);
+	  }
+	}
+	
+	/**
 	 * Add class with compatibility for IE & SVG
 	 *
 	 * @param {Element} el
-	 * @param {Strong} cls
+	 * @param {String} cls
 	 */
 	
 	function addClass(el, cls) {
@@ -1131,7 +1169,7 @@
 	  } else {
 	    var cur = ' ' + (el.getAttribute('class') || '') + ' ';
 	    if (cur.indexOf(' ' + cls + ' ') < 0) {
-	      el.setAttribute('class', (cur + cls).trim());
+	      setClass(el, (cur + cls).trim());
 	    }
 	  }
 	}
@@ -1140,7 +1178,7 @@
 	 * Remove class with compatibility for IE & SVG
 	 *
 	 * @param {Element} el
-	 * @param {Strong} cls
+	 * @param {String} cls
 	 */
 	
 	function removeClass(el, cls) {
@@ -1152,7 +1190,7 @@
 	    while (cur.indexOf(tar) >= 0) {
 	      cur = cur.replace(tar, ' ');
 	    }
-	    el.setAttribute('class', cur.trim());
+	    setClass(el, cur.trim());
 	  }
 	  if (!el.className) {
 	    el.removeAttribute('class');
@@ -1441,6 +1479,7 @@
 	exports.compileRegex = compileRegex;
 	exports.parseText = parseText;
 	exports.tokensToExp = tokensToExp;
+	exports.removeTags = removeTags;
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
@@ -1600,6 +1639,17 @@
 	    }
 	  }
 	}
+	
+	/**
+	 * Replace all interpolation tags in a piece of text.
+	 *
+	 * @param {String} text
+	 * @return {String}
+	 */
+	
+	function removeTags(text) {
+	  return text.replace(tagRE, '');
+	}
 
 /***/ },
 /* 10 */
@@ -1744,7 +1794,7 @@
 	 */
 	
 	var str, dir;
-	var c, i, l, lastFilterIndex;
+	var c, prev, i, l, lastFilterIndex;
 	var inSingle, inDouble, curly, square, paren;
 	
 	/**
@@ -1824,13 +1874,14 @@
 	  dir = {};
 	
 	  for (i = 0, l = str.length; i < l; i++) {
+	    prev = c;
 	    c = str.charCodeAt(i);
 	    if (inSingle) {
 	      // check single quote
-	      if (c === 0x27) inSingle = !inSingle;
+	      if (c === 0x27 && prev !== 0x5C) inSingle = !inSingle;
 	    } else if (inDouble) {
 	      // check double quote
-	      if (c === 0x22) inDouble = !inDouble;
+	      if (c === 0x22 && prev !== 0x5C) inDouble = !inDouble;
 	    } else if (c === 0x7C && // pipe
 	    str.charCodeAt(i + 1) !== 0x7C && str.charCodeAt(i - 1) !== 0x7C) {
 	      if (dir.expression == null) {
@@ -2204,8 +2255,8 @@
 	    var ids = Object.keys(components);
 	    for (var i = 0, l = ids.length; i < l; i++) {
 	      var key = ids[i];
-	      if (_component.commonTagRE.test(key)) {
-	        ("development") !== 'production' && _debug.warn('Do not use built-in HTML elements as component ' + 'id: ' + key);
+	      if (_component.commonTagRE.test(key) || _component.reservedTagRE.test(key)) {
+	        ("development") !== 'production' && _debug.warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + key);
 	        continue;
 	      }
 	      def = components[key];
@@ -2352,6 +2403,7 @@
 	exports.checkComponentAttr = checkComponentAttr;
 	exports.initProp = initProp;
 	exports.assertProp = assertProp;
+	exports.coerceProp = coerceProp;
 	
 	var _debug = __webpack_require__(12);
 	
@@ -2362,8 +2414,10 @@
 	var _lang = __webpack_require__(5);
 	
 	var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/;
-	
 	exports.commonTagRE = commonTagRE;
+	var reservedTagRE = /^(slot|partial|component)$/;
+	
+	exports.reservedTagRE = reservedTagRE;
 	/**
 	 * Check if an element is a component, if yes return its
 	 * component id.
@@ -2376,7 +2430,7 @@
 	function checkComponentAttr(el, options) {
 	  var tag = el.tagName.toLowerCase();
 	  var hasAttrs = el.hasAttributes();
-	  if (!commonTagRE.test(tag) && tag !== 'component') {
+	  if (!commonTagRE.test(tag) && !reservedTagRE.test(tag)) {
 	    if (_options.resolveAsset(options, 'components', tag)) {
 	      return { id: tag };
 	    } else {
@@ -2427,6 +2481,7 @@
 	
 	function initProp(vm, prop, value) {
 	  var key = prop.path;
+	  value = coerceProp(prop, value);
 	  vm[key] = vm._data[key] = assertProp(prop, value) ? value : undefined;
 	}
 	
@@ -2482,6 +2537,23 @@
 	    }
 	  }
 	  return true;
+	}
+	
+	/**
+	 * Force parsing value with coerce option.
+	 *
+	 * @param {*} value
+	 * @param {Object} options
+	 * @return {*}
+	 */
+	
+	function coerceProp(prop, value) {
+	  var coerce = prop.options.coerce;
+	  if (!coerce) {
+	    return value;
+	  }
+	  // coerce is a function
+	  return coerce(value);
 	}
 	
 	function formatType(val) {
@@ -2658,7 +2730,7 @@
 	  var ob;
 	  if (_utilIndex.hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
 	    ob = value.__ob__;
-	  } else if ((_utilIndex.isArray(value) || _utilIndex.isPlainObject(value)) && !Object.isFrozen(value) && !value._isVue) {
+	  } else if ((_utilIndex.isArray(value) || _utilIndex.isPlainObject(value)) && Object.isExtensible(value) && !value._isVue) {
 	    ob = new Observer(value);
 	  }
 	  if (ob && vm) {
@@ -3370,11 +3442,11 @@
 	  if (this.active) {
 	    var value = this.get();
 	    if (value !== this.value ||
-	    // Deep watchers and Array watchers should fire even
+	    // Deep watchers and watchers on Object/Arrays should fire even
 	    // when the value is the same, because the value may
 	    // have mutated; but only do so if this is a
 	    // non-shallow update (caused by a vm digest).
-	    (_utilIndex.isArray(value) || this.deep) && !this.shallow) {
+	    (_utilIndex.isObject(value) || this.deep) && !this.shallow) {
 	      // set new value
 	      var oldValue = this.value;
 	      this.value = value;
@@ -3501,11 +3573,11 @@
 	
 	var wsRE = /\s/g;
 	var newlineRE = /\n/g;
-	var saveRE = /[\{,]\s*[\w\$_]+\s*:|('[^']*'|"[^"]*")|new |typeof |void /g;
+	var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|new |typeof |void /g;
 	var restoreRE = /"(\d+)"/g;
-	var pathTestRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
-	var pathReplaceRE = /[^\w$\.]([A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\])*)/g;
-	var booleanLiteralRE = /^(true|false)$/;
+	var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
+	var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
+	var booleanLiteralRE = /^(?:true|false)$/;
 	
 	/**
 	 * Save / Rewrite / Restore
@@ -3588,7 +3660,7 @@
 	  var body = exp.replace(saveRE, save).replace(wsRE, '');
 	  // rewrite all paths
 	  // pad 1 space here becaue the regex matches 1 extra char
-	  body = (' ' + body).replace(pathReplaceRE, rewrite).replace(restoreRE, restore);
+	  body = (' ' + body).replace(identRE, rewrite).replace(restoreRE, restore);
 	  return makeGetterFn(body);
 	}
 	
@@ -4658,6 +4730,11 @@
 	function checkElementDirectives(el, options) {
 	  var tag = el.tagName.toLowerCase();
 	  if (_utilIndex.commonTagRE.test(tag)) return;
+	  // special case: give named slot a higher priority
+	  // than unnamed slots
+	  if (tag === 'slot' && _utilIndex.hasBindAttr(el, 'name')) {
+	    tag = '_namedSlot';
+	  }
 	  var def = _utilIndex.resolveAsset(options, 'elementDirectives', tag);
 	  if (def) {
 	    return makeTerminalNodeLinkFn(el, tag, '', options, def);
@@ -4796,8 +4873,12 @@
 	    // attribute interpolations
 	    if (tokens) {
 	      value = _parsersText.tokensToExp(tokens);
-	      arg = name;
-	      pushDir('bind', _directivesPublicIndex2['default'].bind, true);
+	      if (name === 'class') {
+	        pushDir('class', _directivesInternalIndex2['default']['class'], true);
+	      } else {
+	        arg = name;
+	        pushDir('bind', _directivesPublicIndex2['default'].bind, true);
+	      }
 	      // warn against mixing mustaches with v-bind
 	      if (true) {
 	        if (name === 'class' && Array.prototype.some.call(attrs, function (attr) {
@@ -5127,7 +5208,7 @@
 	}
 	
 	var tagRE = /<([\w:]+)/;
-	var entityRE = /&\w+;|&#\d+;|&#x[\dA-F]+;/;
+	var entityRE = /&#?\w+?;/;
 	
 	/**
 	 * Convert a string template to a DocumentFragment.
@@ -6294,9 +6375,14 @@
 	  },
 	
 	  apply: function apply(el, value) {
-	    _transitionIndex.applyTransition(el, value ? 1 : -1, function () {
+	    if (_utilIndex.inDoc(el)) {
+	      _transitionIndex.applyTransition(el, value ? 1 : -1, toggle, this.vm);
+	    } else {
+	      toggle();
+	    }
+	    function toggle() {
 	      el.style.display = value ? '' : 'none';
-	    }, this.vm);
+	    }
 	  }
 	};
 	module.exports = exports['default'];
@@ -6459,13 +6545,18 @@
 	      });
 	      this.on('blur', function () {
 	        self.focused = false;
-	        self.listener();
+	        // do not sync value after fragment removal (#2017)
+	        if (!self._frag || self._frag.inserted) {
+	          self.rawListener();
+	        }
 	      });
 	    }
 	
 	    // Now attach the main listener
-	    this.listener = function () {
-	      if (composing) return;
+	    this.listener = this.rawListener = function () {
+	      if (composing || !self._bound) {
+	        return;
+	      }
 	      var val = number || isRange ? _utilIndex.toNumber(el.value) : el.value;
 	      self.set(val);
 	      // force update on next tick to avoid lock & same value
@@ -6570,7 +6661,7 @@
 	    };
 	    this.on('change', this.listener);
 	
-	    if (el.checked) {
+	    if (el.hasAttribute('checked')) {
 	      this.afterBind = this.listener;
 	    }
 	  },
@@ -6744,7 +6835,7 @@
 	    };
 	
 	    this.on('change', this.listener);
-	    if (el.checked) {
+	    if (el.hasAttribute('checked')) {
 	      this.afterBind = this.listener;
 	    }
 	  },
@@ -6908,13 +6999,12 @@
 	var xlinkNS = 'http://www.w3.org/1999/xlink';
 	var xlinkRE = /^xlink:/;
 	
-	// these input element attributes should also set their
-	// corresponding properties
-	var inputProps = {
-	  value: 1,
-	  checked: 1,
-	  selected: 1
-	};
+	// check for attributes that prohibit interpolations
+	var disallowedInterpAttrRE = /^v-|^:|^@|^(is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
+	
+	// these attributes should also set their corresponding properties
+	// because they only affect the initial state of the element
+	var attrWithPropsRE = /^(value|checked|selected|muted)$/;
 	
 	// these attributes should set a hidden property for
 	// binding v-model to object values
@@ -6923,9 +7013,6 @@
 	  'true-value': '_trueValue',
 	  'false-value': '_falseValue'
 	};
-	
-	// check for attributes that prohibit interpolations
-	var disallowedInterpAttrRE = /^v-|^:|^@|^(is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
 	
 	exports['default'] = {
 	
@@ -6979,9 +7066,9 @@
 	  handleObject: _internalStyle2['default'].handleObject,
 	
 	  handleSingle: function handleSingle(attr, value) {
-	    if (inputProps[attr] && attr in this.el) {
-	      this.el[attr] = attr === 'value' ? value || '' : // IE9 will set input.value to "null" for null...
-	      value;
+	    if (!this.descriptor.interp && attrWithPropsRE.test(attr) && attr in this.el) {
+	      this.el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
+	      ? '' : value : value;
 	    }
 	    // set model props
 	    var modelProp = modelProps[attr];
@@ -7455,6 +7542,9 @@
 	    if (activateHook && !cached) {
 	      this.waitingFor = newComponent;
 	      activateHook.call(newComponent, function () {
+	        if (self.waitingFor !== newComponent) {
+	          return;
+	        }
 	        self.waitingFor = null;
 	        self.transition(newComponent, cb);
 	      });
@@ -7702,6 +7792,7 @@
 	    var twoWay = prop.mode === bindingModes.TWO_WAY;
 	
 	    var parentWatcher = this.parentWatcher = new _watcher2['default'](parent, parentKey, function (val) {
+	      val = _utilIndex.coerceProp(prop, val);
 	      if (_utilIndex.assertProp(prop, val)) {
 	        child[childKey] = val;
 	      }
@@ -8463,7 +8554,7 @@
 	      // non-element template
 	      replacer.nodeType !== 1 ||
 	      // single nested component
-	      tag === 'component' || _utilIndex.resolveAsset(options, 'components', tag) || replacer.hasAttribute('is') || replacer.hasAttribute(':is') || replacer.hasAttribute('v-bind:is') ||
+	      tag === 'component' || _utilIndex.resolveAsset(options, 'components', tag) || _utilIndex.hasBindAttr(replacer, 'is') ||
 	      // element directive
 	      _utilIndex.resolveAsset(options, 'elementDirectives', tag) ||
 	      // for block
@@ -8762,6 +8853,11 @@
 	    el = _compilerIndex.transclude(el, options);
 	    this._initElement(el);
 	
+	    // handle v-pre on root node (#2026)
+	    if (el.nodeType === 1 && _utilIndex.getAttr(el, 'v-pre') !== null) {
+	      return;
+	    }
+	
 	    // root is always compiled per-instance, because
 	    // container attrs and props can be different every time.
 	    var contextOptions = this._context && this._context.$options;
@@ -8859,6 +8955,30 @@
 	      }
 	      return;
 	    }
+	
+	    var destroyReady;
+	    var pendingRemoval;
+	
+	    var self = this;
+	    // Cleanup should be called either synchronously or asynchronoysly as
+	    // callback of this.$remove(), or if remove and deferCleanup are false.
+	    // In any case it should be called after all other removing, unbinding and
+	    // turning of is done
+	    var cleanupIfPossible = function cleanupIfPossible() {
+	      if (destroyReady && !pendingRemoval && !deferCleanup) {
+	        self._cleanup();
+	      }
+	    };
+	
+	    // remove DOM element
+	    if (remove && this.$el) {
+	      pendingRemoval = true;
+	      this.$remove(function () {
+	        pendingRemoval = false;
+	        cleanupIfPossible();
+	      });
+	    }
+	
 	    this._callHook('beforeDestroy');
 	    this._isBeingDestroyed = true;
 	    var i;
@@ -8892,15 +9012,9 @@
 	    if (this.$el) {
 	      this.$el.__vue__ = null;
 	    }
-	    // remove DOM element
-	    var self = this;
-	    if (remove && this.$el) {
-	      this.$remove(function () {
-	        self._cleanup();
-	      });
-	    } else if (!deferCleanup) {
-	      this._cleanup();
-	    }
+	
+	    destroyReady = true;
+	    cleanupIfPossible();
 	  };
 	
 	  /**
@@ -8959,6 +9073,8 @@
 	var _watcher = __webpack_require__(20);
 	
 	var _watcher2 = _interopRequireDefault(_watcher);
+	
+	var _parsersText = __webpack_require__(9);
 	
 	var _parsersExpression = __webpack_require__(21);
 	
@@ -9029,7 +9145,13 @@
 	  // remove attribute
 	  if ((name !== 'cloak' || this.vm._isCompiled) && this.el && this.el.removeAttribute) {
 	    var attr = descriptor.attr || 'v-' + name;
-	    this.el.removeAttribute(attr);
+	    if (attr !== 'class') {
+	      this.el.removeAttribute(attr);
+	    } else {
+	      // for class interpolations, only remove the parts that
+	      // need to be interpolated.
+	      _utilIndex.setClass(this.el, _parsersText.removeTags(this.el.getAttribute('class')).trim().replace(/\s+/g, ' '));
+	    }
 	  }
 	
 	  // copy def properties
@@ -9047,6 +9169,7 @@
 	  if (this.bind) {
 	    this.bind();
 	  }
+	  this._bound = true;
 	
 	  if (this.literal) {
 	    this.update && this.update(descriptor.raw);
@@ -9082,7 +9205,6 @@
 	      this.update(watcher.value);
 	    }
 	  }
-	  this._bound = true;
 	};
 	
 	/**
@@ -9461,6 +9583,12 @@
 	      return extendOptions._Ctor;
 	    }
 	    var name = extendOptions.name || Super.options.name;
+	    if (true) {
+	      if (!/^[a-zA-Z][\w-]+$/.test(name)) {
+	        _utilIndex.warn('Invalid component name: ' + name);
+	        name = null;
+	      }
+	    }
 	    var Sub = createClass(name || 'VueComponent');
 	    Sub.prototype = Object.create(Super.prototype);
 	    Sub.prototype.constructor = Sub;
@@ -9545,8 +9673,8 @@
 	      } else {
 	        /* istanbul ignore if */
 	        if (true) {
-	          if (type === 'component' && _utilIndex.commonTagRE.test(id)) {
-	            _utilIndex.warn('Do not use built-in HTML elements as component ' + 'id: ' + id);
+	          if (type === 'component' && (_utilIndex.commonTagRE.test(id) || _utilIndex.reservedTagRE.test(id))) {
+	            _utilIndex.warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
 	          }
 	        }
 	        if (type === 'component' && _utilIndex.isPlainObject(definition)) {
@@ -9604,7 +9732,9 @@
 	      if (asStatement && !_parsersExpression.isSimplePath(exp)) {
 	        var self = this;
 	        return function statementHandler() {
+	          self.$arguments = _utilIndex.toArray(arguments);
 	          res.get.call(self, self);
+	          self.$arguments = null;
 	        };
 	      } else {
 	        try {
@@ -9661,6 +9791,7 @@
 	    }
 	    var watcher = new _watcher2['default'](vm, expOrFn, cb, {
 	      deep: options && options.deep,
+	      sync: options && options.sync,
 	      filters: parsed && parsed.filters
 	    });
 	    if (options && options.immediate) {
@@ -10223,14 +10354,13 @@
 	
 	var _slot = __webpack_require__(65);
 	
-	var _slot2 = _interopRequireDefault(_slot);
-	
 	var _partial = __webpack_require__(66);
 	
 	var _partial2 = _interopRequireDefault(_partial);
 	
 	exports['default'] = {
-	  slot: _slot2['default'],
+	  slot: _slot.slot,
+	  _namedSlot: _slot.namedSlot, // same as slot but with higher priority
 	  partial: _partial2['default']
 	};
 	module.exports = exports['default'];
@@ -10252,55 +10382,46 @@
 	// instance being stored as `$options._content` during
 	// the transclude phase.
 	
-	exports['default'] = {
+	// We are exporting two versions, one for named and one
+	// for unnamed, because the unnamed slots must be compiled
+	// AFTER all named slots have selected their content. So
+	// we need to give them different priorities in the compilation
+	// process. (See #1965)
+	
+	var slot = {
 	
 	  priority: 1750,
-	
-	  params: ['name'],
 	
 	  bind: function bind() {
 	    var host = this.vm;
 	    var raw = host.$options._content;
-	    var content;
 	    if (!raw) {
 	      this.fallback();
 	      return;
 	    }
 	    var context = host._context;
-	    var slotName = this.params.name;
+	    var slotName = this.params && this.params.name;
 	    if (!slotName) {
-	      // Default content
-	      var self = this;
-	      var compileDefaultContent = function compileDefaultContent() {
-	        self.compile(extractFragment(raw.childNodes, raw, true), context, host);
-	      };
-	      if (!host._isCompiled) {
-	        // defer until the end of instance compilation,
-	        // because the default outlet must wait until all
-	        // other possible outlets with selectors have picked
-	        // out their contents.
-	        host.$once('hook:compiled', compileDefaultContent);
-	      } else {
-	        compileDefaultContent();
-	      }
+	      // Default slot
+	      this.tryCompile(extractFragment(raw.childNodes, raw, true), context, host);
 	    } else {
+	      // Named slot
 	      var selector = '[slot="' + slotName + '"]';
 	      var nodes = raw.querySelectorAll(selector);
 	      if (nodes.length) {
-	        content = extractFragment(nodes, raw);
-	        if (content.hasChildNodes()) {
-	          this.compile(content, context, host);
-	        } else {
-	          this.fallback();
-	        }
+	        this.tryCompile(extractFragment(nodes, raw), context, host);
 	      } else {
 	        this.fallback();
 	      }
 	    }
 	  },
 	
-	  fallback: function fallback() {
-	    this.compile(_utilIndex.extractContent(this.el, true), this.vm);
+	  tryCompile: function tryCompile(content, context, host) {
+	    if (content.hasChildNodes()) {
+	      this.compile(content, context, host);
+	    } else {
+	      this.fallback();
+	    }
 	  },
 	
 	  compile: function compile(content, context, host) {
@@ -10315,6 +10436,10 @@
 	    }
 	  },
 	
+	  fallback: function fallback() {
+	    this.compile(_utilIndex.extractContent(this.el, true), this.vm);
+	  },
+	
 	  unbind: function unbind() {
 	    if (this.unlink) {
 	      this.unlink();
@@ -10322,6 +10447,13 @@
 	  }
 	};
 	
+	exports.slot = slot;
+	var namedSlot = _utilIndex.extend(_utilIndex.extend({}, slot), {
+	  priority: slot.priority + 1,
+	  params: ['name']
+	});
+	
+	exports.namedSlot = namedSlot;
 	/**
 	 * Extract qualified content nodes from a node list.
 	 *
@@ -10358,7 +10490,6 @@
 	    frag.appendChild(node);
 	  }
 	}
-	module.exports = exports['default'];
 
 /***/ },
 /* 66 */
@@ -11316,6 +11447,10 @@
 	
 	describe('Global API', function () {
 	
+	  beforeEach(function () {
+	    spyWarns()
+	  })
+	
 	  it('exposed utilities', function () {
 	    expect(Vue.util).toBe(_)
 	    expect(Vue.nextTick).toBe(_.nextTick)
@@ -11349,6 +11484,15 @@
 	    })
 	    expect(t2.$options.a).toBe(3)
 	    expect(t2.$options.b).toBe(2)
+	  })
+	
+	  it('extend warn invalid names', function () {
+	    Vue.extend({ name: '123' })
+	    expect(hasWarned('Invalid component name: 123')).toBe(true)
+	    Vue.extend({ name: '_fesf' })
+	    expect(hasWarned('Invalid component name: _fesf')).toBe(true)
+	    Vue.extend({ name: 'Some App' })
+	    expect(hasWarned('Invalid component name: Some App')).toBe(true)
 	  })
 	
 	  it('use', function () {
@@ -11617,6 +11761,37 @@
 	      expect(opts.beforeDestroy).toHaveBeenCalled()
 	      expect(opts.destroyed).toHaveBeenCalled()
 	      expect(opts.detached).toHaveBeenCalled()
+	    })
+	
+	    // #1966
+	    it('grandchild hooks', function () {
+	      var grandChildBeforeDestroy = jasmine.createSpy()
+	      var grandChildDestroyed = jasmine.createSpy()
+	      var grandChildDetached = jasmine.createSpy()
+	
+	      var opts = {
+	        template: '<div><test></test></div>',
+	        components: {
+	          test: {
+	            template: '<div><test-inner></test-inner></div>',
+	            components: {
+	              'test-inner': {
+	                beforeDestroy: grandChildBeforeDestroy,
+	                destroyed: grandChildDestroyed,
+	                detached: grandChildDetached
+	              }
+	            }
+	          }
+	        }
+	      }
+	      var el = opts.el = document.createElement('div')
+	      document.body.appendChild(el)
+	      var vm = new Vue(opts)
+	      vm.$destroy(true)
+	
+	      expect(grandChildBeforeDestroy).toHaveBeenCalled()
+	      expect(grandChildDestroyed).toHaveBeenCalled()
+	      expect(grandChildDetached).toHaveBeenCalled()
 	    })
 	
 	    it('parent', function () {
@@ -12643,12 +12818,12 @@
 	      }
 	    })
 	    expect(el.firstChild.id).toBe('aaa')
-	    expect(el.firstChild.className).toBe('b ccc d')
+	    expect(el.firstChild.className).toBe('b d ccc')
 	    vm.a = 'aa'
 	    vm.c = 'cc'
 	    _.nextTick(function () {
 	      expect(el.firstChild.id).toBe('aa')
-	      expect(el.firstChild.className).toBe('b cc d')
+	      expect(el.firstChild.className).toBe('b d cc')
 	      done()
 	    })
 	  })
@@ -13253,6 +13428,17 @@
 	    expect(el.lastChild.textContent).toBe('slot b')
 	  })
 	
+	  it('fallback content with mixed named/unnamed slots', function () {
+	    el.innerHTML = '<p slot="b">slot b</p>'
+	    options.template =
+	      '<slot><p>fallback a</p></slot>' +
+	      '<slot name="b">fallback b</slot>'
+	    mount()
+	    expect(el.childNodes.length).toBe(2)
+	    expect(el.firstChild.textContent).toBe('fallback a')
+	    expect(el.lastChild.textContent).toBe('slot b')
+	  })
+	
 	  it('selector matching multiple elements', function () {
 	    el.innerHTML = '<p slot="t">1</p><div></div><p slot="t">2</p>'
 	    options.template = '<slot name="t"></slot>'
@@ -13352,27 +13538,28 @@
 	      el: el,
 	      data: {
 	        a: 1,
+	        b: 2,
 	        show: true
 	      },
-	      template: '<test :show="show">{{a}}</test>',
+	      template: '<test :show="show"><p slot="b">{{b}}</a><p>{{a}}</p></test>',
 	      components: {
 	        test: {
 	          props: ['show'],
-	          template: '<div v-if="show"><slot></cotent></div>'
+	          template: '<div v-if="show"><slot></slot><slot name="b"></slot></div>'
 	        }
 	      }
 	    })
-	    expect(el.textContent).toBe('1')
+	    expect(el.textContent).toBe('12')
 	    vm.a = 2
 	    _.nextTick(function () {
-	      expect(el.textContent).toBe('2')
+	      expect(el.textContent).toBe('22')
 	      vm.show = false
 	      _.nextTick(function () {
 	        expect(el.textContent).toBe('')
 	        vm.show = true
 	        vm.a = 3
 	        _.nextTick(function () {
-	          expect(el.textContent).toBe('3')
+	          expect(el.textContent).toBe('32')
 	          done()
 	        })
 	      })
@@ -13972,11 +14159,16 @@
 	      // cleans up the component being waited on.
 	      // see #1152
 	      vm.view = 'view-a'
+	      // store the ready callback for view-a
+	      var callback = next
 	      _.nextTick(function () {
 	        vm.view = 'view-b'
 	        _.nextTick(function () {
 	          expect(vm.$children.length).toBe(1)
 	          expect(vm.$children[0].$el.textContent).toBe('BBB')
+	          // calling view-a's ready callback here should not throw
+	          // because it should've been cancelled (#1994)
+	          expect(callback).not.toThrow()
 	          done()
 	        })
 	      })
@@ -14453,7 +14645,7 @@
 	
 	  describe('assertions', function () {
 	
-	    function makeInstance (value, type, validator) {
+	    function makeInstance (value, type, validator, coerce) {
 	      return new Vue({
 	        el: document.createElement('div'),
 	        template: '<test :test="val"></test>',
@@ -14465,7 +14657,8 @@
 	            props: {
 	              test: {
 	                type: type,
-	                validator: validator
+	                validator: validator,
+	                coerce: coerce
 	              }
 	            }
 	          }
@@ -14547,6 +14740,17 @@
 	        return v === 123
 	      })
 	      expect(hasWarned('Expected String')).toBe(true)
+	    })
+	
+	    it('type check + coerce', function () {
+	      makeInstance(123, String, null, String)
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance('123', Number, null, Number)
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance('123', Boolean, null, function (val) {
+	        return val === '123'
+	      })
+	      expect(getWarnCount()).toBe(0)
 	    })
 	
 	    it('required', function () {
@@ -15053,7 +15257,10 @@
 	  var el, dir
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    dir = {el: el}
+	    dir = {
+	      el: el,
+	      descriptor: {}
+	    }
 	    _.extend(dir, def)
 	  })
 	
@@ -17869,8 +18076,19 @@
 	    }, 30)
 	    setTimeout(function () {
 	      expect(spy.calls.count()).toBe(1)
+	      expect(spy).toHaveBeenCalledWith('d', 'a')
 	      expect(vm.test).toBe('d')
-	      done()
+	      setTimeout(function () {
+	        el.firstChild.value = 'e'
+	        // blur should trigger change instantly without debounce
+	        trigger(el.firstChild, 'blur')
+	        _.nextTick(function () {
+	          expect(spy.calls.count()).toBe(2)
+	          expect(spy).toHaveBeenCalledWith('e', 'd')
+	          expect(vm.test).toBe('e')
+	          done()
+	        })
+	      }, 10)
 	    }, 200)
 	  })
 	
@@ -17899,6 +18117,34 @@
 	        expect(el.lastChild.checked).toBe(true)
 	        done()
 	      })
+	    })
+	  })
+	
+	  it('should not sync value on blur when parent fragment is removed', function (done) {
+	    el.style.display = ''
+	    var vm = new Vue({
+	      el: el,
+	      replace: false,
+	      template:
+	        '<form v-if="ok" @submit.prevent="save">' +
+	          '<input v-model="msg">' +
+	        '</form>',
+	      data: {
+	        ok: true,
+	        msg: 'hi'
+	      },
+	      methods: {
+	        save: function () {
+	          this.ok = false
+	          this.msg = ''
+	        }
+	      }
+	    })
+	    el.querySelector('input').focus()
+	    trigger(el.querySelector('form'), 'submit')
+	    _.nextTick(function () {
+	      expect(vm.msg).toBe('')
+	      done()
 	    })
 	  })
 	})
@@ -18173,6 +18419,10 @@
 	
 	describe('v-pre', function () {
 	
+	  beforeEach(function () {
+	    spyWarns()
+	  })
+	
 	  it('should work', function () {
 	    var vm = new Vue({
 	      el: document.createElement('div'),
@@ -18182,6 +18432,19 @@
 	      }
 	    })
 	    expect(vm.$el.firstChild.textContent).toBe('{{a}}')
+	  })
+	
+	  it('should work on root node', function () {
+	    var vm = new Vue({
+	      el: document.createElement('div'),
+	      template: '<div v-pre>{{a}}</div>',
+	      replace: true,
+	      data: {
+	        a: 123
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('{{a}}')
+	    expect(getWarnCount()).toBe(0)
 	  })
 	})
 
@@ -18929,6 +19192,24 @@
 	      expect(vm.a).toBe(1)
 	    })
 	
+	    it('passing $arguments', function () {
+	      new Vue({
+	        el: document.createElement('div'),
+	        template: '<comp @ready="onReady($arguments[1])"></comp>',
+	        methods: {
+	          onReady: spy
+	        },
+	        components: {
+	          comp: {
+	            compiled: function () {
+	              this.$emit('ready', 123, 1234)
+	            }
+	          }
+	        }
+	      })
+	      expect(spy).toHaveBeenCalledWith(1234)
+	    })
+	
 	    describe('attached/detached', function () {
 	
 	      it('in DOM', function () {
@@ -19529,7 +19810,56 @@
 	    expect(logs.join()).toBe('0,5,6,5,6,1')
 	    logs = []
 	    vm.$destroy(true)
-	    expect(logs.join()).toBe('3,8,9,8,9,2,7,7,4')
+	    expect(logs.join()).toBe('2,7,7,3,8,9,8,9,4')
+	    Vue.options.replace = false
+	  })
+	
+	  // #1966
+	  it('call lifecycle hooks for child and grandchild components', function () {
+	    Vue.options.replace = true
+	    var el = document.createElement('div')
+	    var logs = []
+	    function log (n) {
+	      return function () {
+	        logs.push(n)
+	      }
+	    }
+	    document.body.appendChild(el)
+	    var vm = new Vue({
+	      el: el,
+	      attached: log(0),
+	      ready: log(1),
+	      detached: log(2),
+	      beforeDestroy: log(3),
+	      destroyed: log(4),
+	      template: '<div><test></test></div>',
+	      components: {
+	        test: {
+	          attached: log(5),
+	          ready: log(6),
+	          detached: log(7),
+	          beforeDestroy: log(8),
+	          destroyed: log(9),
+	          template: '<div><test-inner></test-inner></div>',
+	          components: {
+	            'test-inner': {
+	              attached: log(10),
+	              ready: log(11),
+	              detached: log(12),
+	              beforeDestroy: log(13),
+	              destroyed: log(14),
+	              template: '<span>hi</span>'
+	            }
+	          }
+	
+	        }
+	      }
+	    })
+	    expect(vm.$el.innerHTML).toBe('<div><span>hi</span></div>')
+	    expect(logs.join()).toBe('0,5,10,11,6,1')
+	    logs = []
+	    vm.$destroy(true)
+	    expect(logs.join()).toBe('2,7,12,3,8,13,14,9,4')
 	    Vue.options.replace = false
 	  })
 	
@@ -19747,6 +20077,35 @@
 	      expect(div.getAttribute('b')).toBe('2')
 	      done()
 	    })
+	  })
+	
+	  it('IE9 class & :class merge during transclusion', function () {
+	    var vm = new Vue({
+	      el: document.createElement('div'),
+	      template: '<test class="outer"></test>',
+	      components: {
+	        test: {
+	          replace: true,
+	          template: '<div :class="{\'inner\': true}"></div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.firstChild.className).toBe('outer inner')
+	  })
+	
+	  it('SVG class interpolation', function () {
+	    var vm = new Vue({
+	      el: document.createElement('div'),
+	      template: '<icon class="abc" icon="def"></icon>',
+	      components: {
+	        icon: {
+	          props: ['class', 'icon'],
+	          replace: true,
+	          template: '<svg class="si-icon {{icon}} {{class}}"><use xlink:href=""></use></svg>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.firstChild.getAttribute('class')).toBe('si-icon abc def')
 	  })
 	})
 
@@ -20266,6 +20625,14 @@
 	    expect(res.filters[0].args).toBeUndefined()
 	  })
 	
+	  it('escape string', function () {
+	    var res = parse("'a\\'b' | test")
+	    expect(res.expression).toBe("'a\\'b'")
+	    expect(res.filters.length).toBe(1)
+	    expect(res.filters[0].name).toBe('test')
+	    expect(res.filters[0].args).toBeUndefined()
+	  })
+	
 	  it('cache', function () {
 	    var res1 = parse('a || b | c')
 	    var res2 = parse('a || b | c')
@@ -20451,6 +20818,27 @@
 	    },
 	    expected: 8,
 	    paths: ['$a', 'b', 'c', 'e']
+	  },
+	  {
+	    // string with escaped quotes
+	    exp: "'a\\'b' + c",
+	    scope: {
+	      c: '\'c'
+	    },
+	    expected: "a\'b\'c",
+	    paths: ['c']
+	  },
+	  {
+	    // dynamic sub path
+	    exp: "a['b' + i + 'c']",
+	    scope: {
+	      i: 0,
+	      a: {
+	        'b0c': 123
+	      }
+	    },
+	    expected: 123,
+	    paths: ['a', 'i']
 	  },
 	  {
 	    // Math global, simple path
@@ -20796,6 +21184,11 @@
 	    expect(res instanceof DocumentFragment).toBeTruthy()
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.nodeValue).toBe('hello / hello')
+	    // #2021
+	    res = parse('&#xe604;')
+	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.childNodes.length).toBe(1)
+	    expect(res.firstChild.nodeValue).toBe('')
 	  })
 	
 	  it('should parse textContent if argument is a script node', function () {
@@ -22161,7 +22554,15 @@
 	        a: { template: 'hi' }
 	      }
 	    })
-	    expect(hasWarned('Do not use built-in HTML elements')).toBe(true)
+	    expect(hasWarned('Do not use built-in or reserved HTML elements as component id: a')).toBe(true)
+	    merge({
+	      components: null
+	    }, {
+	      components: {
+	        slot: { template: 'hi' }
+	      }
+	    })
+	    expect(hasWarned('Do not use built-in or reserved HTML elements as component id: slot')).toBe(true)
 	  })
 	
 	  it('should ignore non-function el & data in class merge', function () {
@@ -22665,6 +23066,20 @@
 	          expect(spy.calls.count()).toBe(3)
 	          done()
 	        })
+	      })
+	    })
+	  })
+	
+	  it('fire change for prop addition/deletion in non-deep mode', function (done) {
+	    new Watcher(vm, 'b', spy)
+	    Vue.set(vm.b, 'e', 123)
+	    nextTick(function () {
+	      expect(spy).toHaveBeenCalledWith(vm.b, vm.b)
+	      expect(spy.calls.count()).toBe(1)
+	      Vue.delete(vm.b, 'e')
+	      nextTick(function () {
+	        expect(spy.calls.count()).toBe(2)
+	        done()
 	      })
 	    })
 	  })
