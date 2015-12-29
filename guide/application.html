@@ -191,7 +191,10 @@
     <div id="ad">
         <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
     </div>
-    <p>Vue.js 的设计思想是专注与灵活——它只是一个界面库，不强制使用哪个架构。它能很好地与已有项目整合，不过对于经验欠缺的开发者，从头开始构建大型应用可能是一个挑战。</p>
+    <blockquote>
+<p><strong>新：</strong> 使用脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a> 可以快速地构建项目：单文件 Vue 组件，热加载，保存时检查代码，单元测试等。</p>
+</blockquote>
+<p>Vue.js 的设计思想是专注与灵活——它只是一个界面库，不强制使用哪个架构。它能很好地与已有项目整合，不过对于经验欠缺的开发者，从头开始构建大型应用可能是一个挑战。</p>
 <p>Vue.js 生态系统提供了一系列的工具与库，用于构建单页应用。但是它们只是推荐而已。</p>
 <h2 id="u6A21_u5757_u5316"><a href="#u6A21_u5757_u5316" class="headerlink" title="模块化"></a>模块化</h2><p>对于大型项目，为了更好地管理代码使用模块构建系统非常必要。推荐代码使用 CommonJS 或 ES6 模块，然后使用 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a> 或 <a href="http://browserify.org/" target="_blank" rel="external">Browserify</a> 打包。</p>
 <p>Webpack 和 Browserify 不只是模块打包器。两者都提供了源码转换 API，通过它可以用其它预处理器转换源码。例如，借助 <a href="https://github.com/babel/babel-loader" target="_blank" rel="external">babel-loader</a> 或 <a href="https://github.com/babel/babelify" target="_blank" rel="external">babelify</a> 代码可以使用 ES2015/2016 语法。</p>
@@ -201,12 +204,12 @@
 <p>如果你喜欢预处理器，甚至可以这么做：</p>
 <p><img src="/images/vue-component-with-pre-processors.png"></p>
 <p>你可以使用 Webpack + <a href="https://github.com/vuejs/vue-loader" target="_blank" rel="external">vue-loader</a> 或 Browserify + <a href="https://github.com/vuejs/vueify" target="_blank" rel="external">vueify</a> 构建这些单文件 Vue 组件。推荐使用 Webpack，因为它的加载器 API 提供更好的文件依赖追踪/缓存以及一些 Browserify 没有的转换功能。</p>
-<p>在 GitHub 上有一些构建示例：</p>
+<p>最快的构建方式是使用官方出品的脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a>。你也可以在 GitHub 上找到一些构建示例：</p>
 <ul>
 <li><a href="https://github.com/vuejs/vue-loader-example" target="_blank" rel="external">Webpack + vue-loader</a></li>
 <li><a href="https://github.com/vuejs/vueify-example" target="_blank" rel="external">Browserify + vueify</a></li>
 </ul>
-<h2 id="u8DEF_u7531"><a href="#u8DEF_u7531" class="headerlink" title="路由"></a>路由</h2><p>对于单页应用，推荐使用<a href="https://github.com/vuejs/vue-router" target="_blank" rel="external">官方库 vue-router</a>。详细请查看它的<a href="http://vuejs.github.io/vue-router/" target="_blank" rel="external">文档</a>。 </p>
+<h2 id="u8DEF_u7531"><a href="#u8DEF_u7531" class="headerlink" title="路由"></a>路由</h2><p>对于单页应用，推荐使用<a href="https://github.com/vuejs/vue-router" target="_blank" rel="external">官方库 vue-router</a>。详细请查看它的<a href="http://vuejs.github.io/vue-router/" target="_blank" rel="external">文档</a>。</p>
 <p>如果你只需要非常简单的路由逻辑，可以这么做，监听 <code>hashchange</code> 事件并使用动态组件：</p>
 <p><strong>示例：</strong></p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"app"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">component</span> <span class="attribute">:is</span>=<span class="value">"currentView"</span>&gt;</span><span class="tag">&lt;/<span class="title">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -229,6 +232,7 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">var</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</span><br><span class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  data: &#123; <span class="comment">/* ... */</span> &#125;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    <span class="string">'my-component'</span>: <span class="built_in">require</span>(<span class="string">'./my-component'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>测试这个模块：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Jasmine 2.0 测试</span></span><br><span class="line">describe(<span class="string">'my-component'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// require source module</span></span><br><span class="line">  <span class="keyword">var</span> myComponent = <span class="built_in">require</span>(<span class="string">'../src/my-component'</span>)</span><br><span class="line">  it(<span class="string">'should have a created hook'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    expect(<span class="keyword">typeof</span> myComponent.created).toBe(<span class="string">'function'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">  it(<span class="string">'should set correct default data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    expect(<span class="keyword">typeof</span> myComponent.data).toBe(<span class="string">'function'</span>)</span><br><span class="line">    <span class="keyword">var</span> defaultData = myComponent.data()</span><br><span class="line">    expect(defaultData.msg).toBe(<span class="string">'hello!'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>Karma 的示例配置：<a href="https://github.com/vuejs/vue-loader-example/blob/master/build/karma.conf.js" target="_blank" rel="external">Webpack</a>, <a href="https://github.com/vuejs/vueify-example/blob/master/karma.conf.js" target="_blank" rel="external">Browserify</a>。</p>
 <p class="tip">因为 Vue.js 指令是异步更新，如果想在修改数据之后修改 DOM ，应当在 <code>Vue.nextTick</code> 的回调中操作。</p>
 
 <h2 id="u751F_u4EA7_u53D1_u5E03"><a href="#u751F_u4EA7_u53D1_u5E03" class="headerlink" title="生产发布"></a>生产发布</h2><p>为了更小的文件体积，Vue.js 的压缩版本删除所有的警告，但是在使用 Browserify 或 Webpack 等工具构建 Vue.js 应用时，压缩需要一些配置。</p>
