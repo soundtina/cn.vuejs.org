@@ -177,9 +177,9 @@
             
         </ul>
         <div id="donate">
-            <span class="wrapper" style="width: 110px">
-              <img src="/images/paypal.png">
-              <a href="https://www.paypal.me/evanyou" target="_blank">Buy Me Coffee</a>
+            <span class="wrapper" style="width: 72px">
+              <img src="/images/weixinpay.png">
+              <a>打个赏</a>
             </span>
         </div>
     </div>
@@ -201,7 +201,9 @@
 <h3 id="CSP__u517C_u5BB9_u7248_u672C"><a href="#CSP__u517C_u5BB9_u7248_u672C" class="headerlink" title="CSP 兼容版本"></a>CSP 兼容版本</h3><p>有些环境，如 Google Chrome Apps，强制应用内容安全策略 (CSP) ，不能使用 <code>new Function()</code> 对表达式求值。这时可以用 <a href="https://github.com/vuejs/vue/tree/csp/dist" target="_blank" rel="external">CSP 兼容版本</a>。</p>
 <h2 id="NPM"><a href="#NPM" class="headerlink" title="NPM"></a>NPM</h2><p>在用 Vue.js 构建大型应用时推荐使用 NPM 安装，NPM 能很好地和诸如 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a> 或 <a href="http://browserify.org/" target="_blank" rel="external">Browserify</a> 的 CommonJS 模块打包器配合使用。Vue.js 也提供配套工具来开发<a href="application.html#单文件组件">单文件组件</a>。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 最新稳定版本</span></span><br><span class="line">$ npm install vue</span><br><span class="line"><span class="comment"># 最新稳定 CSP 兼容版本</span></span><br><span class="line">$ npm install vue@csp</span><br></pre></td></tr></table></figure>
-<h2 id="u5F00_u53D1"><a href="#u5F00_u53D1" class="headerlink" title="开发"></a>开发</h2><p><strong>重要</strong>：发布到 NPM 上的 CommonJS 包 (<code>vue.common.js</code>) <strong>没有</strong>签入源码，因此要使用 GitHub 上最新的源码，自己编译：</p>
+<h2 id="u547D_u4EE4_u884C_u5DE5_u5177"><a href="#u547D_u4EE4_u884C_u5DE5_u5177" class="headerlink" title="命令行工具"></a>命令行工具</h2><p>Vue.js 提供一个<a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">官方命令行工具</a>，可用于快速搭建大型单页应用。该工具提供开箱即用的构建工具配置，带来现代化的前端开发流程。只需一分钟即可启动带热重载、保存时静态检查以及可用于生产环境的构建配置的项目：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全局安装 vue-cli</span></span><br><span class="line">$ npm install -g vue-cli</span><br><span class="line"><span class="comment"># 创建一个基于 "webpack" 模板的新项目</span></span><br><span class="line">$ vue init webpack my-project</span><br><span class="line"><span class="comment"># 安装依赖，走你</span></span><br><span class="line">$ <span class="built_in">cd</span> my-project</span><br><span class="line">$ npm install</span><br><span class="line">$ npm run dev</span><br></pre></td></tr></table></figure>
+<h2 id="u5F00_u53D1_u7248_u672C"><a href="#u5F00_u53D1_u7248_u672C" class="headerlink" title="开发版本"></a>开发版本</h2><p><strong>重要</strong>：发布到 NPM 上的 CommonJS 包 (<code>vue.common.js</code>) <strong>没有</strong>签入源码，因此要使用 GitHub 上最新的源码，自己编译：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/vuejs/vue.git node_modules/vue</span><br><span class="line"><span class="built_in">cd</span> node_modules/vue</span><br><span class="line">npm install</span><br><span class="line">npm run build</span><br></pre></td></tr></table></figure>
 <h2 id="Bower"><a href="#Bower" class="headerlink" title="Bower"></a>Bower</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 最新稳定版本</span></span><br><span class="line">$ bower install vue</span><br></pre></td></tr></table></figure>
 <h2 id="AMD__u6A21_u5757_u52A0_u8F7D_u5668"><a href="#AMD__u6A21_u5757_u52A0_u8F7D_u5668" class="headerlink" title="AMD 模块加载器"></a>AMD 模块加载器</h2><p>独立版本或通过 Bower 安装的版本已用 <a href="https://github.com/umdjs/umd#readme" target="_blank" rel="external">UMD</a> 包装，因此它们可以直接用作 AMD 模块。</p>
@@ -234,5 +236,12 @@
                 FastClick.attach(document.body);
             }, false);
         </script>
+
+        <!-- 打赏 -->
+        <div id="qrcode" class="hidden">
+            <h2>微信扫一扫，支持 Vue.js :)</h2>
+            <img src="/images/qrcode.png">
+        </div>
+        <script src="/js/money.js"></script>
     </body>
 </html>
