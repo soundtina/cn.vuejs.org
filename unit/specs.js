@@ -139,7 +139,7 @@
 	
 	var _utilIndex = __webpack_require__(5);
 	
-	_instanceVue2['default'].version = '1.0.15';
+	_instanceVue2['default'].version = '1.0.16';
 	
 	/**
 	 * Vue and every constructor that extends Vue has an
@@ -163,13 +163,11 @@
 	exports['default'] = _instanceVue2['default'];
 	
 	// devtools global hook
-	/* istanbul ignore if */
-	if (("development") !== 'production' && _utilIndex.inBrowser) {
-	  if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
-	    window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', _instanceVue2['default']);
-	  } else if (/Chrome\/\d+/.test(navigator.userAgent)) {
-	    console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
-	  }
+	/* istanbul ignore next */
+	if (_utilIndex.devtools) {
+	  _utilIndex.devtools.emit('init', _instanceVue2['default']);
+	} else if (("development") !== 'production' && _utilIndex.inBrowser && /Chrome\/\d+/.test(navigator.userAgent)) {
+	  console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
 	}
 	module.exports = exports['default'];
 
@@ -327,7 +325,7 @@
 	    this._fragmentEnd = null; // @type {Text|Comment}
 	
 	    // lifecycle state
-	    this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = false;
+	    this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = this._vForRemoving = false;
 	    this._unlinkFn = null;
 	
 	    // context:
@@ -355,6 +353,13 @@
 	    // push self into parent / transclusion host
 	    if (this.$parent) {
 	      this.$parent.$children.push(this);
+	    }
+	
+	    // save raw constructor data before merge
+	    // so that we know which properties are provided at
+	    // instantiation.
+	    if (true) {
+	      this._runtimeData = options.data;
 	    }
 	
 	    // merge options.
@@ -872,7 +877,7 @@
 	 * @return {Boolean}
 	 */
 	
-	var literalValueRE = /^\s?(true|false|[\d\.]+|'[^']*'|"[^"]*")\s?$/;
+	var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/;
 	
 	function isLiteral(exp) {
 	  return literalValueRE.test(exp);
@@ -1218,7 +1223,7 @@
 /* 34 */
 /***/ function(module, exports) {
 
-	// can we use __proto__?
+	/* WEBPACK VAR INJECTION */(function(global) {// can we use __proto__?
 	'use strict';
 	
 	exports.__esModule = true;
@@ -1229,6 +1234,9 @@
 	var inBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) !== '[object Object]';
 	
 	exports.inBrowser = inBrowser;
+	var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+	
+	exports.devtools = devtools;
 	var isIE9 = inBrowser && navigator.userAgent.toLowerCase().indexOf('msie 9.0') > 0;
 	
 	exports.isIE9 = isIE9;
@@ -1277,6 +1285,7 @@
 	      copies[i]();
 	    }
 	  }
+	
 	  /* istanbul ignore if */
 	  if (typeof MutationObserver !== 'undefined') {
 	    var counter = 1;
@@ -1290,7 +1299,11 @@
 	      textNode.data = counter;
 	    };
 	  } else {
-	    timerFunc = setTimeout;
+	    // webpack attempts to inject a shim for setImmediate
+	    // if it is used as a global, so we have to work around that to
+	    // avoid bundling unnecessary code.
+	    var context = inBrowser ? window : typeof global !== 'undefined' ? global : {};
+	    timerFunc = context.setImmediate || setTimeout;
 	  }
 	  return function (cb, ctx) {
 	    var func = ctx ? function () {
@@ -1303,6 +1316,7 @@
 	  };
 	})();
 	exports.nextTick = nextTick;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 35 */
@@ -1498,10 +1512,11 @@
 	 * @param {Element} el
 	 * @param {String} event
 	 * @param {Function} cb
+	 * @param {Boolean} [useCapture]
 	 */
 	
-	function on(el, event, cb) {
-	  el.addEventListener(event, cb);
+	function on(el, event, cb, useCapture) {
+	  el.addEventListener(event, cb, useCapture);
 	}
 	
 	/**
@@ -1605,20 +1620,26 @@
 	}
 	
 	/**
-	 * Trim possible empty head/tail textNodes inside a parent.
+	 * Trim possible empty head/tail text and comment
+	 * nodes inside a parent.
 	 *
 	 * @param {Node} node
 	 */
 	
 	function trimNode(node) {
-	  trim(node, node.firstChild);
-	  trim(node, node.lastChild);
+	  var child;
+	  /* eslint-disable no-sequences */
+	  while ((child = node.firstChild, isTrimmable(child))) {
+	    node.removeChild(child);
+	  }
+	  while ((child = node.lastChild, isTrimmable(child))) {
+	    node.removeChild(child);
+	  }
+	  /* eslint-enable no-sequences */
 	}
 	
-	function trim(parent, node) {
-	  if (node && node.nodeType === 3 && !node.data.trim()) {
-	    parent.removeChild(node);
-	  }
+	function isTrimmable(node) {
+	  return node && (node.nodeType === 3 && !node.data.trim() || node.nodeType === 8);
 	}
 	
 	/**
@@ -2788,6 +2809,10 @@
 	 */
 	
 	function resolveAsset(options, type, id) {
+	  /* istanbul ignore if */
+	  if (typeof id !== 'string') {
+	    return;
+	  }
 	  var assets = options[type];
 	  var camelizedId;
 	  return assets[id] ||
@@ -2856,7 +2881,7 @@
 	        // Chrome returns unknown for several HTML5 elements.
 	        // https://code.google.com/p/chromium/issues/detail?id=540526
 	        !/^(data|time|rtc|rb)$/.test(tag)) {
-	          _debug.warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly?');
+	          _debug.warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly? For recursive components, ' + 'make sure to provide the "name" option.');
 	        }
 	      }
 	    }
@@ -3495,10 +3520,15 @@
 	    var propsData = this._data;
 	    var optionsDataFn = this.$options.data;
 	    var optionsData = optionsDataFn && optionsDataFn();
+	    var runtimeData;
+	    if (true) {
+	      runtimeData = (typeof this._runtimeData === 'function' ? this._runtimeData() : this._runtimeData) || {};
+	      this._runtimeData = null;
+	    }
 	    if (optionsData) {
 	      this._data = optionsData;
 	      for (var prop in propsData) {
-	        if (("development") !== 'production' && _utilIndex.hasOwn(optionsData, prop)) {
+	        if (("development") !== 'production' && _utilIndex.hasOwn(optionsData, prop) && !_utilIndex.hasOwn(runtimeData, prop)) {
 	          _utilIndex.warn('Data field "' + prop + '" is already defined ' + 'as a prop. Use prop default value instead.');
 	        }
 	        if (this._props[prop].raw !== null || !_utilIndex.hasOwn(optionsData, prop)) {
@@ -3692,8 +3722,6 @@
 	exports.__esModule = true;
 	exports['default'] = Watcher;
 	
-	var _utilIndex = __webpack_require__(5);
-	
 	var _config = __webpack_require__(36);
 	
 	var _config2 = _interopRequireDefault(_config);
@@ -3705,6 +3733,8 @@
 	var _parsersExpression = __webpack_require__(57);
 	
 	var _batcher = __webpack_require__(59);
+	
+	var _utilIndex = __webpack_require__(5);
 	
 	var uid = 0;
 	
@@ -3970,9 +4000,10 @@
 	Watcher.prototype.teardown = function () {
 	  if (this.active) {
 	    // remove self from vm's watcher list
-	    // we can skip this if the vm if being destroyed
-	    // which can improve teardown performance.
-	    if (!this.vm._isBeingDestroyed) {
+	    // this is a somewhat expensive operation so we skip it
+	    // if the vm is being destroyed or is performing a v-for
+	    // re-render (the watcher list is then filtered by v-for).
+	    if (!this.vm._isBeingDestroyed && !this.vm._vForRemoving) {
 	      this.vm._watchers.$remove(this);
 	    }
 	    var depIds = _Object$keys(this.deps);
@@ -4568,11 +4599,11 @@
 	exports.__esModule = true;
 	exports.pushWatcher = pushWatcher;
 	
-	var _utilIndex = __webpack_require__(5);
-	
 	var _config = __webpack_require__(36);
 	
 	var _config2 = _interopRequireDefault(_config);
+	
+	var _utilIndex = __webpack_require__(5);
 	
 	// we have two separate queues: one for directive updates
 	// and one for user watcher registered via $watch().
@@ -4609,10 +4640,8 @@
 	  runBatcherQueue(userQueue);
 	  // dev tool hook
 	  /* istanbul ignore if */
-	  if (true) {
-	    if (_utilIndex.inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
-	      window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('flush');
-	    }
+	  if (_utilIndex.devtools) {
+	    _utilIndex.devtools.emit('flush');
 	  }
 	  resetBatcherState();
 	}
@@ -4730,7 +4759,7 @@
 	// special binding prefixes
 	var bindRE = /^v-bind:|^:/;
 	var onRE = /^v-on:|^@/;
-	var argRE = /:(.*)$/;
+	var dirAttrRE = /^v-([^:]+)(?:$|:(.*)$)/;
 	var modifierRE = /\.[^\.]+/g;
 	var transitionRE = /^(v-bind:|:)?transition$/;
 	
@@ -4798,6 +4827,15 @@
 	 */
 	
 	function linkAndCapture(linker, vm) {
+	  /* istanbul ignore if */
+	  if (false) {
+	    // reset directives before every capture in production
+	    // mode, so that when unlinking we don't need to splice
+	    // them out (which turns out to be a perf hit).
+	    // they are kept in development mode because they are
+	    // useful for Vue's own tests.
+	    vm._directives = [];
+	  }
 	  var originalDirCount = vm._directives.length;
 	  linker();
 	  var dirs = vm._directives.slice(originalDirCount);
@@ -4860,7 +4898,7 @@
 	  var i = dirs.length;
 	  while (i--) {
 	    dirs[i]._teardown();
-	    if (!destroying) {
+	    if (("development") !== 'production' && !destroying) {
 	      vm._directives.$remove(dirs[i]);
 	    }
 	  }
@@ -4893,7 +4931,6 @@
 	 *
 	 * If this is a fragment instance, we only need to compile 1.
 	 *
-	 * @param {Vue} vm
 	 * @param {Element} el
 	 * @param {Object} options
 	 * @param {Object} contextOptions
@@ -5328,7 +5365,7 @@
 	function compileDirectives(attrs, options) {
 	  var i = attrs.length;
 	  var dirs = [];
-	  var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens;
+	  var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens, matched;
 	  while (i--) {
 	    attr = attrs[i];
 	    name = rawName = attr.name;
@@ -5379,14 +5416,9 @@
 	          } else
 	
 	            // normal directives
-	            if (name.indexOf('v-') === 0) {
-	              // check arg
-	              arg = (arg = name.match(argRE)) && arg[1];
-	              if (arg) {
-	                name = name.replace(argRE, '');
-	              }
-	              // extract directive name
-	              dirName = name.slice(2);
+	            if (matched = name.match(dirAttrRE)) {
+	              dirName = matched[1];
+	              arg = matched[2];
 	
 	              // skip v-else (when used with v-show)
 	              if (dirName === 'else') {
@@ -5707,7 +5739,8 @@
 	
 	function stringToFragment(templateString, raw) {
 	  // try a cache hit first
-	  var hit = templateCache.get(templateString);
+	  var cacheKey = raw ? templateString : templateString.trim();
+	  var hit = templateCache.get(cacheKey);
 	  if (hit) {
 	    return hit;
 	  }
@@ -5728,8 +5761,7 @@
 	    var suffix = wrap[2];
 	    var node = document.createElement('div');
 	
-	    var templateStringToUse = raw ? templateString : templateString.trim();
-	    node.innerHTML = prefix + templateStringToUse + suffix;
+	    node.innerHTML = prefix + templateString + suffix;
 	    while (depth--) {
 	      node = node.lastChild;
 	    }
@@ -5741,8 +5773,10 @@
 	      frag.appendChild(child);
 	    }
 	  }
-	
-	  templateCache.put(templateString, frag);
+	  if (!raw) {
+	    _utilIndex.trimNode(frag);
+	  }
+	  templateCache.put(cacheKey, frag);
 	  return frag;
 	}
 	
@@ -6064,6 +6098,10 @@
 	    // from cache)
 	    var removalIndex = 0;
 	    var totalRemoved = oldFrags.length - frags.length;
+	    // when removing a large number of fragments, watcher removal
+	    // turns out to be a perf bottleneck, so we batch the watcher
+	    // removals into a single filter call!
+	    this.vm._vForRemoving = true;
 	    for (i = 0, l = oldFrags.length; i < l; i++) {
 	      frag = oldFrags[i];
 	      if (!frag.reused) {
@@ -6071,6 +6109,10 @@
 	        this.remove(frag, removalIndex++, totalRemoved, inDocument);
 	      }
 	    }
+	    this.vm._vForRemoving = false;
+	    this.vm._watchers = this.vm._watchers.filter(function (w) {
+	      return w.active;
+	    });
 	
 	    // Final pass, move/insert new fragments into the
 	    // right place.
@@ -6401,7 +6443,7 @@
 	      }
 	      return res;
 	    } else {
-	      if (typeof value === 'number') {
+	      if (typeof value === 'number' && !isNaN(value)) {
 	        value = range(value);
 	      }
 	      return value || [];
@@ -6481,7 +6523,7 @@
 	
 	function range(n) {
 	  var i = -1;
-	  var ret = new Array(n);
+	  var ret = new Array(Math.floor(n));
 	  while (++i < n) {
 	    ret[i] = i;
 	  }
@@ -6883,6 +6925,9 @@
 	    if (this.frag) {
 	      this.frag.destroy();
 	    }
+	    if (this.elseFrag) {
+	      this.elseFrag.destroy();
+	    }
 	  }
 	};
 	module.exports = exports['default'];
@@ -7129,9 +7174,10 @@
 	    // jQuery variable in tests.
 	    this.hasjQuery = typeof jQuery === 'function';
 	    if (this.hasjQuery) {
-	      jQuery(el).on('change', this.listener);
+	      var method = jQuery.fn.on ? 'on' : 'bind';
+	      jQuery(el)[method]('change', this.listener);
 	      if (!lazy) {
-	        jQuery(el).on('input', this.listener);
+	        jQuery(el)[method]('input', this.listener);
 	      }
 	    } else {
 	      this.on('change', this.listener);
@@ -7165,8 +7211,9 @@
 	  unbind: function unbind() {
 	    var el = this.el;
 	    if (this.hasjQuery) {
-	      jQuery(el).off('change', this.listener);
-	      jQuery(el).off('input', this.listener);
+	      var method = jQuery.fn.off ? 'off' : 'unbind';
+	      jQuery(el)[method]('change', this.listener);
+	      jQuery(el)[method]('input', this.listener);
 	    }
 	  }
 	};
@@ -7419,7 +7466,7 @@
 	  tab: 9,
 	  enter: 13,
 	  space: 32,
-	  'delete': 46,
+	  'delete': [8, 46],
 	  up: 38,
 	  left: 37,
 	  right: 39,
@@ -7440,6 +7487,7 @@
 	    }
 	    return keyCodes[key];
 	  });
+	  codes = [].concat.apply([], codes);
 	  return function keyHandler(e) {
 	    if (codes.indexOf(e.keyCode) > -1) {
 	      return handler.call(this, e);
@@ -7461,6 +7509,14 @@
 	  };
 	}
 	
+	function selfFilter(handler) {
+	  return function selfHandler(e) {
+	    if (e.target === e.currentTarget) {
+	      return handler.call(this, e);
+	    }
+	  };
+	}
+	
 	exports['default'] = {
 	
 	  acceptStatement: true,
@@ -7471,7 +7527,7 @@
 	    if (this.el.tagName === 'IFRAME' && this.arg !== 'load') {
 	      var self = this;
 	      this.iframeBind = function () {
-	        _utilIndex.on(self.el.contentWindow, self.arg, self.handler);
+	        _utilIndex.on(self.el.contentWindow, self.arg, self.handler, self.modifiers.capture);
 	      };
 	      this.on('load', this.iframeBind);
 	    }
@@ -7496,6 +7552,9 @@
 	    if (this.modifiers.prevent) {
 	      handler = preventFilter(handler);
 	    }
+	    if (this.modifiers.self) {
+	      handler = selfFilter(handler);
+	    }
 	    // key filter
 	    var keys = _Object$keys(this.modifiers).filter(function (key) {
 	      return key !== 'stop' && key !== 'prevent';
@@ -7510,7 +7569,7 @@
 	    if (this.iframeBind) {
 	      this.iframeBind();
 	    } else {
-	      _utilIndex.on(this.el, this.arg, this.handler);
+	      _utilIndex.on(this.el, this.arg, this.handler, this.modifiers.capture);
 	    }
 	  },
 	
@@ -7626,6 +7685,9 @@
 	  handleSingle: function handleSingle(attr, value) {
 	    var el = this.el;
 	    var interp = this.descriptor.interp;
+	    if (this.modifiers.camel) {
+	      attr = _utilIndex.camelize(attr);
+	    }
 	    if (!interp && attrWithPropsRE.test(attr) && attr in el) {
 	      el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
 	      ? '' : value : value;
@@ -7655,9 +7717,9 @@
 	        }
 	        _utilIndex.setClass(el, value);
 	      } else if (xlinkRE.test(attr)) {
-	        el.setAttributeNS(xlinkNS, attr, value);
+	        el.setAttributeNS(xlinkNS, attr, value === true ? '' : value);
 	      } else {
-	        el.setAttribute(attr, value);
+	        el.setAttribute(attr, value === true ? '' : value);
 	      }
 	    } else {
 	      el.removeAttribute(attr);
@@ -7771,9 +7833,6 @@
 	  if (!testEl) {
 	    testEl = document.createElement('div');
 	  }
-	  if (camel in testEl.style) {
-	    return prop;
-	  }
 	  var i = prefixes.length;
 	  var prefixed;
 	  while (i--) {
@@ -7781,6 +7840,9 @@
 	    if (prefixed in testEl.style) {
 	      return prefixes[i] + prop;
 	    }
+	  }
+	  if (camel in testEl.style) {
+	    return prop;
 	  }
 	}
 	module.exports = exports['default'];
@@ -9429,7 +9491,6 @@
 	   * Otherwise we need to call transclude/compile/link here.
 	   *
 	   * @param {Element} el
-	   * @return {Element}
 	   */
 	
 	  Vue.prototype._compile = function (el) {
@@ -9487,7 +9548,6 @@
 	
 	    this._isCompiled = true;
 	    this._callHook('compiled');
-	    return el;
 	  };
 	
 	  /**
@@ -9923,10 +9983,11 @@
 	 *
 	 * @param {String} event
 	 * @param {Function} handler
+	 * @param {Boolean} [useCapture]
 	 */
 	
-	Directive.prototype.on = function (event, handler) {
-	  _utilIndex.on(this.el, event, handler);(this._listeners || (this._listeners = [])).push([event, handler]);
+	Directive.prototype.on = function (event, handler, useCapture) {
+	  _utilIndex.on(this.el, event, handler, useCapture);(this._listeners || (this._listeners = [])).push([event, handler]);
 	};
 	
 	/**
@@ -10172,8 +10233,8 @@
 	    }
 	    var name = extendOptions.name || Super.options.name;
 	    if (true) {
-	      if (!/^[a-zA-Z][\w-]+$/.test(name)) {
-	        _utilIndex.warn('Invalid component name: ' + name);
+	      if (!/^[a-zA-Z][\w-]*$/.test(name)) {
+	        _utilIndex.warn('Invalid component name: "' + name + '". Component names ' + 'can only contain alphanumeric characaters and the hyphen.');
 	        name = null;
 	      }
 	    }
@@ -11069,6 +11130,14 @@
 	
 	  compile: function compile(content, context, host) {
 	    if (content && context) {
+	      if (this.el.hasChildNodes() && content.childNodes.length === 1 && content.childNodes[0].nodeType === 1 && content.childNodes[0].hasAttribute('v-if')) {
+	        // if the inserted slot has v-if
+	        // inject fallback content as the v-else
+	        var elseBlock = document.createElement('template');
+	        elseBlock.setAttribute('v-else', '');
+	        elseBlock.innerHTML = this.el.innerHTML;
+	        content.appendChild(elseBlock);
+	      }
 	      var scope = host ? host._scope : this._scope;
 	      this.unlink = context.$compile(content, host, scope, this._frag);
 	    }
@@ -12204,11 +12273,11 @@
 	
 	  it('extend warn invalid names', function () {
 	    Vue.extend({ name: '123' })
-	    expect(hasWarned('Invalid component name: 123')).toBe(true)
+	    expect(hasWarned('Invalid component name: "123"')).toBe(true)
 	    Vue.extend({ name: '_fesf' })
-	    expect(hasWarned('Invalid component name: _fesf')).toBe(true)
+	    expect(hasWarned('Invalid component name: "_fesf"')).toBe(true)
 	    Vue.extend({ name: 'Some App' })
-	    expect(hasWarned('Invalid component name: Some App')).toBe(true)
+	    expect(hasWarned('Invalid component name: "Some App"')).toBe(true)
 	  })
 	
 	  it('use', function () {
@@ -13319,6 +13388,7 @@
 	      testOneTime: null,
 	      optimizeLiteral: null,
 	      optimizeLiteralStr: null,
+	      optimizeLiteralNegativeNumber: null,
 	      literalWithFilter: null
 	    }
 	    el.innerHTML = '<div ' +
@@ -13327,6 +13397,7 @@
 	      'test-boolean ' +
 	      ':optimize-literal="1" ' +
 	      ':optimize-literal-str="\'true\'"' +
+	      ':optimize-literal-negative-number="-1"' +
 	      ':test-two-way.sync="a" ' +
 	      ':two-way-warn.sync="a + 1" ' +
 	      ':test-one-time.once="a" ' +
@@ -13345,6 +13416,8 @@
 	    expect(vm._data.optimizeLiteral).toBe(1)
 	    expect(vm.optimizeLiteralStr).toBe('true')
 	    expect(vm._data.optimizeLiteralStr).toBe('true')
+	    expect(vm.optimizeLiteralNegativeNumber).toBe(-1)
+	    expect(vm._data.optimizeLiteralNegativeNumber).toBe(-1)
 	    // one time
 	    expect(vm.testOneTime).toBe('from parent: a')
 	    expect(vm._data.testOneTime).toBe('from parent: a')
@@ -14139,7 +14212,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
-	var _ = __webpack_require__(5)
+	var nextTick = Vue.nextTick
 	
 	describe('Slot Distribution', function () {
 	
@@ -14298,7 +14371,7 @@
 	    })
 	    expect(el.innerHTML).toBe('<test>hello</test>')
 	    vm.msg = 'what'
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<test>what</test>')
 	      done()
 	    })
@@ -14322,14 +14395,14 @@
 	    })
 	    expect(el.textContent).toBe('12')
 	    vm.a = 2
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.textContent).toBe('22')
 	      vm.show = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(el.textContent).toBe('')
 	        vm.show = true
 	        vm.a = 3
-	        _.nextTick(function () {
+	        nextTick(function () {
 	          expect(el.textContent).toBe('32')
 	          done()
 	        })
@@ -14377,7 +14450,7 @@
 	    markup = vm.list.map(function (item) {
 	      return '<div class="child parent">' + item.a + ' ho</div>'
 	    }).join('')
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe(markup)
 	      done()
 	    })
@@ -14406,7 +14479,7 @@
 	      '</testb></testa>'
 	    )
 	    vm.list.push(3)
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe(
 	        '<testa><testb>' +
 	          '<div>1</div><div>2</div><div>3</div>' +
@@ -14437,7 +14510,7 @@
 	    })
 	    expect(el.innerHTML).toBe('<testa></testa>')
 	    vm.ok = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<testa><testb>hello</testb></testa>')
 	      done()
 	    })
@@ -14535,6 +14608,27 @@
 	      }
 	    })
 	    expect(el.textContent).toBe('hihihi')
+	  })
+	
+	  it('fallback for slot with v-if', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      data: {
+	        ok: false
+	      },
+	      template: '<div><comp><div v-if="ok">inserted</div></comp></div>',
+	      components: {
+	        comp: {
+	          template: '<div><slot>fallback</slot></div>'
+	        }
+	      }
+	    })
+	    expect(el.textContent).toBe('fallback')
+	    vm.ok = true
+	    nextTick(function () {
+	      expect(el.textContent).toBe('inserted')
+	      done()
+	    })
 	  })
 	
 	})
@@ -15683,16 +15777,36 @@
 	  })
 	
 	  it('should warn data fields already defined as a prop', function () {
+	    var Comp = Vue.extend({
+	      data: function () {
+	        return { a: 123 }
+	      },
+	      props: {
+	        a: null
+	      }
+	    })
 	    new Vue({
+	      el: el,
+	      template: '<comp a="1"></comp>',
+	      components: {
+	        comp: Comp
+	      }
+	    })
+	    expect(hasWarned('already defined as a prop')).toBe(true)
+	  })
+	
+	  it('should not warn data fields already defined as a prop if it is from instantiation call', function () {
+	    var vm = new Vue({
 	      el: el,
 	      props: {
 	        a: null
 	      },
 	      data: {
-	        a: 1
+	        a: 123
 	      }
 	    })
-	    expect(hasWarned('already defined as a prop')).toBe(true)
+	    expect(getWarnCount()).toBe(0)
+	    expect(vm.a).toBe(123)
 	  })
 	
 	  it('should not warn for non-required, absent prop', function () {
@@ -16030,7 +16144,8 @@
 	    el = document.createElement('div')
 	    dir = {
 	      el: el,
-	      descriptor: {}
+	      descriptor: {},
+	      modifiers: {}
 	    }
 	    _.extend(dir, def)
 	  })
@@ -16045,6 +16160,8 @@
 	    expect(el.hasAttribute('test')).toBe(false)
 	    dir.update(false)
 	    expect(el.hasAttribute('test')).toBe(false)
+	    dir.update(true)
+	    expect(el.getAttribute('test')).toBe('')
 	    dir.update(0)
 	    expect(el.getAttribute('test')).toBe('0')
 	  })
@@ -16088,6 +16205,16 @@
 	    expect(dir.el.getAttributeNS(xlinkNS, 'special')).toBe('ok')
 	    dir.update(null)
 	    expect(dir.el.hasAttributeNS(xlinkNS, 'special')).toBe(false)
+	  })
+	
+	  it('camel modifier', function () {
+	    dir.modifiers.camel = true
+	    var div = document.createElement('div')
+	    div.innerHTML = '<svg></svg>'
+	    dir.el = div.children[0]
+	    dir.arg = 'view-box'
+	    dir.update('0 0 1500 1000')
+	    expect(dir.el.getAttribute('viewBox')).toBe('0 0 1500 1000')
 	  })
 	})
 
@@ -17715,8 +17842,8 @@
 /* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(5)
 	var Vue = __webpack_require__(1)
+	var nextTick = Vue.nextTick
 	
 	describe('v-if', function () {
 	
@@ -17742,15 +17869,15 @@
 	    expect(el.innerHTML).toBe('')
 	    expect(vm.$children.length).toBe(0)
 	    vm.test = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<div><test>A</test></div>')
 	      expect(vm.$children.length).toBe(1)
 	      vm.test = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(el.innerHTML).toBe('')
 	        expect(vm.$children.length).toBe(0)
 	        vm.test = true
-	        _.nextTick(function () {
+	        nextTick(function () {
 	          expect(el.innerHTML).toBe('<div><test>A</test></div>')
 	          expect(vm.$children.length).toBe(1)
 	          var child = vm.$children[0]
@@ -17771,10 +17898,10 @@
 	    // lazy instantitation
 	    expect(el.innerHTML).toBe('')
 	    vm.test = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<p>A</p><p>B</p>')
 	      vm.test = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(el.innerHTML).toBe('')
 	        done()
 	      })
@@ -17805,13 +17932,13 @@
 	    expect(el.innerHTML).toBe('')
 	    expect(vm.$children.length).toBe(0)
 	    vm.ok = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<test>123</test>')
 	      expect(vm.$children.length).toBe(1)
 	      expect(attachSpy).toHaveBeenCalled()
 	      expect(readySpy).toHaveBeenCalled()
 	      vm.ok = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(detachSpy).toHaveBeenCalled()
 	        expect(el.innerHTML).toBe('')
 	        expect(vm.$children.length).toBe(0)
@@ -17842,23 +17969,23 @@
 	    expect(vm.$children.length).toBe(0)
 	    // toggle if with lazy instantiation
 	    vm.ok = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<component>AAA</component>')
 	      expect(vm.$children.length).toBe(1)
 	      // switch view when if=true
 	      vm.view = 'view-b'
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(el.innerHTML).toBe('<component>BBB</component>')
 	        expect(vm.$children.length).toBe(1)
 	        // toggle if when already instantiated
 	        vm.ok = false
-	        _.nextTick(function () {
+	        nextTick(function () {
 	          expect(el.innerHTML).toBe('')
 	          expect(vm.$children.length).toBe(0)
 	          // toggle if and switch view at the same time
 	          vm.view = 'view-a'
 	          vm.ok = true
-	          _.nextTick(function () {
+	          nextTick(function () {
 	            expect(el.innerHTML).toBe('<component>AAA</component>')
 	            expect(vm.$children.length).toBe(1)
 	            done()
@@ -17878,7 +18005,7 @@
 	    })
 	    expect(el.innerHTML).toBe('<div>1</div>')
 	    vm.a = 2
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.innerHTML).toBe('<div>2</div>')
 	      done()
 	    })
@@ -17913,7 +18040,7 @@
 	    })
 	    expect(attachSpy).toHaveBeenCalled()
 	    vm.show = false
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(detachSpy).toHaveBeenCalled()
 	      document.body.removeChild(el)
 	      done()
@@ -17961,17 +18088,17 @@
 	    assertMarkup()
 	    expect(attachSpy.calls.count()).toBe(2)
 	    vm.show = false
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      assertMarkup()
 	      expect(detachSpy.calls.count()).toBe(1)
 	      vm.list.push({a: 1})
 	      vm.show = true
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        assertMarkup()
 	        expect(attachSpy.calls.count()).toBe(2 + 2)
 	        vm.list.push({a: 2})
 	        vm.show = false
-	        _.nextTick(function () {
+	        nextTick(function () {
 	          assertMarkup()
 	          expect(attachSpy.calls.count()).toBe(2 + 2 + 1)
 	          expect(detachSpy.calls.count()).toBe(1 + 3)
@@ -18023,10 +18150,10 @@
 	    })
 	    expect(attachSpy).not.toHaveBeenCalled()
 	    vm.showInner = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(attachSpy.calls.count()).toBe(1)
 	      vm.showOuter = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(detachSpy.calls.count()).toBe(1)
 	        document.body.removeChild(el)
 	        done()
@@ -18057,15 +18184,15 @@
 	    assertMarkup()
 	    assertCalls(1, 0)
 	    vm.show = false
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      assertMarkup()
 	      assertCalls(1, 1)
 	      vm.show = true
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        assertMarkup()
 	        assertCalls(2, 1)
 	        vm.show = false
-	        _.nextTick(function () {
+	        nextTick(function () {
 	          assertMarkup()
 	          assertCalls(2, 2)
 	          document.body.removeChild(el)
@@ -18120,13 +18247,35 @@
 	    })
 	    expect(el.textContent).toBe('B')
 	    vm.test = true
-	    _.nextTick(function () {
+	    nextTick(function () {
 	      expect(el.textContent).toBe('A')
 	      vm.test = false
-	      _.nextTick(function () {
+	      nextTick(function () {
 	        expect(el.textContent).toBe('B')
 	        done()
 	      })
+	    })
+	  })
+	
+	  it('else block teardown', function (done) {
+	    var created = jasmine.createSpy()
+	    var destroyed = jasmine.createSpy()
+	    var vm = new Vue({
+	      el: el,
+	      data: { ok: false },
+	      template: '<div v-if="ok"></div><div v-else><test></test></div>',
+	      components: {
+	        test: {
+	          created: created,
+	          destroyed: destroyed
+	        }
+	      }
+	    })
+	    expect(created.calls.count()).toBe(1)
+	    vm.$destroy()
+	    nextTick(function () {
+	      expect(destroyed.calls.count()).toBe(1)
+	      done()
 	    })
 	  })
 	})
@@ -19015,6 +19164,48 @@
 	    })
 	  })
 	
+	  it('with delete modifier capturing DEL', function (done) {
+	    new Vue({
+	      el: el,
+	      template: '<a v-on:keyup.delete="test">{{a}}</a>',
+	      data: {a: 1},
+	      methods: {
+	        test: function () {
+	          this.a++
+	        }
+	      }
+	    })
+	    var a = el.firstChild
+	    trigger(a, 'keyup', function (e) {
+	      e.keyCode = 46
+	    })
+	    _.nextTick(function () {
+	      expect(a.textContent).toBe('2')
+	      done()
+	    })
+	  })
+	
+	  it('with delete modifier capturing backspace', function (done) {
+	    new Vue({
+	      el: el,
+	      template: '<a v-on:keyup.delete="test">{{a}}</a>',
+	      data: {a: 1},
+	      methods: {
+	        test: function () {
+	          this.a++
+	        }
+	      }
+	    })
+	    var a = el.firstChild
+	    trigger(a, 'keyup', function (e) {
+	      e.keyCode = 8
+	    })
+	    _.nextTick(function () {
+	      expect(a.textContent).toBe('2')
+	      done()
+	    })
+	  })
+	
 	  it('with key modifier (keycode)', function (done) {
 	    new Vue({
 	      el: el,
@@ -19099,6 +19290,39 @@
 	    var hash = window.location.hash
 	    trigger(el.firstChild, 'click')
 	    expect(window.location.hash).toBe(hash)
+	  })
+	
+	  it('capture modifier', function () {
+	    document.body.appendChild(el)
+	    var outer = jasmine.createSpy('outer')
+	    var inner = jasmine.createSpy('inner')
+	    new Vue({
+	      el: el,
+	      template: '<div @click.capture.stop="outer"><div class="inner" @click="inner"></div></div>',
+	      methods: {
+	        outer: outer,
+	        inner: inner
+	      }
+	    })
+	    trigger(el.querySelector('.inner'), 'click')
+	    expect(outer).toHaveBeenCalled()
+	    expect(inner).not.toHaveBeenCalled()
+	    document.body.removeChild(el)
+	  })
+	
+	  it('self modifier', function () {
+	    var outer = jasmine.createSpy('outer')
+	    new Vue({
+	      el: el,
+	      template: '<div class="outer" @click.self="outer"><div class="inner"></div></div>',
+	      methods: {
+	        outer: outer
+	      }
+	    })
+	    trigger(el.querySelector('.inner'), 'click')
+	    expect(outer).not.toHaveBeenCalled()
+	    trigger(el.querySelector('.outer'), 'click')
+	    expect(outer).toHaveBeenCalled()
 	  })
 	
 	  it('multiple modifiers working together', function () {
@@ -22127,7 +22351,7 @@
 	    expect(c.value).toBe('')
 	  })
 	
-	  it('should trim empty text nodes', function () {
+	  it('should trim empty text nodes and comments', function () {
 	    // string
 	    var res = parse('    <p>test</p>    ')
 	    expect(res.childNodes.length).toBe(1)
@@ -22136,6 +22360,10 @@
 	    var el = document.createElement('div')
 	    el.innerHTML = '<template>    <p>test</p>    </template>'
 	    res = parse(el.children[0])
+	    expect(res.childNodes.length).toBe(1)
+	    expect(res.firstChild.tagName).toBe('P')
+	    // comments
+	    res = parse('  <!-- yo -->  <p>test</p>  <!-- yo -->  ')
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.tagName).toBe('P')
 	  })

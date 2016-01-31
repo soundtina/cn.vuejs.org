@@ -227,7 +227,7 @@
 <p>这里 <code>href</code> 是参数，它告诉 <code>v-bind</code> 指令将元素的 <code>href</code> 特性跟表达式 <code>url</code> 的值绑定。可能你已注意到可以用特性插值 <code>href="{{url}}"</code> 获得同样的结果：这样没错，并且实际上在内部特性插值会转为 <code>v-bind</code> 绑定。</p>
 <p>另一个例子是 <code>v-on</code> 指令，它用于监听 DOM 事件：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-on:click</span>=<span class="value">"doSomething"</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>Here the argument is the event name to listen to. We will talk about event handling in more details too.<br>这里参数是被监听的事件的名字。我们也会详细说明事件绑定。</p>
+<p>这里参数是被监听的事件的名字。我们也会详细说明事件绑定。</p>
 <h3 id="u4FEE_u9970_u7B26"><a href="#u4FEE_u9970_u7B26" class="headerlink" title="修饰符"></a>修饰符</h3><p>修饰符 (Modifiers) 是以半角句号 <code>.</code> 开始的特殊后缀，用于表示指令应当以特殊方式绑定。例如 <code>.literal</code> 修饰符告诉指令将它的值解析为一个字面字符串而不是一个表达式：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-bind:href.literal</span>=<span class="value">"/a/b/c"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>当然，这似乎没有意义，因为我们只需要使用 <code>href=&quot;/a/b/c&quot;</code> 而不必使用一个指令。这个例子只是为了演示语法。后面我们将看到修饰符更多的实践用法。</p>

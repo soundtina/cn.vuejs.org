@@ -195,7 +195,7 @@
 <p><strong>新：</strong> 使用脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a> 可以快速地构建项目：单文件 Vue 组件，热加载，保存时检查代码，单元测试等。</p>
 </blockquote>
 <p>Vue.js 的设计思想是专注与灵活——它只是一个界面库，不强制使用哪个架构。它能很好地与已有项目整合，不过对于经验欠缺的开发者，从头开始构建大型应用可能是一个挑战。</p>
-<p>Vue.js 生态系统提供了一系列的工具与库，用于构建单页应用。但是它们只是推荐而已。</p>
+<p>Vue.js 生态系统提供了一系列的工具与库，用于构建大型单页应用。这些部分会感觉开始更像一个『框架』，但是它们本质上只是一套推荐的技术栈而已 - 你依然可以对各个部分进行选择和替换。</p>
 <h2 id="u6A21_u5757_u5316"><a href="#u6A21_u5757_u5316" class="headerlink" title="模块化"></a>模块化</h2><p>对于大型项目，为了更好地管理代码使用模块构建系统非常必要。推荐代码使用 CommonJS 或 ES6 模块，然后使用 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a> 或 <a href="http://browserify.org/" target="_blank" rel="external">Browserify</a> 打包。</p>
 <p>Webpack 和 Browserify 不只是模块打包器。两者都提供了源码转换 API，通过它可以用其它预处理器转换源码。例如，借助 <a href="https://github.com/babel/babel-loader" target="_blank" rel="external">babel-loader</a> 或 <a href="https://github.com/babel/babelify" target="_blank" rel="external">babelify</a> 代码可以使用 ES2015/2016 语法。</p>
 <p>如果你之前没有用过它们，我强烈推荐你阅读一些教程，了解模块打包器，然后使用最新的 ECMAScript 特性写 JavaScript。</p>
@@ -224,7 +224,7 @@
 <p><img src="/images/state.png" alt="状态管理"></p>
 <p>有一点要注意，不要在 action 中替换原始的状态对象——为了观察到变化，组件和 store 需要共享这个对象。</p>
 <p>如果我们约定，组件不可以直接修改 store 的状态，而应当派发事件，通知 store 执行 action，那么我们基本上实现了 <a href="https://facebook.github.io/flux/" target="_blank" rel="external">Flux</a> 架构。此约定的好处是，我们能记录 store 所有的状态变化，并且在此之上实现高级的调试帮助函数，如修改日志，快照，历史回滚等。</p>
-<p>Flux 架构常用于 React 应用中。借助于响应系统，Flux 的核心思想能非常容易地用 Vue.js 实现。注意我们这里的演示只是为了介绍概念，简单的情况完全不需要这么做，应根据应用的需求调整这个模式。</p>
+<p>Flux 架构常用于 React 应用中，但它的核心理念也可以适用于 Vue.js 应用。比如 <a href="https://github.com/vuejs/vuex/" target="_blank" rel="external">Vuex</a> 就是一个借鉴于 Flux，但是专门为 Vue.js 所设计的状态管理方案。React 生态圈中最流行的 Flux 实现 <a href="https://github.com/rackt/redux/" target="_blank" rel="external">Redux</a> 也可以通过<a href="https://github.com/egoist/revue" target="_blank" rel="external">简单的绑定</a>和 Vue 一起使用。</p>
 <h2 id="u5355_u5143_u6D4B_u8BD5"><a href="#u5355_u5143_u6D4B_u8BD5" class="headerlink" title="单元测试"></a>单元测试</h2><p>任何支持模块构建系统的单元测试工具都可以。推荐使用 <a href="http://karma-runner.github.io/0.12/index.html" target="_blank" rel="external">Karma</a>。它有许多插件，支持 <a href="https://github.com/webpack/karma-webpack" target="_blank" rel="external">Webpack</a> 和 <a href="https://github.com/Nikku/karma-browserify" target="_blank" rel="external">Browserify</a>。用法见它们的文档。</p>
 <p>代码测试的最佳实践是导出组件模块的选项/函数。例如：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// my-component.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  template: <span class="string">'&lt;span&gt;&#123;&#123;msg&#125;&#125;&lt;/span&gt;'</span>,</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello!'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'my-component created!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
