@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
     <head>
-        <title>Announcing vue-cli - vue.js</title>
+        <title>Common Beginner Gotchas - vue.js</title>
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -89,11 +89,11 @@
         <ul>
         
             <li>
-                <a href="/2016/02/06/common-gotchas/" class="sidebar-link">Common Beginner Gotchas</a>
+                <a href="/2016/02/06/common-gotchas/" class="sidebar-link current">Common Beginner Gotchas</a>
             </li>
         
             <li>
-                <a href="/2015/12/28/vue-cli/" class="sidebar-link current">Announcing vue-cli</a>
+                <a href="/2015/12/28/vue-cli/" class="sidebar-link">Announcing vue-cli</a>
             </li>
         
             <li>
@@ -128,32 +128,28 @@
     </div>
 </div>
 <div class="content blog post">
-    <h1>Announcing vue-cli</h1>
+    <h1>Common Beginner Gotchas</h1>
     <div id="ad">
         <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
     </div>
-    <h4>Dec 28, 2015</h4>
-    <p>Recently there has been a lot of <a href="https://medium.com/@ericclemmons/javascript-fatigue-48d4011b6fc4#.chg95e5p6" target="_blank" rel="external">discussion around the tooling hurdle</a> when you start a React project. Luckily for Vue.js, all you need to do to start with a quick prototype is including it from a CDN via a <code>&lt;script&gt;</code> tag, so we’ve got that part covered. However, that’s not how you’d build a real world application. In real world applications we inevitably need a certain amount of tooling to give us modularization, transpilers, pre-processors, hot-reload, linting and testing. These tools are necessary for the long-term maintainability and productivity of large projects, but the initial setup can be a big pain. This is why we are announcing <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a>, a simple CLI tool to help you quickly scaffold Vue.js projects with opinionated, battery-included build setups.</p>
+    <h4>Feb 6, 2016</h4>
+    <p>There are few types of questions that we frequently see from users who are new to Vue.js. Although they are all mentioned somewhere in the guide, they are easy to miss and can be hard to find when you do get bitten by the gotchas. Therefore we are aggregating them in this post and hopefully it can save you some time!</p>
 <a id="more"></a>
-<h3 id="Just_The_Scaffolding"><a href="#Just_The_Scaffolding" class="headerlink" title="Just The Scaffolding"></a>Just The Scaffolding</h3><p>The usage looks like this:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install -g vue-cli</span><br><span class="line">vue init webpack my-project</span><br><span class="line"><span class="comment"># answer prompts</span></span><br><span class="line"><span class="built_in">cd</span> my-project</span><br><span class="line">npm install</span><br><span class="line">npm run dev <span class="comment"># tada!</span></span><br></pre></td></tr></table></figure>
-<p>All the CLI does is pulling down templates from the <a href="https://github.com/vuejs-templates" target="_blank" rel="external">vuejs-templates</a> organization on GitHub. Dependencies are handled via NPM, and build tasks are simply NPM scripts.</p>
-<h3 id="Official_Templates"><a href="#Official_Templates" class="headerlink" title="Official Templates"></a>Official Templates</h3><p>The purpose of official Vue project templates is providing opinionated, battery-included development tooling setups so that users can get started with actual app code as fast as possible. However, these templates are un-opinionated in terms of how you structure your app code and what libraries you use in addition to Vue.js.</p>
-<p>All official project templates are repos in the <a href="https://github.com/vuejs-templates" target="_blank" rel="external">vuejs-templates organization</a>. When a new template is added to the organization, you will be able to run <code>vue init &lt;template-name&gt; &lt;project-name&gt;</code> to use that template. You can also run <code>vue list</code> to see all available official templates.</p>
-<p>Current available templates include:</p>
-<ul>
-<li><p><a href="https://github.com/vuejs-templates/browserify" target="_blank" rel="external">browserify</a> - A full-featured Browserify + vueify setup with hot-reload, linting &amp; unit testing.</p>
+<h3 id="Why_isn_u2019t_the_DOM_updating_3F"><a href="#Why_isn_u2019t_the_DOM_updating_3F" class="headerlink" title="Why isn’t the DOM updating?"></a>Why isn’t the DOM updating?</h3><p>Most of the time, when you change a Vue instance’s data, the view updates. But there are two edge cases:</p>
+<ol>
+<li><p>When you are <strong>adding a new property</strong> that wasn’t present when the data was observed. Due to the limitation of ES5 and to ensure consistent behavior across browsers, Vue.js cannot detect property addition/deletions. The best practice is to always declare properties that need to be reactive upfront. In cases where you absolutely need to add or delete properties at runtime, use the global <a href="/api/#Vue-set"><code>Vue.set</code></a> or <a href="/api/#Vue-delete"><code>Vue.delete</code></a> methods.</p>
 </li>
-<li><p><a href="https://github.com/vuejs-templates/browserify-simple" target="_blank" rel="external">browserify-simple</a> - A simple Browserify + vueify setup for quick prototyping.</p>
+<li><p>When you modify an Array by directly setting an index (e.g. <code>arr[0] = val</code>) or modifying its <code>length</code> property. Similarly, Vue.js cannot pickup these changes. Always modify arrays by using an Array instance method, or replacing it entirely. Vue provides a convenience method <code>arr.$set(index, value)</code> which is just syntax sugar for <code>arr.splice(index, 1, value)</code>.</p>
 </li>
-<li><p><a href="https://github.com/vuejs-templates/webpack" target="_blank" rel="external">webpack</a> - A full-featured Webpack + vue-loader setup with hot reload, linting, testing &amp; css extraction.</p>
-</li>
-<li><p><a href="https://github.com/vuejs-templates/webpack" target="_blank" rel="external">webpack-simple</a> - A simple Webpack + vue-loader setup for quick prototyping.</p>
-</li>
-</ul>
-<h3 id="Bring_Your_Own_Setup"><a href="#Bring_Your_Own_Setup" class="headerlink" title="Bring Your Own Setup"></a>Bring Your Own Setup</h3><p>If you are not happy with the official templates, you can fork these templates, modify them to fit your specific needs (or even create your own from scratch), and use them via <code>vue-cli</code> too, because <code>vue-cli</code> can work directly on GitHub repos:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vue init username/repo my-project</span><br></pre></td></tr></table></figure>
-<h3 id="Vue_Components_Everywhere"><a href="#Vue_Components_Everywhere" class="headerlink" title="Vue Components Everywhere"></a>Vue Components Everywhere</h3><p>There are different templates for different purposes: simple setups for quick prototyping, and full-featured setups for ambitious applications. A common feature among these templates though, is that they all support <code>*.vue</code> single file components. This means any third party Vue components written as valid <code>*.vue</code> files can be shared among projects using these setups, and simply be distributed over NPM - let’s create more reusable components!</p>
+</ol>
+<p>Further reading: <a href="/guide/reactivity.html">Reactivity in Depth</a> and <a href="http://vuejs.org/guide/list.html#Array_Change_Detection">Array Change Detection</a>.</p>
+<h3 id="When_is_the_DOM_updated_3F"><a href="#When_is_the_DOM_updated_3F" class="headerlink" title="When is the DOM updated?"></a>When is the DOM updated?</h3><p>Vue.js uses an asynchronous queue to batch DOM updates. This means when you modify some data, the DOM updates do not happen instantly: they are applied asynchronously when the queue is flushed. So how do you know when the DOM has been updated? Use <code>Vue.nextTick</code> right after you modify the data. The callback function you pass to it will be called once the queue has been flushed.</p>
+<p>Further reading: <a href="/guide/reactivity.html#Async_Update_Queue">Async Update Queue</a>.</p>
+<h3 id="Why_does_data_need_to_be_a_function_3F"><a href="#Why_does_data_need_to_be_a_function_3F" class="headerlink" title="Why does data need to be a function?"></a>Why does <code>data</code> need to be a function?</h3><p>In the basic examples, we declare the <code>data</code> directly as a plain object. This is because we are creating only a single instance with <code>new Vue()</code>. However, when defining a <strong>component</strong>, <code>data</code> must be declared as a function that returns the initial data object. Why? Because there will be many instances created using the same definition. If we still use a plain object for <code>data</code>, that same object will be <strong>shared by reference</strong> across all instance created! By providing a <code>data</code> function, every time a new instance is created, we can simply call it to return a fresh copy of the initial data.</p>
+<p>Further reading: <a href="/guide/components.html#Component_Option_Caveats">Component Option Caveats</a>.</p>
+<h3 id="HTML_case_insensitivity"><a href="#HTML_case_insensitivity" class="headerlink" title="HTML case insensitivity"></a>HTML case insensitivity</h3><p>All Vue.js templates are valid, parsable HTML markup, and Vue.js relies on spec-compliant parsers to process its templates. However, as specified in the standard, HTML is case-insensitive when matching tag and attribute names. This means camelCase attributes like <code>:myProp=&quot;123&quot;</code> will be matched as <code>:myprop=&quot;123&quot;</code>. As a rule of thumb, you should use camelCase in JavaScript and kebab-case in templates. For example a prop defined in JavaScript as <code>myProp</code> should be bound in templates as <code>:my-prop</code>.</p>
+<p>Further reading: <a href="http://vuejs.org/guide/components.html#camelCase_vs-_kebab-case">camelCase vs. kebab-case</a>.</p>
+<p>We are also discussing the possibility of eliminating this inconsistency by resolving props and components in a case-insensitive manner. Join the conversation <a href="https://github.com/vuejs/vue/issues/2308" target="_blank" rel="external">here</a>.</p>
 
 </div>
 
