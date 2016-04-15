@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -85,8 +85,17 @@
 
     </ul>
     <div class="list">
-        <h2>Recent Posts</h2>
-        <ul>
+        <h2>
+            Recent Posts
+            <a href="/atom.xml" target="_blank" style="vertical-align: middle; margin-left: 5px">
+                <img src="/images/feed.png" style="width:15px;height:15px">
+            </a>
+        </h2>
+        <ul style="padding:0">
+        
+            <li>
+                <a href="/2016/03/14/march-update/" class="sidebar-link">March 2016 Update</a>
+            </li>
         
             <li>
                 <a href="/2016/02/06/common-gotchas/" class="sidebar-link">Common Beginner Gotchas</a>
@@ -128,10 +137,14 @@
     </div>
 </div>
 <div class="content blog post">
-    <h1>Vue.js 0.10 is here!</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>Vue.js 0.10 is here!</h1>
     <h4>Mar 22, 2014</h4>
     <p>Vue.js 0.10.0 (Blade Runner) has been released! This release comes with many useful additions based on the suggestions from the users, notably interpolation in literal directives, dynamic components with the new <code>v-view</code> directive, array filters, and the option to configure interpolation delimiters. Internally, the codebase has received many refactoring and improvements which makes Vue.js <a href="http://vuejs.org/perf/">even faster</a>.</p>
 <a id="more"></a>
@@ -176,18 +189,11 @@
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

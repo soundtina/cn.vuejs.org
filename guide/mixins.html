@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,21 +183,25 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>混合</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>混合</h1>
     <h2 id="u57FA_u7840"><a href="#u57FA_u7840" class="headerlink" title="基础"></a>基础</h2><p>混合以一种灵活的方式为组件提供分布复用功能。混合对象可以包含任意的组件选项。当组件使用了混合对象时，混合对象的所有选项将被“混入”组件自己的选项中。</p>
 <p>示例：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个混合对象</span></span><br><span class="line"><span class="keyword">var</span> myMixin = &#123;</span><br><span class="line">  created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.hello()</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    hello: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'hello from mixin!'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个组件，使用这个混合对象</span></span><br><span class="line"><span class="keyword">var</span> Component = Vue.extend(&#123;</span><br><span class="line">  mixins: [myMixin]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> component = <span class="keyword">new</span> Component() <span class="comment">// -&gt; "hello from mixin!"</span></span><br></pre></td></tr></table></figure>
@@ -202,6 +212,8 @@
 <p>注意 <code>Vue.extend()</code> 使用同样的合并策略。</p>
 <h2 id="u5168_u5C40_u6DF7_u5408"><a href="#u5168_u5C40_u6DF7_u5408" class="headerlink" title="全局混合"></a>全局混合</h2><p>也可以全局注册混合。小心使用！一旦全局注册混合，它会影响<strong>所有</strong>之后创建的 Vue 实例。如果使用恰当，可以为自定义选项注入处理逻辑：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 为 `myOption` 自定义选项注入一个处理器</span></span><br><span class="line">Vue.mixin(&#123;</span><br><span class="line">  created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myOption = <span class="keyword">this</span>.$options.myOption</span><br><span class="line">    <span class="keyword">if</span> (myOption) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(myOption)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  myOption: <span class="string">'hello!'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// -&gt; "hello!"</span></span><br></pre></td></tr></table></figure>
+<p class="tip">慎用全局混合，因为它影响到每个创建的 Vue 实例，包括第三方组件。在大多数情况下，它应当只用于自定义选项，就像上面示例一样。</p>
+
 <h2 id="u81EA_u5B9A_u4E49_u9009_u9879_u5408_u5E76_u7B56_u7565"><a href="#u81EA_u5B9A_u4E49_u9009_u9879_u5408_u5E76_u7B56_u7565" class="headerlink" title="自定义选项合并策略"></a>自定义选项合并策略</h2><p>在合并自定义选项时，默认的合并策略是简单地覆盖已有值。如果想用自定义逻辑合并自定义选项，则向 <code>Vue.config.optionMergeStrategies</code> 添加一个函数：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.config.optionMergeStrategies.myOption = <span class="function"><span class="keyword">function</span> (<span class="params">toVal, fromVal</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 返回 mergedVal</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>对于多数值为对象的选项，可以简单地使用 <code>methods</code> 所用的合并策略:</p>
@@ -232,18 +244,11 @@
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

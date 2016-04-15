@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,21 +183,25 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>方法与事件处理器</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>方法与事件处理器</h1>
     <h2 id="u65B9_u6CD5_u5904_u7406_u5668"><a href="#u65B9_u6CD5_u5904_u7406_u5668" class="headerlink" title="方法处理器"></a>方法处理器</h2><p>可以用 <code>v-on</code> 指令监听 DOM 事件：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"example"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">v-on:click</span>=<span class="value">"greet"</span>&gt;</span>Greet<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>我们绑定了一个单击事件处理器到一个方法 <code>greet</code>。下面在 Vue 实例中定义这个方法：</p>
@@ -263,7 +273,9 @@ new Vue({
 <li>left</li>
 <li>right</li>
 </ul>
-<p>另外 1.0.8+ 也支持单字母按键别名。</p>
+<p><strong>1.0.8+：</strong> 支持单字母按键别名。</p>
+<p><strong>1.0.17+：</strong> 可以自定义按键别名：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以使用 @keyup.f1</span></span><br><span class="line">Vue.directive(<span class="string">'on'</span>).keyCodes.f1 = <span class="number">112</span></span><br></pre></td></tr></table></figure>
 <h2 id="u4E3A_u4EC0_u4E48_u5728_HTML__u4E2D_u76D1_u542C_u4E8B_u4EF6_3F"><a href="#u4E3A_u4EC0_u4E48_u5728_HTML__u4E2D_u76D1_u542C_u4E8B_u4EF6_3F" class="headerlink" title="为什么在 HTML 中监听事件?"></a>为什么在 HTML 中监听事件?</h2><p>你可能注意到这种事件监听的方式违背了传统理念 “separation of concern”。不必担心，因为所有的 Vue.js 事件处理方法和表达式都严格绑定在当前视图的 ViewModel 上，它不会导致任何维护困难。实际上，使用 <code>v-on</code> 有几个好处：</p>
 <ol>
 <li><p>扫一眼 HTML 模板便能轻松定位在 JavaScript 代码里对应的方法。</p>
@@ -299,18 +311,11 @@ new Vue({
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

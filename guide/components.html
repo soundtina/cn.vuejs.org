@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,22 +183,27 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>组件</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
-    <h2 id="u4F7F_u7528_u7EC4_u4EF6"><a href="#u4F7F_u7528_u7EC4_u4EF6" class="headerlink" title="使用组件"></a>使用组件</h2><h3 id="u6CE8_u518C"><a href="#u6CE8_u518C" class="headerlink" title="注册"></a>注册</h3><p>之前说过，我们可以用 <code>Vue.extend()</code> 创建一个组件构造器：</p>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>组件</h1>
+    <h2 id="u4EC0_u4E48_u662F_u7EC4_u4EF6_uFF1F"><a href="#u4EC0_u4E48_u662F_u7EC4_u4EF6_uFF1F" class="headerlink" title="什么是组件？"></a>什么是组件？</h2><p>组件（Component）是 Vue.js 最强大的功能之一。组件可以扩展 HTML 元素，封装可重用的代码。在较高层面上，组件是自定义元素，Vue.js 的编译器为它添加特殊功能。在有些情况下，组件也可以是原生 HTML 元素的形式，以 <code>is</code> 特性扩展。</p>
+<h2 id="u4F7F_u7528_u7EC4_u4EF6"><a href="#u4F7F_u7528_u7EC4_u4EF6" class="headerlink" title="使用组件"></a>使用组件</h2><h3 id="u6CE8_u518C"><a href="#u6CE8_u518C" class="headerlink" title="注册"></a>注册</h3><p>之前说过，我们可以用 <code>Vue.extend()</code> 创建一个组件构造器：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> MyComponent = Vue.extend(&#123;</span><br><span class="line">  <span class="comment">// 选项...</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>要把这个构造器用作组件，需要用 <code>Vue.component(tag, constructor)</code> <strong>注册</strong> ：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 全局注册组件，tag 为 my-component</span></span><br><span class="line">Vue.component(<span class="string">'my-component'</span>, MyComponent)</span><br></pre></td></tr></table></figure>
@@ -225,8 +236,20 @@ new Vue({ el: '#example' })
 <p>这么做的问题是 <code>MyComponent</code> 所有的实例将共享同一个 <code>data</code> 对象！这基本不是我们想要的，因此我们应当使用一个函数作为 <code>data</code> 选项，函数返回一个新对象：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> MyComponent = Vue.extend(&#123;</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; a: <span class="number">1</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>同理，<code>el</code> 选项用在 <code>Vue.extend()</code> 中时也须是一个函数。</p>
-<h3 id="is__u7279_u6027"><a href="#is__u7279_u6027" class="headerlink" title="is 特性"></a><code>is</code> 特性</h3><p>一些 HTML 元素，如 <code>&lt;table&gt;</code>，限制什么元素可以放在它里面。自定义元素不在白名单上，将被放在元素的外面，因而渲染不正确。这时应当使用 <code>is</code> 特性，指示它是一个自定义元素：</p>
+<h3 id="u6A21_u677F_u89E3_u6790"><a href="#u6A21_u677F_u89E3_u6790" class="headerlink" title="模板解析"></a>模板解析</h3><p>Vue 的模板是 DOM 模板，使用浏览器原生的解析器而不是自己实现一个。相对于字符串模板这有一些好处，但是也有问题。DOM 模板必须是有效的 HTML 片段。一些 HTML 元素对什么元素可以放在它里面有限制。常见的限制：</p>
+<ul>
+<li><code>a</code> 不能包含其它的交互元素（如按钮，链接）</li>
+<li><code>ul</code> 和 <code>ol</code> 只能直接包含 <code>li</code></li>
+<li><code>select</code> 只能包含 <code>option</code> 和 <code>optgroup</code></li>
+<li><code>table</code> 只能直接包含 <code>thead</code>, <code>tbody</code>, <code>tfoot</code>, <code>tr</code>, <code>caption</code>, <code>col</code>, <code>colgroup</code></li>
+<li><code>tr</code> 只能直接包含 <code>th</code> 和 <code>td</code></li>
+</ul>
+<p>在实际中，这些限制会导致意外的结果。尽管在简单的情况下它可能可以工作，但是你不能依赖自定义组件在浏览器验证之前的展开结果。例如 <code>&lt;my-select&gt;&lt;option&gt;...&lt;/option&gt;&lt;/my-select&gt;</code> 不是有效的模板，即使 <code>my-select</code> 组件最终展开为 <code>&lt;select&gt;...&lt;/select&gt;</code>。</p>
+<p>另一个结果是，自定义标签（包括自定义元素和特殊标签，如 <code>&lt;component&gt;</code>、<code>&lt;template&gt;</code>、 <code>&lt;partial&gt;</code> ）不能用在 <code>ul</code>, <code>select</code>, <code>table</code> 等对内部元素有限制的标签内。放在这些元素内部的自定义标签将被提到元素的外面，因而渲染不正确。</p>
+<p>对于自定义元素，应当使用 <code>is</code> 特性：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">tr</span> <span class="attribute">is</span>=<span class="value">"my-component"</span>&gt;</span><span class="tag">&lt;/<span class="title">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>&lt;template&gt;</code> 不能用在 <code>&lt;table&gt;</code> 内，这时应使用 <code>&lt;tbody&gt;</code>，<code>&lt;table&gt;</code> 可以有多个 <code>&lt;tbody&gt;</code>：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">tbody</span> <span class="attribute">v-for</span>=<span class="value">"item in items"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">tr</span>&gt;</span>Even row<span class="tag">&lt;/<span class="title">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">tr</span>&gt;</span>Odd row<span class="tag">&lt;/<span class="title">tr</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">tbody</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h2 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h2><h3 id="u4F7F_u7528_Props__u4F20_u9012_u6570_u636E"><a href="#u4F7F_u7528_Props__u4F20_u9012_u6570_u636E" class="headerlink" title="使用 Props 传递数据"></a>使用 Props 传递数据</h3><p><strong>组件实例的作用域是孤立的</strong>。这意味着不能并且不应该在子组件的模板内直接引用父组件的数据。可以使用 <strong>props</strong> 把数据传给子组件。</p>
 <p>“prop” 是组件数据的一个字段，期望从父组件传下来。子组件需要显式地用 <a href="/api/#props"><code>props</code> 选项</a> 声明 props：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.component(<span class="string">'child'</span>, &#123;</span><br><span class="line">  <span class="comment">// 声明 props</span></span><br><span class="line">  props: [<span class="string">'msg'</span>],</span><br><span class="line">  <span class="comment">// prop 可以用在模板内</span></span><br><span class="line">  <span class="comment">// 可以用 `this.msg` 设置</span></span><br><span class="line">  template: <span class="string">'&lt;span&gt;&#123;&#123; msg &#125;&#125;&lt;/span&gt;'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
@@ -289,7 +312,7 @@ new Vue({
 <p class="tip">注意如果 prop 是一个对象或数组，是按引用传递。在子组件内修改它<strong>会</strong>影响父组件的状态，不管是使用哪种绑定类型。</p>
 
 <h3 id="Prop__u9A8C_u8BC1"><a href="#Prop__u9A8C_u8BC1" class="headerlink" title="Prop 验证"></a>Prop 验证</h3><p>组件可以为 props 指定验证要求。当组件给其他人使用时这很有用，因为这些验证要求构成了组件的 API，确保其他人正确地使用组件。此时 props 的值是一个对象，包含验证要求：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.component(<span class="string">'example'</span>, &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    <span class="comment">// 基础类型检测 （`null` 意思是任何类型都可以）</span></span><br><span class="line">    propA: <span class="built_in">Number</span>,</span><br><span class="line">    <span class="comment">// 必需且是字符串</span></span><br><span class="line">    propB: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      required: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 数字，有默认值</span></span><br><span class="line">    propC: &#123;</span><br><span class="line">      type: <span class="built_in">Number</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="number">100</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 对象/数组的默认值应当由一个函数返回</span></span><br><span class="line">    propD: &#123;</span><br><span class="line">      type: <span class="built_in">Object</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123; msg: <span class="string">'hello'</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 指定这个 prop 为双向绑定</span></span><br><span class="line">    <span class="comment">// 如果绑定类型不对将抛出一条警告</span></span><br><span class="line">    propE: &#123;</span><br><span class="line">      twoWay: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 自定义验证函数</span></span><br><span class="line">    propF: &#123;</span><br><span class="line">      validator: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value &gt; <span class="number">10</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 转换函数（1.0.12 新增）</span></span><br><span class="line">    <span class="comment">// 在设置值之前转换值</span></span><br><span class="line">    propG: &#123;</span><br><span class="line">      coerce: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val + <span class="string">''</span> <span class="comment">// 将值转换为字符串</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    propH: &#123;</span><br><span class="line">      coerce: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(val) <span class="comment">// 将 JSON 字符串转换为对象</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.component(<span class="string">'example'</span>, &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    <span class="comment">// 基础类型检测 （`null` 意思是任何类型都可以）</span></span><br><span class="line">    propA: <span class="built_in">Number</span>,</span><br><span class="line">    <span class="comment">// 多种类型 (1.0.21+)</span></span><br><span class="line">    propM: [<span class="built_in">String</span>, <span class="built_in">Number</span>],</span><br><span class="line">    <span class="comment">// 必需且是字符串</span></span><br><span class="line">    propB: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      required: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 数字，有默认值</span></span><br><span class="line">    propC: &#123;</span><br><span class="line">      type: <span class="built_in">Number</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="number">100</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 对象/数组的默认值应当由一个函数返回</span></span><br><span class="line">    propD: &#123;</span><br><span class="line">      type: <span class="built_in">Object</span>,</span><br><span class="line">      <span class="keyword">default</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123; msg: <span class="string">'hello'</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 指定这个 prop 为双向绑定</span></span><br><span class="line">    <span class="comment">// 如果绑定类型不对将抛出一条警告</span></span><br><span class="line">    propE: &#123;</span><br><span class="line">      twoWay: <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 自定义验证函数</span></span><br><span class="line">    propF: &#123;</span><br><span class="line">      validator: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value &gt; <span class="number">10</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 转换函数（1.0.12 新增）</span></span><br><span class="line">    <span class="comment">// 在设置值之前转换值</span></span><br><span class="line">    propG: &#123;</span><br><span class="line">      coerce: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val + <span class="string">''</span> <span class="comment">// 将值转换为字符串</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    propH: &#123;</span><br><span class="line">      coerce: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(val) <span class="comment">// 将 JSON 字符串转换为对象</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p><code>type</code> 可以是下面原生构造器：</p>
 <ul>
 <li>String</li>
@@ -538,18 +561,11 @@ new Vue({
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

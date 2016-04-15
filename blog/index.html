@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,7 +86,19 @@
   </ul>
 </div>
 <div class="content blog">
-<h1 style="text-align: center; margin-bottom:.5em">The Vue.js Blog</h1>
+<h1 style="text-align: center; margin-bottom: 1em">The Vue.js Blog</h1>
+<p style="text-align: center; margin: 0">
+  <a href="/atom.xml" target="_blank">
+    <img src="/images/feed.png" style="width:15px;height:15px">
+  </a>
+</p>
+
+    <div class="post">
+        <h2><a href="/2016/03/14/march-update/">March 2016 Update</a></h2>
+        <h4>Mar 14, 2016</h4>
+        <div><h2 id="Growing_Community"><a href="#Growing_Community" class="headerlink" title="Growing Community"></a>Growing Community</h2><p>Vue’s growth in the past year has been nothing short of amazing. As of today we are at over 15,000 stars on GitHub, over 500k downloads from npm, and over 2,000 users in the Gitter channel. What’s more exciting though, is that the community successfully organized the first <a href="http://www.meetup.com/London-Vue-js-Meetup/">London Vue.js Meetup</a> and the first <a href="http://www.meetup.com/Vuejs-Paris/?scroll=true">Paris Vue.js Meetup</a>! A big shoutout to the awesome organizers: <a href="https://twitter.com/JackBarham">Jack</a>, <a href="https://twitter.com/onejamesbrowne/">James</a> and <a href="https://twitter.com/posva/">Eduardo</a>.</p></div>
+        <a href="/2016/03/14/march-update/">... continue reading</a>
+    </div>
 
     <div class="post">
         <h2><a href="/2016/02/06/common-gotchas/">Common Beginner Gotchas</a></h2>
@@ -166,18 +178,11 @@
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

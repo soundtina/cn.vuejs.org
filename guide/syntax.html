@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,21 +183,25 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>数据绑定语法</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>数据绑定语法</h1>
     <p>Vue.js 的模板是基于 DOM 实现的。这意味着所有的 Vue.js 模板都是可解析的有效的 HTML，且通过一些特殊的特性做了增强。Vue 模板因而从根本上不同于基于字符串的模板，请记住这点。</p>
 <h2 id="u63D2_u503C"><a href="#u63D2_u503C" class="headerlink" title="插值"></a>插值</h2><h3 id="u6587_u672C"><a href="#u6587_u672C" class="headerlink" title="文本"></a>文本</h3><p>数据绑定最基础的形式是文本插值，使用 “Mustache” 语法（双大括号）：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">span</span>&gt;</span>Message: &#123;&#123; msg &#125;&#125;<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -232,7 +242,7 @@
 <h3 id="u4FEE_u9970_u7B26"><a href="#u4FEE_u9970_u7B26" class="headerlink" title="修饰符"></a>修饰符</h3><p>修饰符 (Modifiers) 是以半角句号 <code>.</code> 开始的特殊后缀，用于表示指令应当以特殊方式绑定。例如 <code>.literal</code> 修饰符告诉指令将它的值解析为一个字面字符串而不是一个表达式：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-bind:href.literal</span>=<span class="value">"/a/b/c"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>当然，这似乎没有意义，因为我们只需要使用 <code>href=&quot;/a/b/c&quot;</code> 而不必使用一个指令。这个例子只是为了演示语法。后面我们将看到修饰符更多的实践用法。</p>
-<h2 id="u7F29_u5199"><a href="#u7F29_u5199" class="headerlink" title="缩写"></a>缩写</h2><p><code>v-</code> 前缀是一种标识模板中特定的 Vue 特性的视觉暗示。当你需要在一些现有的 HTML 代码中添加动态行为时，这些前缀可以起到很好的区分效果。但你在使用一些常用指令的时候，你会感觉一直这么写实在是啰嗦。而且在构建单页应用时，Vue.js 会管理所有的模板，此时 <code>v-</code> 前缀也没那么重要了。因此Vue.js 为两个最常用的指令 <code>v-bind</code> 和 <code>v-on</code> 提供特别的缩写：</p>
+<h2 id="u7F29_u5199"><a href="#u7F29_u5199" class="headerlink" title="缩写"></a>缩写</h2><p><code>v-</code> 前缀是一种标识模板中特定的 Vue 特性的视觉暗示。当你需要在一些现有的 HTML 代码中添加动态行为时，这些前缀可以起到很好的区分效果。但你在使用一些常用指令的时候，你会感觉一直这么写实在是啰嗦。而且在构建单页应用（<a href="https://en.wikipedia.org/wiki/Single-page_application" target="_blank" rel="external">SPA</a> ）时，Vue.js 会管理所有的模板，此时 <code>v-</code> 前缀也没那么重要了。因此Vue.js 为两个最常用的指令 <code>v-bind</code> 和 <code>v-on</code> 提供特别的缩写：</p>
 <h3 id="v-bind__u7F29_u5199"><a href="#v-bind__u7F29_u5199" class="headerlink" title="v-bind 缩写"></a><code>v-bind</code> 缩写</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 完整语法 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-bind:href</span>=<span class="value">"url"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 缩写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">:href</span>=<span class="value">"url"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 完整语法 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">button</span> <span class="attribute">v-bind:disabled</span>=<span class="value">"someDynamicCondition"</span>&gt;</span>Button<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 缩写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">button</span> <span class="attribute">:disabled</span>=<span class="value">"someDynamicCondition"</span>&gt;</span>Button<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h3 id="v-on__u7F29_u5199"><a href="#v-on__u7F29_u5199" class="headerlink" title="v-on 缩写"></a><code>v-on</code> 缩写</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 完整语法 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">v-on:click</span>=<span class="value">"doSomething"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 缩写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">a</span> @<span class="attribute">click</span>=<span class="value">"doSomething"</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>它们看起来跟“合法”的 HTML 有点不同，但是它们在所有 Vue.js 支持的浏览器中都能被正确地解析，并且不会出现在最终渲染的标记中。缩写语法完全是可选的，不过随着一步步学习的深入，你会庆幸拥有它们。</p>
@@ -262,18 +272,11 @@
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

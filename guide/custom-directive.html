@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,21 +183,25 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>自定义指令</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>自定义指令</h1>
     <h2 id="u57FA_u7840"><a href="#u57FA_u7840" class="headerlink" title="基础"></a>基础</h2><p>除了内置指令，Vue.js 也允许注册自定义指令。自定义指令提供一种机制将数据的变化映射为 DOM 行为。</p>
 <p>可以用 <code>Vue.directive(id, definition)</code> 方法注册一个全局自定义指令，它接收两个参数<strong>指令 ID</strong> 与<strong>定义对象</strong>。也可以用组件的 <code>directives</code> 选项注册一个局部自定义指令。</p>
 <h3 id="u94A9_u5B50_u51FD_u6570"><a href="#u94A9_u5B50_u51FD_u6570" class="headerlink" title="钩子函数"></a>钩子函数</h3><p>定义对象可以提供几个钩子函数（都是可选的）：</p>
@@ -268,16 +278,26 @@ var demo = new Vue({
 <p>此 API 也支持动态属性。<code>this.params[key]</code> 会自动保持更新。另外，可以指定一个回调，在值变化时调用：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-example</span> <span class="attribute">v-bind:a</span>=<span class="value">"someValue"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  params: [<span class="string">'a'</span>],</span><br><span class="line">  paramWatchers: &#123;</span><br><span class="line">    a: <span class="function"><span class="keyword">function</span> (<span class="params">val, oldVal</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'a changed!'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p class="tip">类似于 props，指令参数的名字在 JavaScript 中使用 camelCase 风格，在 HTML 中对应使用 kebab-case 风格。例如，假设在模板里有一个参数 <code>disable-effect</code>，在 JavaScript 里以 <code>disableEffect</code> 访问它。</p>
+
 <h3 id="deep"><a href="#deep" class="headerlink" title="deep"></a>deep</h3><p>如果自定义指令用在一个对象上，当对象内部属性变化时要触发 <code>update</code>，则在指令定义对象中指定 <code>deep: true</code>。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>=<span class="value">"obj"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'my-directive'</span>, &#123;</span><br><span class="line">  deep: <span class="literal">true</span>,</span><br><span class="line">  update: <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在 `obj` 的嵌套属性变化时调用</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h3 id="twoWay"><a href="#twoWay" class="headerlink" title="twoWay"></a>twoWay</h3><p>如果指令想向 Vue 实例写回数据，则在指令定义对象中指定 <code>twoWay: true</code> 。该选项允许在指令中使用 <code>this.set(value)</code>:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  twoWay: <span class="literal">true</span>,</span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.handler = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 将数据写回 vm</span></span><br><span class="line">      <span class="comment">// 如果指令这样绑定 v-example="a.b.c"</span></span><br><span class="line">      <span class="comment">// 它将用给定值设置 `vm.a.b.c`	  </span></span><br><span class="line">      <span class="keyword">this</span>.set(<span class="keyword">this</span>.el.value)</span><br><span class="line">    &#125;.bind(<span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">this</span>.el.addEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.el.removeEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'example'</span>, &#123;</span><br><span class="line">  twoWay: <span class="literal">true</span>,</span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.handler = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 将数据写回 vm</span></span><br><span class="line">      <span class="comment">// 如果指令这样绑定 v-example="a.b.c"</span></span><br><span class="line">      <span class="comment">// 它将用给定值设置 `vm.a.b.c`</span></span><br><span class="line">      <span class="keyword">this</span>.set(<span class="keyword">this</span>.el.value)</span><br><span class="line">    &#125;.bind(<span class="keyword">this</span>)</span><br><span class="line">    <span class="keyword">this</span>.el.addEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.el.removeEventListener(<span class="string">'input'</span>, <span class="keyword">this</span>.handler)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h3 id="acceptStatement"><a href="#acceptStatement" class="headerlink" title="acceptStatement"></a>acceptStatement</h3><p>传入 <code>acceptStatement:true</code> 可以让自定义指令接受内联语句，就像 <code>v-on</code> 那样：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-my-directive</span>=<span class="value">"a++"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">'my-directive'</span>, &#123;</span><br><span class="line">  acceptStatement: <span class="literal">true</span>,</span><br><span class="line">  update: <span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 传入值是一个函数</span></span><br><span class="line">    <span class="comment">// 在调用它时将在所属实例作用域内计算 "a++" 语句</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>明智地使用，因为通常你要在模板中避免副效应。</p>
-<h3 id="priority"><a href="#priority" class="headerlink" title="priority"></a>priority</h3><p>可以给指令指定一个优先级（默认是 1000）。同一个元素上优先级高的指令会比其它指令处理得早一些。优先级一样的指令按照它在元素特性列表中出现的顺序依次处理，但是不能保证这个顺序在不同的浏览器中是一致的。</p>
+<h3 id="terminal"><a href="#terminal" class="headerlink" title="terminal"></a>terminal</h3><blockquote>
+<p>1.0.19+</p>
+</blockquote>
+<p>Vue 通过递归遍历 DOM 树来编译模块。但是当它遇到 <strong>terminal</strong> 指令时会停止遍历这个元素的后代元素。这个指令将接管编译这个元素及其后代元素的任务。<code>v-if</code> 和 <code>v-for</code> 都是 terminal 指令。</p>
+<p>编写自定义 terminal 指令是一个高级话题，需要较好的理解 Vue 的编译流程，但这不是说不可能编写自定义 terminal 指令。用 <code>terminal: true</code> 指定自定义 terminal 指令，可能还需要用 <code>Vue.FragmentFactory</code> 来编译 partial。下面是一个自定义 terminal 指令，它编译它的内容模板并将结果注入到页面的另一个地方：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> FragmentFactory = Vue.FragmentFactory</span><br><span class="line"><span class="keyword">var</span> remove = Vue.util.remove</span><br><span class="line"><span class="keyword">var</span> createAnchor = Vue.util.createAnchor</span><br><span class="line"></span><br><span class="line">Vue.directive(<span class="string">'inject'</span>, &#123;</span><br><span class="line">  terminal: <span class="literal">true</span>,</span><br><span class="line">  bind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="keyword">this</span>.arg)</span><br><span class="line">    <span class="keyword">this</span>.anchor = createAnchor(<span class="string">'v-inject'</span>)</span><br><span class="line">    container.appendChild(<span class="keyword">this</span>.anchor)</span><br><span class="line">    remove(<span class="keyword">this</span>.el)</span><br><span class="line">    <span class="keyword">var</span> factory = <span class="keyword">new</span> FragmentFactory(<span class="keyword">this</span>.vm, <span class="keyword">this</span>.el)</span><br><span class="line">    <span class="keyword">this</span>.frag = factory.create(<span class="keyword">this</span>._host, <span class="keyword">this</span>._scope, <span class="keyword">this</span>._frag)</span><br><span class="line">    <span class="keyword">this</span>.frag.before(<span class="keyword">this</span>.anchor)</span><br><span class="line">  &#125;,</span><br><span class="line">  unbind: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.frag.remove()</span><br><span class="line">    remove(<span class="keyword">this</span>.anchor)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"modal"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">v-inject:modal</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">h1</span>&gt;</span>header<span class="tag">&lt;/<span class="title">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">p</span>&gt;</span>body<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">p</span>&gt;</span>footer<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果你想编写自定义 terminal 指令，建议你通读内置 terminal 指令的源码，如 <code>v-if</code> 和 <code>v-for</code>，以便更好地了解 Vue 的内部机制。</p>
+<h3 id="priority"><a href="#priority" class="headerlink" title="priority"></a>priority</h3><p>可以给指令指定一个优先级。如果没有指定，普通指令默认是 <code>1000</code>， terminal 指令默认是 <code>2000</code>。同一个元素上优先级高的指令会比其它指令处理得早一些。优先级一样的指令按照它在元素特性列表中出现的顺序依次处理，但是不能保证这个顺序在不同的浏览器中是一致的。</p>
 <p>可以在 <a href="/api/#指令">API</a> 中查看内置指令的优先级。另外，流程控制指令 <code>v-if</code> 和 <code>v-for</code> 在编译过程中始终拥有最高的优先级。</p>
 
     
@@ -305,18 +325,11 @@ var demo = new Vue({
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>

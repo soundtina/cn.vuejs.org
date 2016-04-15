@@ -62,16 +62,11 @@
 	  ? global
 	  : window
 	
-	scope.spyWarns = function () {
-	  spyOn(_, 'warn')
-	  spyOn(__, 'warn')
-	}
-	
 	scope.getWarnCount = function () {
 	  return _.warn.calls.count() + __.warn.calls.count()
 	}
 	
-	scope.hasWarned = function (msg, silent) {
+	function hasWarned (msg) {
 	  var count = _.warn.calls.count()
 	  var args
 	  while (count--) {
@@ -89,16 +84,36 @@
 	    }
 	  }
 	
-	  if (!silent) {
-	    console.warn('[test] "' + msg + '" was never warned.')
-	  }
-	
 	  function containsMsg (arg) {
 	    if (arg instanceof Error) throw arg
 	    return typeof arg === 'string' && arg.indexOf(msg) > -1
 	  }
 	}
 	
+	// define custom matcher for warnings
+	beforeEach(function () {
+	  spyOn(_, 'warn')
+	  spyOn(__, 'warn')
+	  jasmine.addMatchers({
+	    toHaveBeenWarned: function () {
+	      return {
+	        compare: function (msg) {
+	          var warned = Array.isArray(msg)
+	            ? msg.some(hasWarned)
+	            : hasWarned(msg)
+	          return {
+	            pass: warned,
+	            message: warned
+	              ? 'Expected message "' + msg + '" not to have been warned'
+	              : 'Expected message "' + msg + '" to have been warned'
+	          }
+	        }
+	      }
+	    }
+	  })
+	})
+	
+	// shim process
 	scope.process = {
 	  env: {
 	    NODE_ENV: 'development'
@@ -106,7 +121,7 @@
 	}
 	
 	// require all test files
-	var testsContext = __webpack_require__(107)
+	var testsContext = __webpack_require__(108)
 	testsContext.keys().forEach(testsContext)
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
@@ -125,50 +140,33 @@
 	
 	var _instanceVue2 = _interopRequireDefault(_instanceVue);
 	
-	var _directivesPublicIndex = __webpack_require__(62);
+	var _globalApi = __webpack_require__(101);
 	
-	var _directivesPublicIndex2 = _interopRequireDefault(_directivesPublicIndex);
-	
-	var _directivesElementIndex = __webpack_require__(102);
-	
-	var _directivesElementIndex2 = _interopRequireDefault(_directivesElementIndex);
-	
-	var _filtersIndex = __webpack_require__(105);
-	
-	var _filtersIndex2 = _interopRequireDefault(_filtersIndex);
+	var _globalApi2 = _interopRequireDefault(_globalApi);
 	
 	var _utilIndex = __webpack_require__(5);
 	
-	_instanceVue2['default'].version = '1.0.16';
+	var _config = __webpack_require__(36);
 	
-	/**
-	 * Vue and every constructor that extends Vue has an
-	 * associated options object, which can be accessed during
-	 * compilation steps as `this.constructor.options`.
-	 *
-	 * These can be seen as the default options of every
-	 * Vue instance.
-	 */
+	var _config2 = _interopRequireDefault(_config);
 	
-	_instanceVue2['default'].options = {
-	  directives: _directivesPublicIndex2['default'],
-	  elementDirectives: _directivesElementIndex2['default'],
-	  filters: _filtersIndex2['default'],
-	  transitions: {},
-	  components: {},
-	  partials: {},
-	  replace: true
-	};
+	_globalApi2['default'](_instanceVue2['default']);
+	
+	_instanceVue2['default'].version = '1.0.21';
 	
 	exports['default'] = _instanceVue2['default'];
 	
 	// devtools global hook
 	/* istanbul ignore next */
-	if (_utilIndex.devtools) {
-	  _utilIndex.devtools.emit('init', _instanceVue2['default']);
-	} else if (("development") !== 'production' && _utilIndex.inBrowser && /Chrome\/\d+/.test(navigator.userAgent)) {
-	  console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
-	}
+	setTimeout(function () {
+	  if (_config2['default'].devtools) {
+	    if (_utilIndex.devtools) {
+	      _utilIndex.devtools.emit('init', _instanceVue2['default']);
+	    } else if (("development") !== 'production' && _utilIndex.inBrowser && /Chrome\/\d+/.test(window.navigator.userAgent)) {
+	      console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
+	    }
+	  }
+	}, 0);
 	module.exports = exports['default'];
 
 /***/ },
@@ -203,35 +201,31 @@
 	
 	var _internalState2 = _interopRequireDefault(_internalState);
 	
-	var _internalEvents = __webpack_require__(92);
+	var _internalEvents = __webpack_require__(93);
 	
 	var _internalEvents2 = _interopRequireDefault(_internalEvents);
 	
-	var _internalLifecycle = __webpack_require__(93);
+	var _internalLifecycle = __webpack_require__(94);
 	
 	var _internalLifecycle2 = _interopRequireDefault(_internalLifecycle);
 	
-	var _internalMisc = __webpack_require__(95);
+	var _internalMisc = __webpack_require__(96);
 	
 	var _internalMisc2 = _interopRequireDefault(_internalMisc);
 	
-	var _apiGlobal = __webpack_require__(96);
-	
-	var _apiGlobal2 = _interopRequireDefault(_apiGlobal);
-	
-	var _apiData = __webpack_require__(98);
+	var _apiData = __webpack_require__(97);
 	
 	var _apiData2 = _interopRequireDefault(_apiData);
 	
-	var _apiDom = __webpack_require__(99);
+	var _apiDom = __webpack_require__(98);
 	
 	var _apiDom2 = _interopRequireDefault(_apiDom);
 	
-	var _apiEvents = __webpack_require__(100);
+	var _apiEvents = __webpack_require__(99);
 	
 	var _apiEvents2 = _interopRequireDefault(_apiEvents);
 	
-	var _apiLifecycle = __webpack_require__(101);
+	var _apiLifecycle = __webpack_require__(100);
 	
 	var _apiLifecycle2 = _interopRequireDefault(_apiLifecycle);
 	
@@ -260,8 +254,7 @@
 	_internalLifecycle2['default'](Vue);
 	_internalMisc2['default'](Vue);
 	
-	// install APIs
-	_apiGlobal2['default'](Vue);
+	// install instance APIs
 	_apiData2['default'](Vue);
 	_apiDom2['default'](Vue);
 	_apiEvents2['default'](Vue);
@@ -283,7 +276,6 @@
 	var uid = 0;
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * The main init sequence. This is called for every
 	   * instance, including ones that are created from extended
@@ -296,7 +288,6 @@
 	   */
 	
 	  Vue.prototype._init = function (options) {
-	
 	    options = options || {};
 	
 	    this.$el = null;
@@ -355,13 +346,6 @@
 	      this.$parent.$children.push(this);
 	    }
 	
-	    // save raw constructor data before merge
-	    // so that we know which properties are provided at
-	    // instantiation.
-	    if (true) {
-	      this._runtimeData = options.data;
-	    }
-	
 	    // merge options.
 	    options = this.$options = _utilIndex.mergeOptions(this.constructor.options, options, this);
 	
@@ -371,6 +355,11 @@
 	    // initialize data as empty object.
 	    // it will be filled up in _initScope().
 	    this._data = {};
+	
+	    // save raw constructor data before merge
+	    // so that we know which properties are provided at
+	    // instantiation.
+	    this._runtimeData = options.data;
 	
 	    // call init hook
 	    this._callHook('init');
@@ -1084,7 +1073,7 @@
 	
 	exports.isArray = isArray;
 	/**
-	 * Define a non-enumerable property
+	 * Define a property.
 	 *
 	 * @param {Object} obj
 	 * @param {String} key
@@ -1223,7 +1212,9 @@
 /* 34 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {// can we use __proto__?
+	/* WEBPACK VAR INJECTION */(function(global) {/* global MutationObserver */
+	
+	// can we use __proto__?
 	'use strict';
 	
 	exports.__esModule = true;
@@ -1234,13 +1225,15 @@
 	var inBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) !== '[object Object]';
 	
 	exports.inBrowser = inBrowser;
+	// detect devtools
 	var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 	
 	exports.devtools = devtools;
-	var isIE9 = inBrowser && navigator.userAgent.toLowerCase().indexOf('msie 9.0') > 0;
-	
+	// UA sniffing for working around browser-specific quirks
+	var UA = inBrowser && window.navigator.userAgent.toLowerCase();
+	var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
 	exports.isIE9 = isIE9;
-	var isAndroid = inBrowser && navigator.userAgent.toLowerCase().indexOf('android') > 0;
+	var isAndroid = UA && UA.indexOf('android') > 0;
 	
 	exports.isAndroid = isAndroid;
 	var transitionProp = undefined;
@@ -1349,6 +1342,8 @@
 	exports.findRef = findRef;
 	exports.mapNodeRange = mapNodeRange;
 	exports.removeNodeRange = removeNodeRange;
+	exports.isFragment = isFragment;
+	exports.getOuterHTML = getOuterHTML;
 	
 	var _config = __webpack_require__(36);
 	
@@ -1532,6 +1527,22 @@
 	}
 	
 	/**
+	 * For IE9 compat: when both class and :class are present
+	 * getAttribute('class') returns wrong value...
+	 *
+	 * @param {Element} el
+	 * @return {String}
+	 */
+	
+	function getClass(el) {
+	  var classname = el.className;
+	  if (typeof classname === 'object') {
+	    classname = classname.baseVal || '';
+	  }
+	  return classname;
+	}
+	
+	/**
 	 * In IE9, setAttribute('class') will result in empty class
 	 * if the element also has the :class attribute; However in
 	 * PhantomJS, setting `className` does not work on SVG elements...
@@ -1543,7 +1554,7 @@
 	
 	function setClass(el, cls) {
 	  /* istanbul ignore if */
-	  if (_env.isIE9 && !(el instanceof SVGElement)) {
+	  if (_env.isIE9 && !/svg$/.test(el.namespaceURI)) {
 	    el.className = cls;
 	  } else {
 	    el.setAttribute('class', cls);
@@ -1561,7 +1572,7 @@
 	  if (el.classList) {
 	    el.classList.add(cls);
 	  } else {
-	    var cur = ' ' + (el.getAttribute('class') || '') + ' ';
+	    var cur = ' ' + getClass(el) + ' ';
 	    if (cur.indexOf(' ' + cls + ' ') < 0) {
 	      setClass(el, (cur + cls).trim());
 	    }
@@ -1579,7 +1590,7 @@
 	  if (el.classList) {
 	    el.classList.remove(cls);
 	  } else {
-	    var cur = ' ' + (el.getAttribute('class') || '') + ' ';
+	    var cur = ' ' + getClass(el) + ' ';
 	    var tar = ' ' + cls + ' ';
 	    while (cur.indexOf(tar) >= 0) {
 	      cur = cur.replace(tar, ' ');
@@ -1597,14 +1608,14 @@
 	 *
 	 * @param {Element} el
 	 * @param {Boolean} asFragment
-	 * @return {Element}
+	 * @return {Element|DocumentFragment}
 	 */
 	
 	function extractContent(el, asFragment) {
 	  var child;
 	  var rawContent;
 	  /* istanbul ignore if */
-	  if (isTemplate(el) && el.content instanceof DocumentFragment) {
+	  if (isTemplate(el) && isFragment(el.content)) {
 	    el = el.content;
 	  }
 	  if (el.hasChildNodes()) {
@@ -1674,7 +1685,7 @@
 	
 	function createAnchor(content, persist) {
 	  var anchor = _config2['default'].debug ? document.createComment(content) : document.createTextNode(persist ? ' ' : '');
-	  anchor.__vue_anchor = true;
+	  anchor.__v_anchor = true;
 	  return anchor;
 	}
 	
@@ -1748,6 +1759,35 @@
 	    }
 	  }
 	}
+	
+	/**
+	 * Check if a node is a DocumentFragment.
+	 *
+	 * @param {Node} node
+	 * @return {Boolean}
+	 */
+	
+	function isFragment(node) {
+	  return node && node.nodeType === 11;
+	}
+	
+	/**
+	 * Get outerHTML of elements, taking care
+	 * of SVG elements in IE as well.
+	 *
+	 * @param {Element} el
+	 * @return {String}
+	 */
+	
+	function getOuterHTML(el) {
+	  if (el.outerHTML) {
+	    return el.outerHTML;
+	  } else {
+	    var container = document.createElement('div');
+	    container.appendChild(el.cloneNode(true));
+	    return container.innerHTML;
+	  }
+	}
 
 /***/ },
 /* 36 */
@@ -1797,12 +1837,11 @@
 	  warnExpressionErrors: true,
 	
 	  /**
-	   * Whether or not to handle fully object properties which
-	   * are already backed by getters and seters. Depending on
-	   * use case and environment, this might introduce non-neglible
-	   * performance penalties.
+	   * Whether to allow devtools inspection.
+	   * Disabled by default in production builds.
 	   */
-	  convertAllProperties: false,
+	
+	  devtools: ("development") !== 'production',
 	
 	  /**
 	   * Internal flag to indicate the delimiters have been
@@ -1930,7 +1969,7 @@
 	  var close = escapeRegex(_config2['default'].delimiters[1]);
 	  var unsafeOpen = escapeRegex(_config2['default'].unsafeDelimiters[0]);
 	  var unsafeClose = escapeRegex(_config2['default'].unsafeDelimiters[1]);
-	  tagRE = new RegExp(unsafeOpen + '(.+?)' + unsafeClose + '|' + open + '(.+?)' + close, 'g');
+	  tagRE = new RegExp(unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '|' + open + '((?:.|\\n)+?)' + close, 'g');
 	  htmlRE = new RegExp('^' + unsafeOpen + '.*' + unsafeClose + '$');
 	  // reset cache
 	  cache = new _cache2['default'](1000);
@@ -1955,7 +1994,6 @@
 	  if (hit) {
 	    return hit;
 	  }
-	  text = text.replace(/\n/g, '');
 	  if (!tagRE.test(text)) {
 	    return null;
 	  }
@@ -2286,12 +2324,11 @@
 	 *   ]
 	 * }
 	 *
-	 * @param {String} str
+	 * @param {String} s
 	 * @return {Object}
 	 */
 	
 	function parseDirective(s) {
-	
 	  var hit = cache.get(s);
 	  if (hit) {
 	    return hit;
@@ -2369,23 +2406,24 @@
 	
 	var _config2 = _interopRequireDefault(_config);
 	
+	var _lang = __webpack_require__(29);
+	
 	var warn = undefined;
+	var formatComponentName = undefined;
 	
 	if (true) {
 	  (function () {
 	    var hasConsole = typeof console !== 'undefined';
-	    exports.warn = warn = function (msg, e) {
-	      if (hasConsole && (!_config2['default'].silent || _config2['default'].debug)) {
-	        console.warn('[Vue warn]: ' + msg);
-	        /* istanbul ignore if */
-	        if (_config2['default'].debug) {
-	          if (e) {
-	            throw e;
-	          } else {
-	            console.warn(new Error('Warning Stack Trace').stack);
-	          }
-	        }
+	
+	    exports.warn = warn = function (msg, vm) {
+	      if (hasConsole && !_config2['default'].silent) {
+	        console.error('[Vue warn]: ' + msg + (vm ? formatComponentName(vm) : ''));
 	      }
+	    };
+	
+	    formatComponentName = function (vm) {
+	      var name = vm._isVue ? vm.$options.name : vm.name;
+	      return name ? ' (found in component: <' + _lang.hyphenate(name) + '>)' : '';
 	    };
 	  })();
 	}
@@ -2497,7 +2535,6 @@
 	exports.__esModule = true;
 	exports.mergeOptions = mergeOptions;
 	exports.resolveAsset = resolveAsset;
-	exports.assertAsset = assertAsset;
 	
 	var _instanceVue = __webpack_require__(3);
 	
@@ -2556,7 +2593,7 @@
 	      return parentVal;
 	    }
 	    if (typeof childVal !== 'function') {
-	      ("development") !== 'production' && _debug.warn('The "data" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.');
+	      ("development") !== 'production' && _debug.warn('The "data" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.', vm);
 	      return parentVal;
 	    }
 	    if (!parentVal) {
@@ -2590,7 +2627,7 @@
 	
 	strats.el = function (parentVal, childVal, vm) {
 	  if (!vm && childVal && typeof childVal !== 'function') {
-	    ("development") !== 'production' && _debug.warn('The "el" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.');
+	    ("development") !== 'production' && _debug.warn('The "el" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.', vm);
 	    return;
 	  }
 	  var ret = childVal || parentVal;
@@ -2602,17 +2639,8 @@
 	 * Hooks and param attributes are merged as arrays.
 	 */
 	
-	strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = function (parentVal, childVal) {
+	strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = strats.activate = function (parentVal, childVal) {
 	  return childVal ? parentVal ? parentVal.concat(childVal) : _lang.isArray(childVal) ? childVal : [childVal] : parentVal;
-	};
-	
-	/**
-	 * 0.11 deprecation warning
-	 */
-	
-	strats.paramAttributes = function () {
-	  /* istanbul ignore next */
-	  ("development") !== 'production' && _debug.warn('"paramAttributes" option has been deprecated in 0.12. ' + 'Use "props" instead.');
 	};
 	
 	/**
@@ -2686,13 +2714,21 @@
 	function guardComponents(options) {
 	  if (options.components) {
 	    var components = options.components = guardArrayAssets(options.components);
-	    var def;
 	    var ids = _Object$keys(components);
+	    var def;
+	    if (true) {
+	      var map = options._componentNameMap = {};
+	    }
 	    for (var i = 0, l = ids.length; i < l; i++) {
 	      var key = ids[i];
 	      if (_component.commonTagRE.test(key) || _component.reservedTagRE.test(key)) {
 	        ("development") !== 'production' && _debug.warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + key);
 	        continue;
+	      }
+	      // record a all lowercase <-> kebab-case mapping for
+	      // possible custom element case error warning
+	      if (true) {
+	        map[key.replace(/-/g, '').toLowerCase()] = _lang.hyphenate(key);
 	      }
 	      def = components[key];
 	      if (_lang.isPlainObject(def)) {
@@ -2805,31 +2841,26 @@
 	 * @param {Object} options
 	 * @param {String} type
 	 * @param {String} id
+	 * @param {Boolean} warnMissing
 	 * @return {Object|Function}
 	 */
 	
-	function resolveAsset(options, type, id) {
+	function resolveAsset(options, type, id, warnMissing) {
 	  /* istanbul ignore if */
 	  if (typeof id !== 'string') {
 	    return;
 	  }
 	  var assets = options[type];
 	  var camelizedId;
-	  return assets[id] ||
+	  var res = assets[id] ||
 	  // camelCase ID
 	  assets[camelizedId = _lang.camelize(id)] ||
 	  // Pascal Case ID
 	  assets[camelizedId.charAt(0).toUpperCase() + camelizedId.slice(1)];
-	}
-	
-	/**
-	 * Assert asset exists
-	 */
-	
-	function assertAsset(val, type, id) {
-	  if (!val) {
-	    ("development") !== 'production' && _debug.warn('Failed to resolve ' + type + ': ' + id);
+	  if (("development") !== 'production' && warnMissing && !res) {
+	    _debug.warn('Failed to resolve ' + type.slice(0, -1) + ': ' + id, options);
 	  }
+	  return res;
 	}
 
 /***/ },
@@ -2840,9 +2871,6 @@
 	
 	exports.__esModule = true;
 	exports.checkComponentAttr = checkComponentAttr;
-	exports.initProp = initProp;
-	exports.assertProp = assertProp;
-	exports.coerceProp = coerceProp;
 	
 	var _debug = __webpack_require__(44);
 	
@@ -2850,13 +2878,27 @@
 	
 	var _dom = __webpack_require__(35);
 	
-	var _lang = __webpack_require__(29);
-	
-	var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/;
+	var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/i;
 	exports.commonTagRE = commonTagRE;
-	var reservedTagRE = /^(slot|partial|component)$/;
+	var reservedTagRE = /^(slot|partial|component)$/i;
 	
 	exports.reservedTagRE = reservedTagRE;
+	var isUnknownElement = undefined;
+	if (true) {
+	  isUnknownElement = function (el, tag) {
+	    if (tag.indexOf('-') > -1) {
+	      // http://stackoverflow.com/a/28210364/1070244
+	      return el.constructor === window.HTMLUnknownElement || el.constructor === window.HTMLElement;
+	    } else {
+	      return (/HTMLUnknownElement/.test(el.toString()) &&
+	        // Chrome returns unknown for several HTML5 elements.
+	        // https://code.google.com/p/chromium/issues/detail?id=540526
+	        !/^(data|time|rtc|rb)$/.test(tag)
+	      );
+	    }
+	  };
+	}
+	
 	/**
 	 * Check if an element is a component, if yes return its
 	 * component id.
@@ -2877,10 +2919,10 @@
 	      if (is) {
 	        return is;
 	      } else if (true) {
-	        if (tag.indexOf('-') > -1 || /HTMLUnknownElement/.test(el.toString()) &&
-	        // Chrome returns unknown for several HTML5 elements.
-	        // https://code.google.com/p/chromium/issues/detail?id=540526
-	        !/^(data|time|rtc|rb)$/.test(tag)) {
+	        var expectedTag = options._componentNameMap && options._componentNameMap[tag];
+	        if (expectedTag) {
+	          _debug.warn('Unknown custom element: <' + tag + '> - ' + 'did you mean <' + expectedTag + '>? ' + 'HTML is case-insensitive, remember to use kebab-case in templates.');
+	        } else if (isUnknownElement(el, tag)) {
 	          _debug.warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly? For recursive components, ' + 'make sure to provide the "name" option.');
 	        }
 	      }
@@ -2909,99 +2951,6 @@
 	    }
 	  }
 	}
-	
-	/**
-	 * Set a prop's initial value on a vm and its data object.
-	 *
-	 * @param {Vue} vm
-	 * @param {Object} prop
-	 * @param {*} value
-	 */
-	
-	function initProp(vm, prop, value) {
-	  var key = prop.path;
-	  value = coerceProp(prop, value);
-	  vm[key] = vm._data[key] = assertProp(prop, value) ? value : undefined;
-	}
-	
-	/**
-	 * Assert whether a prop is valid.
-	 *
-	 * @param {Object} prop
-	 * @param {*} value
-	 */
-	
-	function assertProp(prop, value) {
-	  // if a prop is not provided and is not required,
-	  // skip the check.
-	  if (prop.raw === null && !prop.required) {
-	    return true;
-	  }
-	  var options = prop.options;
-	  var type = options.type;
-	  var valid = true;
-	  var expectedType;
-	  if (type) {
-	    if (type === String) {
-	      expectedType = 'string';
-	      valid = typeof value === expectedType;
-	    } else if (type === Number) {
-	      expectedType = 'number';
-	      valid = typeof value === 'number';
-	    } else if (type === Boolean) {
-	      expectedType = 'boolean';
-	      valid = typeof value === 'boolean';
-	    } else if (type === Function) {
-	      expectedType = 'function';
-	      valid = typeof value === 'function';
-	    } else if (type === Object) {
-	      expectedType = 'object';
-	      valid = _lang.isPlainObject(value);
-	    } else if (type === Array) {
-	      expectedType = 'array';
-	      valid = _lang.isArray(value);
-	    } else {
-	      valid = value instanceof type;
-	    }
-	  }
-	  if (!valid) {
-	    ("development") !== 'production' && _debug.warn('Invalid prop: type check failed for ' + prop.path + '="' + prop.raw + '".' + ' Expected ' + formatType(expectedType) + ', got ' + formatValue(value) + '.');
-	    return false;
-	  }
-	  var validator = options.validator;
-	  if (validator) {
-	    if (!validator.call(null, value)) {
-	      ("development") !== 'production' && _debug.warn('Invalid prop: custom validator check failed for ' + prop.path + '="' + prop.raw + '"');
-	      return false;
-	    }
-	  }
-	  return true;
-	}
-	
-	/**
-	 * Force parsing value with coerce option.
-	 *
-	 * @param {*} value
-	 * @param {Object} options
-	 * @return {*}
-	 */
-	
-	function coerceProp(prop, value) {
-	  var coerce = prop.options.coerce;
-	  if (!coerce) {
-	    return value;
-	  }
-	  // coerce is a function
-	  return coerce(value);
-	}
-	
-	function formatType(val) {
-	  return val ? val.charAt(0).toUpperCase() + val.slice(1) : 'custom type';
-	}
-	
-	function formatValue(val) {
-	  return Object.prototype.toString.call(val).slice(8, -1);
-	}
 
 /***/ },
 /* 48 */
@@ -3022,13 +2971,10 @@
 	var _interopRequireDefault = __webpack_require__(2)['default'];
 	
 	exports.__esModule = true;
+	exports.withoutConversion = withoutConversion;
 	exports.Observer = Observer;
 	exports.observe = observe;
 	exports.defineReactive = defineReactive;
-	
-	var _config = __webpack_require__(36);
-	
-	var _config2 = _interopRequireDefault(_config);
 	
 	var _dep = __webpack_require__(53);
 	
@@ -3039,6 +2985,24 @@
 	var _utilIndex = __webpack_require__(5);
 	
 	var arrayKeys = _Object$getOwnPropertyNames(_array.arrayMethods);
+	
+	/**
+	 * By default, when a reactive property is set, the new value is
+	 * also converted to become reactive. However in certain cases, e.g.
+	 * v-for scope alias and props, we don't want to force conversion
+	 * because the value may be a nested value under a frozen data structure.
+	 *
+	 * So whenever we want to set a reactive property without forcing
+	 * conversion on the new value, we wrap that call inside this function.
+	 */
+	
+	var shouldConvert = true;
+	
+	function withoutConversion(fn) {
+	  shouldConvert = false;
+	  fn();
+	  shouldConvert = true;
+	}
 	
 	/**
 	 * Observer class that are attached to each observed
@@ -3135,11 +3099,13 @@
 	 * the prototype chain using __proto__
 	 *
 	 * @param {Object|Array} target
-	 * @param {Object} proto
+	 * @param {Object} src
 	 */
 	
 	function protoAugment(target, src) {
+	  /* eslint-disable no-proto */
 	  target.__proto__ = src;
+	  /* eslint-enable no-proto */
 	}
 	
 	/**
@@ -3175,7 +3141,7 @@
 	  var ob;
 	  if (_utilIndex.hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
 	    ob = value.__ob__;
-	  } else if ((_utilIndex.isArray(value) || _utilIndex.isPlainObject(value)) && _Object$isExtensible(value) && !value._isVue) {
+	  } else if (shouldConvert && (_utilIndex.isArray(value) || _utilIndex.isPlainObject(value)) && _Object$isExtensible(value) && !value._isVue) {
 	    ob = new Observer(value);
 	  }
 	  if (ob && vm) {
@@ -3195,16 +3161,14 @@
 	function defineReactive(obj, key, val) {
 	  var dep = new _dep2['default']();
 	
-	  // cater for pre-defined getter/setters
-	  var getter, setter;
-	  if (_config2['default'].convertAllProperties) {
-	    var property = _Object$getOwnPropertyDescriptor(obj, key);
-	    if (property && property.configurable === false) {
-	      return;
-	    }
-	    getter = property && property.get;
-	    setter = property && property.set;
+	  var property = _Object$getOwnPropertyDescriptor(obj, key);
+	  if (property && property.configurable === false) {
+	    return;
 	  }
+	
+	  // cater for pre-defined getter/setters
+	  var getter = property && property.get;
+	  var setter = property && property.set;
 	
 	  var childOb = observe(val);
 	  _Object$defineProperty(obj, key, {
@@ -3416,10 +3380,9 @@
 	});
 	
 	/**
-	 * Convenience method to remove the element at given index.
+	 * Convenience method to remove the element at given index or target element reference.
 	 *
-	 * @param {Number} index
-	 * @param {*} val
+	 * @param {*} item
 	 */
 	
 	_utilIndex.def(arrayProto, '$remove', function $remove(item) {
@@ -3460,7 +3423,6 @@
 	var _utilIndex = __webpack_require__(5);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Accessor for `$data` property, since setting $data
 	   * requires observing the new object and updating
@@ -3503,7 +3465,7 @@
 	    var el = options.el;
 	    var props = options.props;
 	    if (props && !el) {
-	      ("development") !== 'production' && _utilIndex.warn('Props will not be compiled if no `el` option is ' + 'provided at instantiation.');
+	      ("development") !== 'production' && _utilIndex.warn('Props will not be compiled if no `el` option is ' + 'provided at instantiation.', this);
 	    }
 	    // make sure to convert string selectors into element now
 	    el = options.el = _utilIndex.query(el);
@@ -3517,33 +3479,29 @@
 	   */
 	
 	  Vue.prototype._initData = function () {
-	    var propsData = this._data;
-	    var optionsDataFn = this.$options.data;
-	    var optionsData = optionsDataFn && optionsDataFn();
-	    var runtimeData;
-	    if (true) {
-	      runtimeData = (typeof this._runtimeData === 'function' ? this._runtimeData() : this._runtimeData) || {};
-	      this._runtimeData = null;
+	    var dataFn = this.$options.data;
+	    var data = this._data = dataFn ? dataFn() : {};
+	    if (!_utilIndex.isPlainObject(data)) {
+	      data = {};
+	      ("development") !== 'production' && _utilIndex.warn('data functions should return an object.', this);
 	    }
-	    if (optionsData) {
-	      this._data = optionsData;
-	      for (var prop in propsData) {
-	        if (("development") !== 'production' && _utilIndex.hasOwn(optionsData, prop) && !_utilIndex.hasOwn(runtimeData, prop)) {
-	          _utilIndex.warn('Data field "' + prop + '" is already defined ' + 'as a prop. Use prop default value instead.');
-	        }
-	        if (this._props[prop].raw !== null || !_utilIndex.hasOwn(optionsData, prop)) {
-	          _utilIndex.set(optionsData, prop, propsData[prop]);
-	        }
-	      }
-	    }
-	    var data = this._data;
+	    var props = this._props;
+	    var runtimeData = this._runtimeData ? typeof this._runtimeData === 'function' ? this._runtimeData() : this._runtimeData : null;
 	    // proxy data on instance
 	    var keys = _Object$keys(data);
 	    var i, key;
 	    i = keys.length;
 	    while (i--) {
 	      key = keys[i];
-	      this._proxy(key);
+	      // there are two scenarios where we can proxy a data key:
+	      // 1. it's not already defined as a prop
+	      // 2. it's provided via a instantiation option AND there are no
+	      //    template prop present
+	      if (!props || !_utilIndex.hasOwn(props, key) || runtimeData && _utilIndex.hasOwn(runtimeData, key) && props[key].raw === null) {
+	        this._proxy(key);
+	      } else if (true) {
+	        _utilIndex.warn('Data field "' + key + '" is already defined ' + 'as a prop. Use prop default value instead.', this);
+	      }
 	    }
 	    // observe data
 	    _observerIndex.observe(data, this);
@@ -3744,7 +3702,7 @@
 	 * This is used for both the $watch() api and directives.
 	 *
 	 * @param {Vue} vm
-	 * @param {String} expression
+	 * @param {String|Function} expOrFn
 	 * @param {Function} cb
 	 * @param {Object} options
 	 *                 - {Array} filters
@@ -3766,13 +3724,15 @@
 	  var isFn = typeof expOrFn === 'function';
 	  this.vm = vm;
 	  vm._watchers.push(this);
-	  this.expression = isFn ? expOrFn.toString() : expOrFn;
+	  this.expression = expOrFn;
 	  this.cb = cb;
 	  this.id = ++uid; // uid for batching
 	  this.active = true;
 	  this.dirty = this.lazy; // for lazy watchers
-	  this.deps = _Object$create(null);
-	  this.newDeps = null;
+	  this.deps = [];
+	  this.newDeps = [];
+	  this.depIds = _Object$create(null);
+	  this.newDepIds = null;
 	  this.prevError = null; // for async error stacks
 	  // parse expression for getter/setter
 	  if (isFn) {
@@ -3790,23 +3750,6 @@
 	}
 	
 	/**
-	 * Add a dependency to this directive.
-	 *
-	 * @param {Dep} dep
-	 */
-	
-	Watcher.prototype.addDep = function (dep) {
-	  var id = dep.id;
-	  if (!this.newDeps[id]) {
-	    this.newDeps[id] = dep;
-	    if (!this.deps[id]) {
-	      this.deps[id] = dep;
-	      dep.addSub(this);
-	    }
-	  }
-	};
-	
-	/**
 	 * Evaluate the getter, and re-collect dependencies.
 	 */
 	
@@ -3818,7 +3761,7 @@
 	    value = this.getter.call(scope, scope);
 	  } catch (e) {
 	    if (("development") !== 'production' && _config2['default'].warnExpressionErrors) {
-	      _utilIndex.warn('Error when evaluating expression "' + this.expression + '". ' + (_config2['default'].debug ? '' : 'Turn on debug mode to see stack trace.'), e);
+	      _utilIndex.warn('Error when evaluating expression ' + '"' + this.expression + '": ' + e.toString(), this.vm);
 	    }
 	  }
 	  // "touch" every property so they are all tracked as
@@ -3854,14 +3797,14 @@
 	    this.setter.call(scope, scope, value);
 	  } catch (e) {
 	    if (("development") !== 'production' && _config2['default'].warnExpressionErrors) {
-	      _utilIndex.warn('Error when evaluating setter "' + this.expression + '"', e);
+	      _utilIndex.warn('Error when evaluating setter ' + '"' + this.expression + '": ' + e.toString(), this.vm);
 	    }
 	  }
 	  // two-way sync for v-for alias
 	  var forContext = scope.$forContext;
 	  if (forContext && forContext.alias === this.expression) {
 	    if (forContext.filters) {
-	      ("development") !== 'production' && _utilIndex.warn('It seems you are using two-way binding on ' + 'a v-for alias (' + this.expression + '), and the ' + 'v-for has filters. This will not work properly. ' + 'Either remove the filters or use an array of ' + 'objects and bind to object properties instead.');
+	      ("development") !== 'production' && _utilIndex.warn('It seems you are using two-way binding on ' + 'a v-for alias (' + this.expression + '), and the ' + 'v-for has filters. This will not work properly. ' + 'Either remove the filters or use an array of ' + 'objects and bind to object properties instead.', this.vm);
 	      return;
 	    }
 	    forContext._withLock(function () {
@@ -3881,7 +3824,25 @@
 	
 	Watcher.prototype.beforeGet = function () {
 	  _observerDep2['default'].target = this;
-	  this.newDeps = _Object$create(null);
+	  this.newDepIds = _Object$create(null);
+	  this.newDeps.length = 0;
+	};
+	
+	/**
+	 * Add a dependency to this directive.
+	 *
+	 * @param {Dep} dep
+	 */
+	
+	Watcher.prototype.addDep = function (dep) {
+	  var id = dep.id;
+	  if (!this.newDepIds[id]) {
+	    this.newDepIds[id] = true;
+	    this.newDeps.push(dep);
+	    if (!this.depIds[id]) {
+	      dep.addSub(this);
+	    }
+	  }
 	};
 	
 	/**
@@ -3890,15 +3851,17 @@
 	
 	Watcher.prototype.afterGet = function () {
 	  _observerDep2['default'].target = null;
-	  var ids = _Object$keys(this.deps);
-	  var i = ids.length;
+	  var i = this.deps.length;
 	  while (i--) {
-	    var id = ids[i];
-	    if (!this.newDeps[id]) {
-	      this.deps[id].removeSub(this);
+	    var dep = this.deps[i];
+	    if (!this.newDepIds[dep.id]) {
+	      dep.removeSub(this);
 	    }
 	  }
+	  this.depIds = this.newDepIds;
+	  var tmp = this.deps;
 	  this.deps = this.newDeps;
+	  this.newDeps = tmp;
 	};
 	
 	/**
@@ -3986,10 +3949,9 @@
 	 */
 	
 	Watcher.prototype.depend = function () {
-	  var depIds = _Object$keys(this.deps);
-	  var i = depIds.length;
+	  var i = this.deps.length;
 	  while (i--) {
-	    this.deps[depIds[i]].depend();
+	    this.deps[i].depend();
 	  }
 	};
 	
@@ -4006,10 +3968,9 @@
 	    if (!this.vm._isBeingDestroyed && !this.vm._vForRemoving) {
 	      this.vm._watchers.$remove(this);
 	    }
-	    var depIds = _Object$keys(this.deps);
-	    var i = depIds.length;
+	    var i = this.deps.length;
 	    while (i--) {
-	      this.deps[depIds[i]].removeSub(this);
+	      this.deps[i].removeSub(this);
 	    }
 	    this.active = false;
 	    this.vm = this.cb = this.value = null;
@@ -4063,12 +4024,12 @@
 	var allowedKeywordsRE = new RegExp('^(' + allowedKeywords.replace(/,/g, '\\b|') + '\\b)');
 	
 	// keywords that don't make sense inside expressions
-	var improperKeywords = 'break,case,class,catch,const,continue,debugger,default,' + 'delete,do,else,export,extends,finally,for,function,if,' + 'import,in,instanceof,let,return,super,switch,throw,try,' + 'var,while,with,yield,enum,await,implements,package,' + 'proctected,static,interface,private,public';
+	var improperKeywords = 'break,case,class,catch,const,continue,debugger,default,' + 'delete,do,else,export,extends,finally,for,function,if,' + 'import,in,instanceof,let,return,super,switch,throw,try,' + 'var,while,with,yield,enum,await,implements,package,' + 'protected,static,interface,private,public';
 	var improperKeywordsRE = new RegExp('^(' + improperKeywords.replace(/,/g, '\\b|') + '\\b)');
 	
 	var wsRE = /\s/g;
 	var newlineRE = /\n/g;
-	var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|new |typeof |void /g;
+	var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g;
 	var restoreRE = /"(\d+)"/g;
 	var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
 	var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
@@ -4171,7 +4132,9 @@
 	
 	function makeGetterFn(body) {
 	  try {
+	    /* eslint-disable no-new-func */
 	    return new Function('scope', 'return ' + body + ';');
+	    /* eslint-enable no-new-func */
 	  } catch (e) {
 	    ("development") !== 'production' && _utilIndex.warn('Invalid expression. ' + 'Generated function body: ' + body);
 	  }
@@ -4535,8 +4498,8 @@
 	
 	var warnNonExistent;
 	if (true) {
-	  warnNonExistent = function (path) {
-	    _utilIndex.warn('You are setting a non-existent path "' + path.raw + '" ' + 'on a vm instance. Consider pre-initializing the property ' + 'with the "data" option for more reliable reactivity ' + 'and better performance.');
+	  warnNonExistent = function (path, vm) {
+	    _utilIndex.warn('You are setting a non-existent path "' + path.raw + '" ' + 'on a vm instance. Consider pre-initializing the property ' + 'with the "data" option for more reliable reactivity ' + 'and better performance.', vm);
 	  };
 	}
 	
@@ -4568,7 +4531,7 @@
 	      if (!_utilIndex.isObject(obj)) {
 	        obj = {};
 	        if (("development") !== 'production' && last._isVue) {
-	          warnNonExistent(path);
+	          warnNonExistent(path, last);
 	        }
 	        _utilIndex.set(last, key, obj);
 	      }
@@ -4579,7 +4542,7 @@
 	        obj[key] = val;
 	      } else {
 	        if (("development") !== 'production' && obj._isVue) {
-	          warnNonExistent(path);
+	          warnNonExistent(path, obj);
 	        }
 	        _utilIndex.set(obj, key, val);
 	      }
@@ -4611,6 +4574,8 @@
 	// before user watchers so that when user watchers are
 	// triggered, the DOM would have already been in updated
 	// state.
+	
+	var queueIndex;
 	var queue = [];
 	var userQueue = [];
 	var has = {};
@@ -4640,7 +4605,7 @@
 	  runBatcherQueue(userQueue);
 	  // dev tool hook
 	  /* istanbul ignore if */
-	  if (_utilIndex.devtools) {
+	  if (_utilIndex.devtools && _config2['default'].devtools) {
 	    _utilIndex.devtools.emit('flush');
 	  }
 	  resetBatcherState();
@@ -4655,8 +4620,8 @@
 	function runBatcherQueue(queue) {
 	  // do not cache length because more watchers might be pushed
 	  // as we run existing watchers
-	  for (var i = 0; i < queue.length; i++) {
-	    var watcher = queue[i];
+	  for (queueIndex = 0; queueIndex < queue.length; queueIndex++) {
+	    var watcher = queue[queueIndex];
 	    var id = watcher.id;
 	    has[id] = null;
 	    watcher.run();
@@ -4664,8 +4629,8 @@
 	    if (("development") !== 'production' && has[id] != null) {
 	      circular[id] = (circular[id] || 0) + 1;
 	      if (circular[id] > _config2['default']._maxUpdateCount) {
-	        queue.splice(has[id], 1);
-	        _utilIndex.warn('You may have an infinite update loop for watcher ' + 'with expression: ' + watcher.expression);
+	        _utilIndex.warn('You may have an infinite update loop for watcher ' + 'with expression "' + watcher.expression + '"', watcher.vm);
+	        break;
 	      }
 	    }
 	  }
@@ -4685,20 +4650,20 @@
 	function pushWatcher(watcher) {
 	  var id = watcher.id;
 	  if (has[id] == null) {
-	    // if an internal watcher is pushed, but the internal
-	    // queue is already depleted, we run it immediately.
 	    if (internalQueueDepleted && !watcher.user) {
-	      watcher.run();
-	      return;
-	    }
-	    // push watcher into appropriate queue
-	    var q = watcher.user ? userQueue : queue;
-	    has[id] = q.length;
-	    q.push(watcher);
-	    // queue the flush
-	    if (!waiting) {
-	      waiting = true;
-	      _utilIndex.nextTick(flushBatcherQueue);
+	      // an internal watcher triggered by a user watcher...
+	      // let's run it immediately after current user watcher is done.
+	      userQueue.splice(queueIndex + 1, 0, watcher);
+	    } else {
+	      // push watcher into appropriate queue
+	      var q = watcher.user ? userQueue : queue;
+	      has[id] = q.length;
+	      q.push(watcher);
+	      // queue the flush
+	      if (!waiting) {
+	        waiting = true;
+	        _utilIndex.nextTick(flushBatcherQueue);
+	      }
 	    }
 	  }
 	}
@@ -4722,6 +4687,10 @@
 	var _transclude = __webpack_require__(91);
 	
 	_defaults(exports, _interopExportWildcard(_transclude, _defaults));
+	
+	var _resolveSlots = __webpack_require__(92);
+	
+	_defaults(exports, _interopExportWildcard(_resolveSlots, _defaults));
 
 /***/ },
 /* 61 */
@@ -4746,7 +4715,7 @@
 	
 	var _directivesInternalIndex2 = _interopRequireDefault(_directivesInternalIndex);
 	
-	var _compileProps = __webpack_require__(90);
+	var _compileProps = __webpack_require__(87);
 	
 	var _parsersText = __webpack_require__(39);
 	
@@ -4763,12 +4732,9 @@
 	var modifierRE = /\.[^\.]+/g;
 	var transitionRE = /^(v-bind:|:)?transition$/;
 	
-	// terminal directives
-	var terminalDirectives = ['for', 'if'];
-	
-	exports.terminalDirectives = terminalDirectives;
 	// default directive priority
 	var DEFAULT_PRIORITY = 1000;
+	var DEFAULT_TERMINAL_PRIORITY = 2000;
 	
 	/**
 	 * Compile a template and return a reusable composite link
@@ -4915,7 +4881,7 @@
 	 */
 	
 	function compileAndLinkProps(vm, el, props, scope) {
-	  var propsLinkFn = _compileProps.compileProps(el, props);
+	  var propsLinkFn = _compileProps.compileProps(el, props, vm);
 	  var propDirs = linkAndCapture(function () {
 	    propsLinkFn(vm, scope);
 	  }, vm);
@@ -5041,9 +5007,10 @@
 	  }
 	  var linkFn;
 	  var hasAttrs = el.hasAttributes();
+	  var attrs = hasAttrs && _utilIndex.toArray(el.attributes);
 	  // check terminal directives (for & if)
 	  if (hasAttrs) {
-	    linkFn = checkTerminalDirectives(el, options);
+	    linkFn = checkTerminalDirectives(el, attrs, options);
 	  }
 	  // check element directives
 	  if (!linkFn) {
@@ -5055,7 +5022,7 @@
 	  }
 	  // normal directives
 	  if (!linkFn && hasAttrs) {
-	    linkFn = compileDirectives(el.attributes, options);
+	    linkFn = compileDirectives(attrs, options);
 	  }
 	  return linkFn;
 	}
@@ -5237,11 +5204,8 @@
 	
 	function checkElementDirectives(el, options) {
 	  var tag = el.tagName.toLowerCase();
-	  if (_utilIndex.commonTagRE.test(tag)) return;
-	  // special case: give named slot a higher priority
-	  // than unnamed slots
-	  if (tag === 'slot' && _utilIndex.hasBindAttr(el, 'name')) {
-	    tag = '_namedSlot';
+	  if (_utilIndex.commonTagRE.test(tag)) {
+	    return;
 	  }
 	  var def = _utilIndex.resolveAsset(options, 'elementDirectives', tag);
 	  if (def) {
@@ -5287,11 +5251,12 @@
 	 * If it finds one, return a terminal link function.
 	 *
 	 * @param {Element} el
+	 * @param {Array} attrs
 	 * @param {Object} options
 	 * @return {Function} terminalLinkFn
 	 */
 	
-	function checkTerminalDirectives(el, options) {
+	function checkTerminalDirectives(el, attrs, options) {
 	  // skip v-pre
 	  if (_utilIndex.getAttr(el, 'v-pre') !== null) {
 	    return skip;
@@ -5303,13 +5268,28 @@
 	      return skip;
 	    }
 	  }
-	  var value, dirName;
-	  for (var i = 0, l = terminalDirectives.length; i < l; i++) {
-	    dirName = terminalDirectives[i];
-	    value = el.getAttribute('v-' + dirName);
-	    if (value != null) {
-	      return makeTerminalNodeLinkFn(el, dirName, value, options);
+	
+	  var attr, name, value, modifiers, matched, dirName, rawName, arg, def, termDef;
+	  for (var i = 0, j = attrs.length; i < j; i++) {
+	    attr = attrs[i];
+	    modifiers = parseModifiers(attr.name);
+	    name = attr.name.replace(modifierRE, '');
+	    if (matched = name.match(dirAttrRE)) {
+	      def = _utilIndex.resolveAsset(options, 'directives', matched[1]);
+	      if (def && def.terminal) {
+	        if (!termDef || (def.priority || DEFAULT_TERMINAL_PRIORITY) > termDef.priority) {
+	          termDef = def;
+	          rawName = attr.name;
+	          value = attr.value;
+	          dirName = matched[1];
+	          arg = matched[2];
+	        }
+	      }
 	    }
+	  }
+	
+	  if (termDef) {
+	    return makeTerminalNodeLinkFn(el, dirName, value, options, termDef, rawName, arg, modifiers);
 	  }
 	}
 	
@@ -5326,19 +5306,24 @@
 	 * @param {String} dirName
 	 * @param {String} value
 	 * @param {Object} options
-	 * @param {Object} [def]
+	 * @param {Object} def
+	 * @param {String} [rawName]
+	 * @param {String} [arg]
+	 * @param {Object} [modifiers]
 	 * @return {Function} terminalLinkFn
 	 */
 	
-	function makeTerminalNodeLinkFn(el, dirName, value, options, def) {
+	function makeTerminalNodeLinkFn(el, dirName, value, options, def, rawName, arg, modifiers) {
 	  var parsed = _parsersDirective.parseDirective(value);
 	  var descriptor = {
 	    name: dirName,
+	    arg: arg,
 	    expression: parsed.expression,
 	    filters: parsed.filters,
 	    raw: value,
-	    // either an element directive, or if/for
-	    def: def || _directivesPublicIndex2['default'][dirName]
+	    attr: rawName,
+	    modifiers: modifiers,
+	    def: def
 	  };
 	  // check ref for v-for and router-view
 	  if (dirName === 'for' || dirName === 'router-view') {
@@ -5387,7 +5372,7 @@
 	        if (name === 'class' && Array.prototype.some.call(attrs, function (attr) {
 	          return attr.name === ':class' || attr.name === 'v-bind:class';
 	        })) {
-	          _utilIndex.warn('class="' + rawValue + '": Do not mix mustache interpolation ' + 'and v-bind for "class" on the same element. Use one or the other.');
+	          _utilIndex.warn('class="' + rawValue + '": Do not mix mustache interpolation ' + 'and v-bind for "class" on the same element. Use one or the other.', options);
 	        }
 	      }
 	    } else
@@ -5425,12 +5410,7 @@
 	                continue;
 	              }
 	
-	              dirDef = _utilIndex.resolveAsset(options, 'directives', dirName);
-	
-	              if (true) {
-	                _utilIndex.assertAsset(dirDef, 'directive', dirName);
-	              }
-	
+	              dirDef = _utilIndex.resolveAsset(options, 'directives', dirName, true);
 	              if (dirDef) {
 	                pushDir(dirName, dirDef);
 	              }
@@ -5688,11 +5668,11 @@
 	exports.cloneNode = cloneNode;
 	exports.parseTemplate = parseTemplate;
 	
-	var _utilIndex = __webpack_require__(5);
-	
 	var _cache = __webpack_require__(40);
 	
 	var _cache2 = _interopRequireDefault(_cache);
+	
+	var _utilIndex = __webpack_require__(5);
 	
 	var templateCache = new _cache2['default'](1000);
 	var idSelectorCache = new _cache2['default'](1000);
@@ -5721,10 +5701,10 @@
 	 */
 	
 	function isRealTemplate(node) {
-	  return _utilIndex.isTemplate(node) && node.content instanceof DocumentFragment;
+	  return _utilIndex.isTemplate(node) && _utilIndex.isFragment(node.content);
 	}
 	
-	var tagRE = /<([\w:]+)/;
+	var tagRE = /<([\w:-]+)/;
 	var entityRE = /&#?\w+?;/;
 	
 	/**
@@ -5753,7 +5733,6 @@
 	    // text only, return a single text node.
 	    frag.appendChild(document.createTextNode(templateString));
 	  } else {
-	
 	    var tag = tagMatch && tagMatch[1];
 	    var wrap = map[tag] || map.efault;
 	    var depth = wrap[0];
@@ -5847,6 +5826,7 @@
 	 */
 	
 	function cloneNode(node) {
+	  /* istanbul ignore if */
 	  if (!node.querySelectorAll) {
 	    return node.cloneNode();
 	  }
@@ -5909,7 +5889,7 @@
 	
 	  // if the template is already a document fragment,
 	  // do nothing
-	  if (template instanceof DocumentFragment) {
+	  if (_utilIndex.isFragment(template)) {
 	    _utilIndex.trimNode(template);
 	    return shouldClone ? cloneNode(template) : template;
 	  }
@@ -5959,6 +5939,10 @@
 	
 	var _priorities = __webpack_require__(69);
 	
+	var _observerIndex = __webpack_require__(48);
+	
+	var _parsersPath = __webpack_require__(58);
+	
 	var _utilIndex = __webpack_require__(5);
 	
 	var uid = 0;
@@ -5966,12 +5950,13 @@
 	var vFor = {
 	
 	  priority: _priorities.FOR,
+	  terminal: true,
 	
 	  params: ['track-by', 'stagger', 'enter-stagger', 'leave-stagger'],
 	
 	  bind: function bind() {
-	    // support "item in items" syntax
-	    var inMatch = this.expression.match(/(.*) in (.*)/);
+	    // support "item in/of items" syntax
+	    var inMatch = this.expression.match(/(.*) (?:in|of) (.*)/);
 	    if (inMatch) {
 	      var itMatch = inMatch[1].match(/\((.*),(.*)\)/);
 	      if (itMatch) {
@@ -5984,7 +5969,7 @@
 	    }
 	
 	    if (!this.alias) {
-	      ("development") !== 'production' && _utilIndex.warn('Alias is required in v-for.');
+	      ("development") !== 'production' && _utilIndex.warn('Invalid v-for expression "' + this.descriptor.raw + '": ' + 'alias is required.', this.vm);
 	      return;
 	    }
 	
@@ -6075,7 +6060,9 @@
 	        // update data for track-by, object repeat &
 	        // primitive values.
 	        if (trackByKey || convertedFromObject || primitive) {
-	          frag.scope[alias] = value;
+	          _observerIndex.withoutConversion(function () {
+	            frag.scope[alias] = value;
+	          });
 	        }
 	      } else {
 	        // new isntance
@@ -6110,9 +6097,11 @@
 	      }
 	    }
 	    this.vm._vForRemoving = false;
-	    this.vm._watchers = this.vm._watchers.filter(function (w) {
-	      return w.active;
-	    });
+	    if (removalIndex) {
+	      this.vm._watchers = this.vm._watchers.filter(function (w) {
+	        return w.active;
+	      });
+	    }
 	
 	    // Final pass, move/insert new fragments into the
 	    // right place.
@@ -6163,7 +6152,11 @@
 	    // for two-way binding on alias
 	    scope.$forContext = this;
 	    // define scope properties
-	    _utilIndex.defineReactive(scope, alias, value);
+	    // important: define the scope alias without forced conversion
+	    // so that frozen data structures remain non-reactive.
+	    _observerIndex.withoutConversion(function () {
+	      _utilIndex.defineReactive(scope, alias, value);
+	    });
 	    _utilIndex.defineReactive(scope, '$index', index);
 	    if (key) {
 	      _utilIndex.defineReactive(scope, '$key', key);
@@ -6237,7 +6230,7 @@
 	      var anchor = frag.staggerAnchor;
 	      if (!anchor) {
 	        anchor = frag.staggerAnchor = _utilIndex.createAnchor('stagger-anchor');
-	        anchor.__vfrag__ = frag;
+	        anchor.__v_frag = frag;
 	      }
 	      _utilIndex.after(anchor, prevEl);
 	      var op = frag.staggerCb = _utilIndex.cancellable(function () {
@@ -6318,7 +6311,7 @@
 	    var primitive = !_utilIndex.isObject(value);
 	    var id;
 	    if (key || trackByKey || primitive) {
-	      id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
+	      id = trackByKey ? trackByKey === '$index' ? index : _parsersPath.getPath(value, trackByKey) : key || value;
 	      if (!cache[id]) {
 	        cache[id] = frag;
 	      } else if (trackByKey !== '$index') {
@@ -6353,7 +6346,7 @@
 	    var primitive = !_utilIndex.isObject(value);
 	    var frag;
 	    if (key || trackByKey || primitive) {
-	      var id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
+	      var id = trackByKey ? trackByKey === '$index' ? index : _parsersPath.getPath(value, trackByKey) : key || value;
 	      frag = this.cache[id];
 	    } else {
 	      frag = value[this.id];
@@ -6380,7 +6373,7 @@
 	    var key = _utilIndex.hasOwn(scope, '$key') && scope.$key;
 	    var primitive = !_utilIndex.isObject(value);
 	    if (trackByKey || key || primitive) {
-	      var id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
+	      var id = trackByKey ? trackByKey === '$index' ? index : _parsersPath.getPath(value, trackByKey) : key || value;
 	      this.cache[id] = null;
 	    } else {
 	      value[this.id] = null;
@@ -6486,12 +6479,12 @@
 	  var el = frag.node.previousSibling;
 	  /* istanbul ignore if */
 	  if (!el) return;
-	  frag = el.__vfrag__;
+	  frag = el.__v_frag;
 	  while ((!frag || frag.forId !== id || !frag.inserted) && el !== anchor) {
 	    el = el.previousSibling;
 	    /* istanbul ignore if */
 	    if (!el) return;
-	    frag = el.__vfrag__;
+	    frag = el.__v_frag;
 	  }
 	  return frag;
 	}
@@ -6532,7 +6525,7 @@
 	
 	if (true) {
 	  vFor.warnDuplicate = function (value) {
-	    _utilIndex.warn('Duplicate value found in v-for="' + this.descriptor.raw + '": ' + JSON.stringify(value) + '. Use track-by="$index" if ' + 'you are expecting duplicate values.');
+	    _utilIndex.warn('Duplicate value found in v-for="' + this.descriptor.raw + '": ' + JSON.stringify(value) + '. Use track-by="$index" if ' + 'you are expecting duplicate values.', this.vm);
 	  };
 	}
 	
@@ -6589,7 +6582,7 @@
 	  var linker;
 	  var cid = vm.constructor.cid;
 	  if (cid > 0) {
-	    var cacheId = cid + (isString ? el : el.outerHTML);
+	    var cacheId = cid + (isString ? el : _utilIndex.getOuterHTML(el));
 	    linker = linkerCache.get(cacheId);
 	    if (!linker) {
 	      linker = _compilerIndex.compile(template, vm.$options, true);
@@ -6637,6 +6630,7 @@
 	 * @param {DocumentFragment} frag
 	 * @param {Vue} [host]
 	 * @param {Object} [scope]
+	 * @param {Fragment} [parentFrag]
 	 */
 	
 	function Fragment(linker, vm, frag, host, scope, parentFrag) {
@@ -6652,7 +6646,7 @@
 	  this.unlink = linker(vm, frag, host, scope, this);
 	  var single = this.single = frag.childNodes.length === 1 &&
 	  // do not go single mode if the only node is an anchor
-	  !frag.childNodes[0].__vue_anchor;
+	  !frag.childNodes[0].__v_anchor;
 	  if (single) {
 	    this.node = frag.childNodes[0];
 	    this.before = singleBefore;
@@ -6666,7 +6660,7 @@
 	    this.before = multiBefore;
 	    this.remove = multiRemove;
 	  }
-	  this.node.__vfrag__ = this;
+	  this.node.__v_frag = this;
 	}
 	
 	/**
@@ -6792,7 +6786,7 @@
 	  if (this.parentFrag) {
 	    this.parentFrag.childFrags.$remove(this);
 	  }
-	  this.node.__vfrag__ = null;
+	  this.node.__v_frag = null;
 	  this.unlink();
 	};
 	
@@ -6803,7 +6797,7 @@
 	 */
 	
 	function attach(child) {
-	  if (!child._isAttached) {
+	  if (!child._isAttached && _utilIndex.inDoc(child.$el)) {
 	    child._callHook('attached');
 	  }
 	}
@@ -6815,7 +6809,7 @@
 	 */
 	
 	function detach(child) {
-	  if (child._isAttached) {
+	  if (child._isAttached && !_utilIndex.inDoc(child.$el)) {
 	    child._callHook('detached');
 	  }
 	}
@@ -6842,11 +6836,11 @@
 	exports.COMPONENT = COMPONENT;
 	var PARTIAL = 1750;
 	exports.PARTIAL = PARTIAL;
-	var FOR = 2000;
-	exports.FOR = FOR;
-	var IF = 2000;
+	var IF = 2100;
 	exports.IF = IF;
-	var SLOT = 2100;
+	var FOR = 2200;
+	exports.FOR = FOR;
+	var SLOT = 2300;
 	exports.SLOT = SLOT;
 
 /***/ },
@@ -6870,6 +6864,7 @@
 	exports['default'] = {
 	
 	  priority: _priorities.IF,
+	  terminal: true,
 	
 	  bind: function bind() {
 	    var el = this.el;
@@ -6878,14 +6873,13 @@
 	      var next = el.nextElementSibling;
 	      if (next && _utilIndex.getAttr(next, 'v-else') !== null) {
 	        _utilIndex.remove(next);
-	        this.elseFactory = new _fragmentFactory2['default'](this.vm, next);
+	        this.elseEl = next;
 	      }
 	      // check main block
 	      this.anchor = _utilIndex.createAnchor('v-if');
 	      _utilIndex.replace(el, this.anchor);
-	      this.factory = new _fragmentFactory2['default'](this.vm, el);
 	    } else {
-	      ("development") !== 'production' && _utilIndex.warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.');
+	      ("development") !== 'production' && _utilIndex.warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.', this.vm);
 	      this.invalid = true;
 	    }
 	  },
@@ -6906,6 +6900,10 @@
 	      this.elseFrag.remove();
 	      this.elseFrag = null;
 	    }
+	    // lazy init factory
+	    if (!this.factory) {
+	      this.factory = new _fragmentFactory2['default'](this.vm, this.el);
+	    }
 	    this.frag = this.factory.create(this._host, this._scope, this._frag);
 	    this.frag.before(this.anchor);
 	  },
@@ -6915,7 +6913,10 @@
 	      this.frag.remove();
 	      this.frag = null;
 	    }
-	    if (this.elseFactory && !this.elseFrag) {
+	    if (this.elseEl && !this.elseFrag) {
+	      if (!this.elseFactory) {
+	        this.elseFactory = new _fragmentFactory2['default'](this.elseEl._context || this.vm, this.elseEl);
+	      }
 	      this.elseFrag = this.elseFactory.create(this._host, this._scope, this._frag);
 	      this.elseFrag.before(this.anchor);
 	    }
@@ -7033,7 +7034,7 @@
 	    // friendly warning...
 	    this.checkFilters();
 	    if (this.hasRead && !this.hasWrite) {
-	      ("development") !== 'production' && _utilIndex.warn('It seems you are using a read-only filter with ' + 'v-model. You might want to use a two-way filter ' + 'to ensure correct behavior.');
+	      ("development") !== 'production' && _utilIndex.warn('It seems you are using a read-only filter with ' + 'v-model="' + this.descriptor.raw + '". ' + 'You might want to use a two-way filter to ensure correct behavior.', this.vm);
 	    }
 	    var el = this.el;
 	    var tag = el.tagName;
@@ -7045,7 +7046,7 @@
 	    } else if (tag === 'TEXTAREA') {
 	      handler = handlers.text;
 	    } else {
-	      ("development") !== 'production' && _utilIndex.warn('v-model does not support element type: ' + tag);
+	      ("development") !== 'production' && _utilIndex.warn('v-model does not support element type: ' + tag, this.vm);
 	      return;
 	    }
 	    el.__v_model = this;
@@ -7084,6 +7085,8 @@
 /* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* global jQuery */
+	
 	'use strict';
 	
 	exports.__esModule = true;
@@ -7175,12 +7178,12 @@
 	    this.hasjQuery = typeof jQuery === 'function';
 	    if (this.hasjQuery) {
 	      var method = jQuery.fn.on ? 'on' : 'bind';
-	      jQuery(el)[method]('change', this.listener);
+	      jQuery(el)[method]('change', this.rawListener);
 	      if (!lazy) {
 	        jQuery(el)[method]('input', this.listener);
 	      }
 	    } else {
-	      this.on('change', this.listener);
+	      this.on('change', this.rawListener);
 	      if (!lazy) {
 	        this.on('input', this.listener);
 	      }
@@ -7519,8 +7522,9 @@
 	
 	exports['default'] = {
 	
-	  acceptStatement: true,
 	  priority: _priorities.ON,
+	  acceptStatement: true,
+	  keyCodes: keyCodes,
 	
 	  bind: function bind() {
 	    // deal with iframes
@@ -7541,7 +7545,7 @@
 	    }
 	
 	    if (typeof handler !== 'function') {
-	      ("development") !== 'production' && _utilIndex.warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler);
+	      ("development") !== 'production' && _utilIndex.warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler, this.vm);
 	      return;
 	    }
 	
@@ -7557,7 +7561,7 @@
 	    }
 	    // key filter
 	    var keys = _Object$keys(this.modifiers).filter(function (key) {
-	      return key !== 'stop' && key !== 'prevent';
+	      return key !== 'stop' && key !== 'prevent' && key !== 'self';
 	    });
 	    if (keys.length) {
 	      handler = keyFilter(handler, keys);
@@ -7615,6 +7619,9 @@
 	// these attributes should also set their corresponding properties
 	// because they only affect the initial state of the element
 	var attrWithPropsRE = /^(?:value|checked|selected|muted)$/;
+	// these attributes expect enumrated values of "true" or "false"
+	// but are not boolean attributes
+	var enumeratedAttrRE = /^(?:draggable|contenteditable|spellcheck)$/;
 	
 	// these attributes should set a hidden property for
 	// binding v-model to object values
@@ -7646,7 +7653,7 @@
 	
 	      // only allow binding on native attributes
 	      if (disallowedInterpAttrRE.test(attr) || attr === 'name' && (tag === 'PARTIAL' || tag === 'SLOT')) {
-	        ("development") !== 'production' && _utilIndex.warn(attr + '="' + descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.');
+	        ("development") !== 'production' && _utilIndex.warn(attr + '="' + descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.', this.vm);
 	        this.el.removeAttribute(attr);
 	        this.invalid = true;
 	      }
@@ -7656,12 +7663,12 @@
 	        var raw = attr + '="' + descriptor.raw + '": ';
 	        // warn src
 	        if (attr === 'src') {
-	          _utilIndex.warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.');
+	          _utilIndex.warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.', this.vm);
 	        }
 	
 	        // warn style
 	        if (attr === 'style') {
-	          _utilIndex.warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.');
+	          _utilIndex.warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.', this.vm);
 	        }
 	      }
 	    }
@@ -7708,7 +7715,9 @@
 	      return;
 	    }
 	    // update attribute
-	    if (value != null && value !== false) {
+	    if (enumeratedAttrRE.test(attr)) {
+	      el.setAttribute(attr, value ? 'true' : 'false');
+	    } else if (value != null && value !== false) {
 	      if (attr === 'class') {
 	        // handle edge case #1960:
 	        // class interpolation should not overwrite Vue transition class
@@ -7789,11 +7798,17 @@
 	    if (value) {
 	      var isImportant = importantRE.test(value) ? 'important' : '';
 	      if (isImportant) {
+	        /* istanbul ignore if */
+	        if (true) {
+	          _utilIndex.warn('It\'s probably a bad idea to use !important with inline rules. ' + 'This feature will be deprecated in a future version of Vue.');
+	        }
 	        value = value.replace(importantRE, '').trim();
+	        this.el.style.setProperty(prop.kebab, value, isImportant);
+	      } else {
+	        this.el.style[prop.camel] = value;
 	      }
-	      this.el.style.setProperty(prop, value, isImportant);
 	    } else {
-	      this.el.style.removeProperty(prop);
+	      this.el.style[prop.camel] = '';
 	    }
 	  }
 	
@@ -7838,11 +7853,17 @@
 	  while (i--) {
 	    prefixed = camelPrefixes[i] + upper;
 	    if (prefixed in testEl.style) {
-	      return prefixes[i] + prop;
+	      return {
+	        kebab: prefixes[i] + prop,
+	        camel: prefixed
+	      };
 	    }
 	  }
 	  if (camel in testEl.style) {
-	    return prop;
+	    return {
+	      kebab: prop,
+	      camel: camel
+	    };
 	  }
 	}
 	module.exports = exports['default'];
@@ -7898,7 +7919,7 @@
 	
 	exports['default'] = {
 	  bind: function bind() {
-	    ("development") !== 'production' && _utilIndex.warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.');
+	    ("development") !== 'production' && _utilIndex.warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.', this.vm);
 	  }
 	};
 	module.exports = exports['default'];
@@ -7946,7 +7967,7 @@
 	
 	var _prop2 = _interopRequireDefault(_prop);
 	
-	var _transition = __webpack_require__(87);
+	var _transition = __webpack_require__(88);
 	
 	var _transition2 = _interopRequireDefault(_transition);
 	
@@ -7989,52 +8010,83 @@
 	
 	  handleObject: function handleObject(value) {
 	    this.cleanup(value);
-	    var keys = this.prevKeys = _Object$keys(value);
-	    for (var i = 0, l = keys.length; i < l; i++) {
-	      var key = keys[i];
-	      if (value[key]) {
-	        _utilIndex.addClass(this.el, key);
-	      } else {
-	        _utilIndex.removeClass(this.el, key);
-	      }
-	    }
+	    this.prevKeys = _Object$keys(value);
+	    setObjectClasses(this.el, value);
 	  },
 	
 	  handleArray: function handleArray(value) {
 	    this.cleanup(value);
 	    for (var i = 0, l = value.length; i < l; i++) {
-	      if (value[i]) {
-	        _utilIndex.addClass(this.el, value[i]);
+	      var val = value[i];
+	      if (val && _utilIndex.isPlainObject(val)) {
+	        setObjectClasses(this.el, val);
+	      } else if (val && typeof val === 'string') {
+	        _utilIndex.addClass(this.el, val);
 	      }
 	    }
 	    this.prevKeys = value.slice();
 	  },
 	
 	  cleanup: function cleanup(value) {
-	    if (this.prevKeys) {
-	      var i = this.prevKeys.length;
-	      while (i--) {
-	        var key = this.prevKeys[i];
-	        if (key && (!value || !contains(value, key))) {
-	          _utilIndex.removeClass(this.el, key);
-	        }
+	    if (!this.prevKeys) return;
+	
+	    var i = this.prevKeys.length;
+	    while (i--) {
+	      var key = this.prevKeys[i];
+	      if (!key) continue;
+	
+	      var keys = _utilIndex.isPlainObject(key) ? _Object$keys(key) : [key];
+	      for (var j = 0, l = keys.length; j < l; j++) {
+	        toggleClasses(this.el, keys[j], _utilIndex.removeClass);
 	      }
 	    }
 	  }
 	};
 	
+	function setObjectClasses(el, obj) {
+	  var keys = _Object$keys(obj);
+	  for (var i = 0, l = keys.length; i < l; i++) {
+	    var key = keys[i];
+	    if (!obj[key]) continue;
+	    toggleClasses(el, key, _utilIndex.addClass);
+	  }
+	}
+	
 	function stringToObject(value) {
 	  var res = {};
 	  var keys = value.trim().split(/\s+/);
-	  var i = keys.length;
-	  while (i--) {
+	  for (var i = 0, l = keys.length; i < l; i++) {
 	    res[keys[i]] = true;
 	  }
 	  return res;
 	}
 	
-	function contains(value, key) {
-	  return _utilIndex.isArray(value) ? value.indexOf(key) > -1 : _utilIndex.hasOwn(value, key);
+	/**
+	 * Add or remove a class/classes on an element
+	 *
+	 * @param {Element} el
+	 * @param {String} key The class name. This may or may not
+	 *                     contain a space character, in such a
+	 *                     case we'll deal with multiple class
+	 *                     names at once.
+	 * @param {Function} fn
+	 */
+	
+	function toggleClasses(el, key, fn) {
+	  key = key.trim();
+	
+	  if (key.indexOf(' ') === -1) {
+	    fn(el, key);
+	    return;
+	  }
+	
+	  // The key contains one or more space characters.
+	  // Since a class name doesn't accept such characters, we
+	  // treat it as multiple classes.
+	  var keys = key.split(/\s+/);
+	  for (var i = 0, l = keys.length; i < l; i++) {
+	    fn(el, keys[i]);
+	  }
 	}
 	module.exports = exports['default'];
 
@@ -8148,16 +8200,19 @@
 	  /**
 	   * Resolve the component constructor to use when creating
 	   * the child vm.
+	   *
+	   * @param {String|Function} value
+	   * @param {Function} cb
 	   */
 	
-	  resolveComponent: function resolveComponent(id, cb) {
+	  resolveComponent: function resolveComponent(value, cb) {
 	    var self = this;
 	    this.pendingComponentCb = _utilIndex.cancellable(function (Component) {
-	      self.ComponentName = Component.options.name || id;
+	      self.ComponentName = Component.options.name || (typeof value === 'string' ? value : null);
 	      self.Component = Component;
 	      cb();
 	    });
-	    this.vm._resolveComponent(id, this.pendingComponentCb);
+	    this.vm._resolveComponent(value, this.pendingComponentCb);
 	  },
 	
 	  /**
@@ -8173,12 +8228,12 @@
 	    // actual mount
 	    this.unbuild(true);
 	    var self = this;
-	    var activateHook = this.Component.options.activate;
+	    var activateHooks = this.Component.options.activate;
 	    var cached = this.getCached();
 	    var newComponent = this.build();
-	    if (activateHook && !cached) {
+	    if (activateHooks && !cached) {
 	      this.waitingFor = newComponent;
-	      activateHook.call(newComponent, function () {
+	      callActivateHooks(activateHooks, newComponent, function () {
 	        if (self.waitingFor !== newComponent) {
 	          return;
 	        }
@@ -8264,7 +8319,7 @@
 	      }
 	      /* istanbul ignore if */
 	      if (("development") !== 'production' && this.el.hasAttribute('transition') && child._isFragment) {
-	        _utilIndex.warn('Transitions will not work on a fragment instance. ' + 'Template: ' + child.$options.template);
+	        _utilIndex.warn('Transitions will not work on a fragment instance. ' + 'Template: ' + child.$options.template, child);
 	      }
 	      return child;
 	    }
@@ -8289,13 +8344,16 @@
 	
 	  unbuild: function unbuild(defer) {
 	    if (this.waitingFor) {
-	      this.waitingFor.$destroy();
+	      if (!this.keepAlive) {
+	        this.waitingFor.$destroy();
+	      }
 	      this.waitingFor = null;
 	    }
 	    var child = this.childVM;
 	    if (!child || this.keepAlive) {
 	      if (child) {
 	        // remove ref
+	        child._inactive = true;
 	        child._updateRef(true);
 	      }
 	      return;
@@ -8348,10 +8406,8 @@
 	    var self = this;
 	    var current = this.childVM;
 	    // for devtool inspection
-	    if (true) {
-	      if (current) current._inactive = true;
-	      target._inactive = false;
-	    }
+	    if (current) current._inactive = true;
+	    target._inactive = false;
 	    this.childVM = target;
 	    switch (self.params.transitionMode) {
 	      case 'in-out':
@@ -8387,6 +8443,27 @@
 	    }
 	  }
 	};
+	
+	/**
+	 * Call activate hooks in order (asynchronous)
+	 *
+	 * @param {Array} hooks
+	 * @param {Vue} vm
+	 * @param {Function} cb
+	 */
+	
+	function callActivateHooks(hooks, vm, cb) {
+	  var total = hooks.length;
+	  var called = 0;
+	  hooks[0].call(vm, next);
+	  function next() {
+	    if (++called >= total) {
+	      cb();
+	    } else {
+	      hooks[called].call(vm, next);
+	    }
+	  }
+	}
 	module.exports = exports['default'];
 
 /***/ },
@@ -8412,14 +8489,13 @@
 	
 	var _config2 = _interopRequireDefault(_config);
 	
-	var _utilIndex = __webpack_require__(5);
+	var _compilerCompileProps = __webpack_require__(87);
 	
 	var bindingModes = _config2['default']._propBindingModes;
 	
 	exports['default'] = {
 	
 	  bind: function bind() {
-	
 	    var child = this.vm;
 	    var parent = child._context;
 	    // passed in from compiler directly
@@ -8429,10 +8505,7 @@
 	    var twoWay = prop.mode === bindingModes.TWO_WAY;
 	
 	    var parentWatcher = this.parentWatcher = new _watcher2['default'](parent, parentKey, function (val) {
-	      val = _utilIndex.coerceProp(prop, val);
-	      if (_utilIndex.assertProp(prop, val)) {
-	        child[childKey] = val;
-	      }
+	      _compilerCompileProps.updateProp(child, prop, val);
 	    }, {
 	      twoWay: twoWay,
 	      filters: prop.filters,
@@ -8442,7 +8515,7 @@
 	    });
 	
 	    // set the child initial value.
-	    _utilIndex.initProp(child, prop, parentWatcher.value);
+	    _compilerCompileProps.initProp(child, prop, parentWatcher.value);
 	
 	    // setup two-way binding
 	    if (twoWay) {
@@ -8477,6 +8550,403 @@
 
 	'use strict';
 	
+	var _Object$keys = __webpack_require__(30)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(2)['default'];
+	
+	exports.__esModule = true;
+	exports.compileProps = compileProps;
+	exports.initProp = initProp;
+	exports.updateProp = updateProp;
+	
+	var _config = __webpack_require__(36);
+	
+	var _config2 = _interopRequireDefault(_config);
+	
+	var _parsersDirective = __webpack_require__(43);
+	
+	var _parsersExpression = __webpack_require__(57);
+	
+	var _observerIndex = __webpack_require__(48);
+	
+	var _directivesInternalProp = __webpack_require__(86);
+	
+	var _directivesInternalProp2 = _interopRequireDefault(_directivesInternalProp);
+	
+	var _utilIndex = __webpack_require__(5);
+	
+	var propBindingModes = _config2['default']._propBindingModes;
+	var empty = {};
+	
+	// regexes
+	var identRE = /^[$_a-zA-Z]+[\w$]*$/;
+	var settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]+\])*$/;
+	
+	/**
+	 * Compile props on a root element and return
+	 * a props link function.
+	 *
+	 * @param {Element|DocumentFragment} el
+	 * @param {Array} propOptions
+	 * @param {Vue} vm
+	 * @return {Function} propsLinkFn
+	 */
+	
+	function compileProps(el, propOptions, vm) {
+	  var props = [];
+	  var names = _Object$keys(propOptions);
+	  var i = names.length;
+	  var options, name, attr, value, path, parsed, prop;
+	  while (i--) {
+	    name = names[i];
+	    options = propOptions[name] || empty;
+	
+	    if (("development") !== 'production' && name === '$data') {
+	      _utilIndex.warn('Do not use $data as prop.', vm);
+	      continue;
+	    }
+	
+	    // props could contain dashes, which will be
+	    // interpreted as minus calculations by the parser
+	    // so we need to camelize the path here
+	    path = _utilIndex.camelize(name);
+	    if (!identRE.test(path)) {
+	      ("development") !== 'production' && _utilIndex.warn('Invalid prop key: "' + name + '". Prop keys ' + 'must be valid identifiers.', vm);
+	      continue;
+	    }
+	
+	    prop = {
+	      name: name,
+	      path: path,
+	      options: options,
+	      mode: propBindingModes.ONE_WAY,
+	      raw: null
+	    };
+	
+	    attr = _utilIndex.hyphenate(name);
+	    // first check dynamic version
+	    if ((value = _utilIndex.getBindAttr(el, attr)) === null) {
+	      if ((value = _utilIndex.getBindAttr(el, attr + '.sync')) !== null) {
+	        prop.mode = propBindingModes.TWO_WAY;
+	      } else if ((value = _utilIndex.getBindAttr(el, attr + '.once')) !== null) {
+	        prop.mode = propBindingModes.ONE_TIME;
+	      }
+	    }
+	    if (value !== null) {
+	      // has dynamic binding!
+	      prop.raw = value;
+	      parsed = _parsersDirective.parseDirective(value);
+	      value = parsed.expression;
+	      prop.filters = parsed.filters;
+	      // check binding type
+	      if (_utilIndex.isLiteral(value) && !parsed.filters) {
+	        // for expressions containing literal numbers and
+	        // booleans, there's no need to setup a prop binding,
+	        // so we can optimize them as a one-time set.
+	        prop.optimizedLiteral = true;
+	      } else {
+	        prop.dynamic = true;
+	        // check non-settable path for two-way bindings
+	        if (("development") !== 'production' && prop.mode === propBindingModes.TWO_WAY && !settablePathRE.test(value)) {
+	          prop.mode = propBindingModes.ONE_WAY;
+	          _utilIndex.warn('Cannot bind two-way prop with non-settable ' + 'parent path: ' + value, vm);
+	        }
+	      }
+	      prop.parentPath = value;
+	
+	      // warn required two-way
+	      if (("development") !== 'production' && options.twoWay && prop.mode !== propBindingModes.TWO_WAY) {
+	        _utilIndex.warn('Prop "' + name + '" expects a two-way binding type.', vm);
+	      }
+	    } else if ((value = _utilIndex.getAttr(el, attr)) !== null) {
+	      // has literal binding!
+	      prop.raw = value;
+	    } else if (true) {
+	      // check possible camelCase prop usage
+	      var lowerCaseName = path.toLowerCase();
+	      value = /[A-Z\-]/.test(name) && (el.getAttribute(lowerCaseName) || el.getAttribute(':' + lowerCaseName) || el.getAttribute('v-bind:' + lowerCaseName) || el.getAttribute(':' + lowerCaseName + '.once') || el.getAttribute('v-bind:' + lowerCaseName + '.once') || el.getAttribute(':' + lowerCaseName + '.sync') || el.getAttribute('v-bind:' + lowerCaseName + '.sync'));
+	      if (value) {
+	        _utilIndex.warn('Possible usage error for prop `' + lowerCaseName + '` - ' + 'did you mean `' + attr + '`? HTML is case-insensitive, remember to use ' + 'kebab-case for props in templates.', vm);
+	      } else if (options.required) {
+	        // warn missing required
+	        _utilIndex.warn('Missing required prop: ' + name, vm);
+	      }
+	    }
+	    // push prop
+	    props.push(prop);
+	  }
+	  return makePropsLinkFn(props);
+	}
+	
+	/**
+	 * Build a function that applies props to a vm.
+	 *
+	 * @param {Array} props
+	 * @return {Function} propsLinkFn
+	 */
+	
+	function makePropsLinkFn(props) {
+	  return function propsLinkFn(vm, scope) {
+	    // store resolved props info
+	    vm._props = {};
+	    var i = props.length;
+	    var prop, path, options, value, raw;
+	    while (i--) {
+	      prop = props[i];
+	      raw = prop.raw;
+	      path = prop.path;
+	      options = prop.options;
+	      vm._props[path] = prop;
+	      if (raw === null) {
+	        // initialize absent prop
+	        initProp(vm, prop, undefined);
+	      } else if (prop.dynamic) {
+	        // dynamic prop
+	        if (prop.mode === propBindingModes.ONE_TIME) {
+	          // one time binding
+	          value = (scope || vm._context || vm).$get(prop.parentPath);
+	          initProp(vm, prop, value);
+	        } else {
+	          if (vm._context) {
+	            // dynamic binding
+	            vm._bindDir({
+	              name: 'prop',
+	              def: _directivesInternalProp2['default'],
+	              prop: prop
+	            }, null, null, scope); // el, host, scope
+	          } else {
+	              // root instance
+	              initProp(vm, prop, vm.$get(prop.parentPath));
+	            }
+	        }
+	      } else if (prop.optimizedLiteral) {
+	        // optimized literal, cast it and just set once
+	        var stripped = _utilIndex.stripQuotes(raw);
+	        value = stripped === raw ? _utilIndex.toBoolean(_utilIndex.toNumber(raw)) : stripped;
+	        initProp(vm, prop, value);
+	      } else {
+	        // string literal, but we need to cater for
+	        // Boolean props with no value, or with same
+	        // literal value (e.g. disabled="disabled")
+	        // see https://github.com/vuejs/vue-loader/issues/182
+	        value = options.type === Boolean && (raw === '' || raw === _utilIndex.hyphenate(prop.name)) ? true : raw;
+	        initProp(vm, prop, value);
+	      }
+	    }
+	  };
+	}
+	
+	/**
+	 * Process a prop with a rawValue, applying necessary coersions,
+	 * default values & assertions and call the given callback with
+	 * processed value.
+	 *
+	 * @param {Vue} vm
+	 * @param {Object} prop
+	 * @param {*} rawValue
+	 * @param {Function} fn
+	 */
+	
+	function processPropValue(vm, prop, rawValue, fn) {
+	  var isSimple = prop.dynamic && _parsersExpression.isSimplePath(prop.parentPath);
+	  var value = rawValue;
+	  if (value === undefined) {
+	    value = getPropDefaultValue(vm, prop);
+	  }
+	  value = coerceProp(prop, value);
+	  var coerced = value !== rawValue;
+	  if (!assertProp(prop, value, vm)) {
+	    value = undefined;
+	  }
+	  if (isSimple && !coerced) {
+	    _observerIndex.withoutConversion(function () {
+	      fn(value);
+	    });
+	  } else {
+	    fn(value);
+	  }
+	}
+	
+	/**
+	 * Set a prop's initial value on a vm and its data object.
+	 *
+	 * @param {Vue} vm
+	 * @param {Object} prop
+	 * @param {*} value
+	 */
+	
+	function initProp(vm, prop, value) {
+	  processPropValue(vm, prop, value, function (value) {
+	    _observerIndex.defineReactive(vm, prop.path, value);
+	  });
+	}
+	
+	/**
+	 * Update a prop's value on a vm.
+	 *
+	 * @param {Vue} vm
+	 * @param {Object} prop
+	 * @param {*} value
+	 */
+	
+	function updateProp(vm, prop, value) {
+	  processPropValue(vm, prop, value, function (value) {
+	    vm[prop.path] = value;
+	  });
+	}
+	
+	/**
+	 * Get the default value of a prop.
+	 *
+	 * @param {Vue} vm
+	 * @param {Object} prop
+	 * @return {*}
+	 */
+	
+	function getPropDefaultValue(vm, prop) {
+	  // no default, return undefined
+	  var options = prop.options;
+	  if (!_utilIndex.hasOwn(options, 'default')) {
+	    // absent boolean value defaults to false
+	    return options.type === Boolean ? false : undefined;
+	  }
+	  var def = options['default'];
+	  // warn against non-factory defaults for Object & Array
+	  if (_utilIndex.isObject(def)) {
+	    ("development") !== 'production' && _utilIndex.warn('Invalid default value for prop "' + prop.name + '": ' + 'Props with type Object/Array must use a factory function ' + 'to return the default value.', vm);
+	  }
+	  // call factory function for non-Function types
+	  return typeof def === 'function' && options.type !== Function ? def.call(vm) : def;
+	}
+	
+	/**
+	 * Assert whether a prop is valid.
+	 *
+	 * @param {Object} prop
+	 * @param {*} value
+	 * @param {Vue} vm
+	 */
+	
+	function assertProp(prop, value, vm) {
+	  if (!prop.options.required && ( // non-required
+	  prop.raw === null || // abscent
+	  value == null) // null or undefined
+	  ) {
+	      return true;
+	    }
+	  var options = prop.options;
+	  var type = options.type;
+	  var valid = !type;
+	  var expectedTypes = [];
+	  if (type) {
+	    if (!_utilIndex.isArray(type)) {
+	      type = [type];
+	    }
+	    for (var i = 0; i < type.length && !valid; i++) {
+	      var assertedType = assertType(value, type[i]);
+	      expectedTypes.push(assertedType.expectedType);
+	      valid = assertedType.valid;
+	    }
+	  }
+	  if (!valid) {
+	    if (true) {
+	      _utilIndex.warn('Invalid prop: type check failed for prop "' + prop.name + '".' + ' Expected ' + expectedTypes.map(formatType).join(', ') + ', got ' + formatValue(value) + '.', vm);
+	    }
+	    return false;
+	  }
+	  var validator = options.validator;
+	  if (validator) {
+	    if (!validator(value)) {
+	      ("development") !== 'production' && _utilIndex.warn('Invalid prop: custom validator check failed for prop "' + prop.name + '".', vm);
+	      return false;
+	    }
+	  }
+	  return true;
+	}
+	
+	/**
+	 * Force parsing value with coerce option.
+	 *
+	 * @param {*} value
+	 * @param {Object} options
+	 * @return {*}
+	 */
+	
+	function coerceProp(prop, value) {
+	  var coerce = prop.options.coerce;
+	  if (!coerce) {
+	    return value;
+	  }
+	  // coerce is a function
+	  return coerce(value);
+	}
+	
+	/**
+	 * Assert the type of a value
+	 *
+	 * @param {*} value
+	 * @param {Function} type
+	 * @return {Object}
+	 */
+	
+	function assertType(value, type) {
+	  var valid;
+	  var expectedType;
+	  if (type === String) {
+	    expectedType = 'string';
+	    valid = typeof value === expectedType;
+	  } else if (type === Number) {
+	    expectedType = 'number';
+	    valid = typeof value === expectedType;
+	  } else if (type === Boolean) {
+	    expectedType = 'boolean';
+	    valid = typeof value === expectedType;
+	  } else if (type === Function) {
+	    expectedType = 'function';
+	    valid = typeof value === expectedType;
+	  } else if (type === Object) {
+	    expectedType = 'object';
+	    valid = _utilIndex.isPlainObject(value);
+	  } else if (type === Array) {
+	    expectedType = 'array';
+	    valid = _utilIndex.isArray(value);
+	  } else {
+	    valid = value instanceof type;
+	  }
+	  return {
+	    valid: valid,
+	    expectedType: expectedType
+	  };
+	}
+	
+	/**
+	 * Format type for output
+	 *
+	 * @param {String} type
+	 * @return {String}
+	 */
+	
+	function formatType(type) {
+	  return type ? type.charAt(0).toUpperCase() + type.slice(1) : 'custom type';
+	}
+	
+	/**
+	 * Format value
+	 *
+	 * @param {*} value
+	 * @return {String}
+	 */
+	
+	function formatValue(val) {
+	  return Object.prototype.toString.call(val).slice(8, -1);
+	}
+
+/***/ },
+/* 88 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
 	var _interopRequireDefault = __webpack_require__(2)['default'];
 	
 	exports.__esModule = true;
@@ -8485,7 +8955,7 @@
 	
 	var _priorities = __webpack_require__(69);
 	
-	var _transitionTransition = __webpack_require__(88);
+	var _transitionTransition = __webpack_require__(89);
 	
 	var _transitionTransition2 = _interopRequireDefault(_transitionTransition);
 	
@@ -8498,8 +8968,7 @@
 	    // resolve on owner vm
 	    var hooks = _utilIndex.resolveAsset(this.vm.$options, 'transitions', id);
 	    id = id || 'v';
-	    // apply on closest vm
-	    el.__v_trans = new _transitionTransition2['default'](el, id, hooks, this.el.__vue__ || this.vm);
+	    el.__v_trans = new _transitionTransition2['default'](el, id, hooks, this.vm);
 	    if (oldId) {
 	      _utilIndex.removeClass(el, oldId + '-transition');
 	    }
@@ -8509,7 +8978,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8517,7 +8986,7 @@
 	exports.__esModule = true;
 	exports['default'] = Transition;
 	
-	var _queue = __webpack_require__(89);
+	var _queue = __webpack_require__(90);
 	
 	var _utilIndex = __webpack_require__(5);
 	
@@ -8525,6 +8994,32 @@
 	var TYPE_ANIMATION = 'animation';
 	var transDurationProp = _utilIndex.transitionProp + 'Duration';
 	var animDurationProp = _utilIndex.animationProp + 'Duration';
+	
+	/**
+	 * If a just-entered element is applied the
+	 * leave class while its enter transition hasn't started yet,
+	 * and the transitioned property has the same value for both
+	 * enter/leave, then the leave transition will be skipped and
+	 * the transitionend event never fires. This function ensures
+	 * its callback to be called after a transition has started
+	 * by waiting for double raf.
+	 *
+	 * It falls back to setTimeout on devices that support CSS
+	 * transitions but not raf (e.g. Android 4.2 browser) - since
+	 * these environments are usually slow, we are giving it a
+	 * relatively large timeout.
+	 */
+	
+	var raf = _utilIndex.inBrowser && window.requestAnimationFrame;
+	var waitForTransitionStart = raf
+	/* istanbul ignore next */
+	? function (fn) {
+	  raf(function () {
+	    raf(fn);
+	  });
+	} : function (fn) {
+	  setTimeout(fn, 50);
+	};
 	
 	/**
 	 * A Transition object that encapsulates the state and logic
@@ -8553,7 +9048,7 @@
 	  /* istanbul ignore if */
 	  if (true) {
 	    if (this.type && this.type !== TYPE_TRANSITION && this.type !== TYPE_ANIMATION) {
-	      _utilIndex.warn('invalid CSS transition type for transition="' + this.id + '": ' + this.type);
+	      _utilIndex.warn('invalid CSS transition type for transition="' + this.id + '": ' + this.type, vm);
 	    }
 	  }
 	  // bind
@@ -8611,20 +9106,13 @@
 	 */
 	
 	p.enterNextTick = function () {
+	  var _this = this;
 	
-	  // Important hack:
-	  // in Chrome, if a just-entered element is applied the
-	  // leave class while its interpolated property still has
-	  // a very small value (within one frame), Chrome will
-	  // skip the leave transition entirely and not firing the
-	  // transtionend event. Therefore we need to protected
-	  // against such cases using a one-frame timeout.
+	  // prevent transition skipping
 	  this.justEntered = true;
-	  var self = this;
-	  setTimeout(function () {
-	    self.justEntered = false;
-	  }, 17);
-	
+	  waitForTransitionStart(function () {
+	    _this.justEntered = false;
+	  });
 	  var enterDone = this.enterDone;
 	  var type = this.getCssTransitionType(this.enterClass);
 	  if (!this.pendingJsCb) {
@@ -8866,12 +9354,19 @@
 	 */
 	
 	function isHidden(el) {
-	  return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+	  if (/svg$/.test(el.namespaceURI)) {
+	    // SVG elements do not have offset(Width|Height)
+	    // so we need to check the client rect
+	    var rect = el.getBoundingClientRect();
+	    return !(rect.width || rect.height);
+	  } else {
+	    return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+	  }
 	}
 	module.exports = exports['default'];
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8917,204 +9412,6 @@
 	}
 
 /***/ },
-/* 90 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _Object$keys = __webpack_require__(30)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(2)['default'];
-	
-	exports.__esModule = true;
-	exports.compileProps = compileProps;
-	
-	var _config = __webpack_require__(36);
-	
-	var _config2 = _interopRequireDefault(_config);
-	
-	var _parsersDirective = __webpack_require__(43);
-	
-	var _directivesInternalProp = __webpack_require__(86);
-	
-	var _directivesInternalProp2 = _interopRequireDefault(_directivesInternalProp);
-	
-	var _utilIndex = __webpack_require__(5);
-	
-	var propBindingModes = _config2['default']._propBindingModes;
-	var empty = {};
-	
-	// regexes
-	var identRE = /^[$_a-zA-Z]+[\w$]*$/;
-	var settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]+\])*$/;
-	
-	/**
-	 * Compile props on a root element and return
-	 * a props link function.
-	 *
-	 * @param {Element|DocumentFragment} el
-	 * @param {Array} propOptions
-	 * @return {Function} propsLinkFn
-	 */
-	
-	function compileProps(el, propOptions) {
-	  var props = [];
-	  var names = _Object$keys(propOptions);
-	  var i = names.length;
-	  var options, name, attr, value, path, parsed, prop;
-	  while (i--) {
-	    name = names[i];
-	    options = propOptions[name] || empty;
-	
-	    if (("development") !== 'production' && name === '$data') {
-	      _utilIndex.warn('Do not use $data as prop.');
-	      continue;
-	    }
-	
-	    // props could contain dashes, which will be
-	    // interpreted as minus calculations by the parser
-	    // so we need to camelize the path here
-	    path = _utilIndex.camelize(name);
-	    if (!identRE.test(path)) {
-	      ("development") !== 'production' && _utilIndex.warn('Invalid prop key: "' + name + '". Prop keys ' + 'must be valid identifiers.');
-	      continue;
-	    }
-	
-	    prop = {
-	      name: name,
-	      path: path,
-	      options: options,
-	      mode: propBindingModes.ONE_WAY,
-	      raw: null
-	    };
-	
-	    attr = _utilIndex.hyphenate(name);
-	    // first check dynamic version
-	    if ((value = _utilIndex.getBindAttr(el, attr)) === null) {
-	      if ((value = _utilIndex.getBindAttr(el, attr + '.sync')) !== null) {
-	        prop.mode = propBindingModes.TWO_WAY;
-	      } else if ((value = _utilIndex.getBindAttr(el, attr + '.once')) !== null) {
-	        prop.mode = propBindingModes.ONE_TIME;
-	      }
-	    }
-	    if (value !== null) {
-	      // has dynamic binding!
-	      prop.raw = value;
-	      parsed = _parsersDirective.parseDirective(value);
-	      value = parsed.expression;
-	      prop.filters = parsed.filters;
-	      // check binding type
-	      if (_utilIndex.isLiteral(value) && !parsed.filters) {
-	        // for expressions containing literal numbers and
-	        // booleans, there's no need to setup a prop binding,
-	        // so we can optimize them as a one-time set.
-	        prop.optimizedLiteral = true;
-	      } else {
-	        prop.dynamic = true;
-	        // check non-settable path for two-way bindings
-	        if (("development") !== 'production' && prop.mode === propBindingModes.TWO_WAY && !settablePathRE.test(value)) {
-	          prop.mode = propBindingModes.ONE_WAY;
-	          _utilIndex.warn('Cannot bind two-way prop with non-settable ' + 'parent path: ' + value);
-	        }
-	      }
-	      prop.parentPath = value;
-	
-	      // warn required two-way
-	      if (("development") !== 'production' && options.twoWay && prop.mode !== propBindingModes.TWO_WAY) {
-	        _utilIndex.warn('Prop "' + name + '" expects a two-way binding type.');
-	      }
-	    } else if ((value = _utilIndex.getAttr(el, attr)) !== null) {
-	      // has literal binding!
-	      prop.raw = value;
-	    } else if (options.required) {
-	      // warn missing required
-	      ("development") !== 'production' && _utilIndex.warn('Missing required prop: ' + name);
-	    }
-	    // push prop
-	    props.push(prop);
-	  }
-	  return makePropsLinkFn(props);
-	}
-	
-	/**
-	 * Build a function that applies props to a vm.
-	 *
-	 * @param {Array} props
-	 * @return {Function} propsLinkFn
-	 */
-	
-	function makePropsLinkFn(props) {
-	  return function propsLinkFn(vm, scope) {
-	    // store resolved props info
-	    vm._props = {};
-	    var i = props.length;
-	    var prop, path, options, value, raw;
-	    while (i--) {
-	      prop = props[i];
-	      raw = prop.raw;
-	      path = prop.path;
-	      options = prop.options;
-	      vm._props[path] = prop;
-	      if (raw === null) {
-	        // initialize absent prop
-	        _utilIndex.initProp(vm, prop, getDefault(vm, options));
-	      } else if (prop.dynamic) {
-	        // dynamic prop
-	        if (vm._context) {
-	          if (prop.mode === propBindingModes.ONE_TIME) {
-	            // one time binding
-	            value = (scope || vm._context).$get(prop.parentPath);
-	            _utilIndex.initProp(vm, prop, value);
-	          } else {
-	            // dynamic binding
-	            vm._bindDir({
-	              name: 'prop',
-	              def: _directivesInternalProp2['default'],
-	              prop: prop
-	            }, null, null, scope); // el, host, scope
-	          }
-	        } else {
-	            ("development") !== 'production' && _utilIndex.warn('Cannot bind dynamic prop on a root instance' + ' with no parent: ' + prop.name + '="' + raw + '"');
-	          }
-	      } else if (prop.optimizedLiteral) {
-	        // optimized literal, cast it and just set once
-	        var stripped = _utilIndex.stripQuotes(raw);
-	        value = stripped === raw ? _utilIndex.toBoolean(_utilIndex.toNumber(raw)) : stripped;
-	        _utilIndex.initProp(vm, prop, value);
-	      } else {
-	        // string literal, but we need to cater for
-	        // Boolean props with no value
-	        value = options.type === Boolean && raw === '' ? true : raw;
-	        _utilIndex.initProp(vm, prop, value);
-	      }
-	    }
-	  };
-	}
-	
-	/**
-	 * Get the default value of a prop.
-	 *
-	 * @param {Vue} vm
-	 * @param {Object} options
-	 * @return {*}
-	 */
-	
-	function getDefault(vm, options) {
-	  // no default, return undefined
-	  if (!_utilIndex.hasOwn(options, 'default')) {
-	    // absent boolean value defaults to false
-	    return options.type === Boolean ? false : undefined;
-	  }
-	  var def = options['default'];
-	  // warn against non-factory defaults for Object & Array
-	  if (_utilIndex.isObject(def)) {
-	    ("development") !== 'production' && _utilIndex.warn('Object/Array as default prop values will be shared ' + 'across multiple instances. Use a factory function ' + 'to return the default value instead.');
-	  }
-	  // call factory function for non-Function types
-	  return typeof def === 'function' && options.type !== Function ? def.call(vm) : def;
-	}
-
-/***/ },
 /* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9123,9 +9420,9 @@
 	exports.__esModule = true;
 	exports.transclude = transclude;
 	
-	var _parsersTemplate = __webpack_require__(65);
-	
 	var _parsersText = __webpack_require__(39);
+	
+	var _parsersTemplate = __webpack_require__(65);
 	
 	var _utilIndex = __webpack_require__(5);
 	
@@ -9166,7 +9463,7 @@
 	      el = transcludeTemplate(el, options);
 	    }
 	  }
-	  if (el instanceof DocumentFragment) {
+	  if (_utilIndex.isFragment(el)) {
 	    // anchors for fragment instance
 	    // passing in `persist: true` to avoid them being
 	    // discarded by IE during template cloning
@@ -9259,7 +9556,7 @@
 	    if (!to.hasAttribute(name) && !specialCharRE.test(name)) {
 	      to.setAttribute(name, value);
 	    } else if (name === 'class' && !_parsersText.parseText(value)) {
-	      value.split(/\s+/).forEach(function (cls) {
+	      value.trim().split(/\s+/).forEach(function (cls) {
 	        _utilIndex.addClass(to, cls);
 	      });
 	    }
@@ -9272,6 +9569,78 @@
 
 	'use strict';
 	
+	var _Object$create = __webpack_require__(41)['default'];
+	
+	exports.__esModule = true;
+	exports.resolveSlots = resolveSlots;
+	
+	var _parsersTemplate = __webpack_require__(65);
+	
+	var _utilIndex = __webpack_require__(5);
+	
+	/**
+	 * Scan and determine slot content distribution.
+	 * We do this during transclusion instead at compile time so that
+	 * the distribution is decoupled from the compilation order of
+	 * the slots.
+	 *
+	 * @param {Element|DocumentFragment} template
+	 * @param {Element} content
+	 * @param {Vue} vm
+	 */
+	
+	function resolveSlots(vm, content) {
+	  if (!content) {
+	    return;
+	  }
+	  var contents = vm._slotContents = _Object$create(null);
+	  var el, name;
+	  for (var i = 0, l = content.children.length; i < l; i++) {
+	    el = content.children[i];
+	    /* eslint-disable no-cond-assign */
+	    if (name = el.getAttribute('slot')) {
+	      (contents[name] || (contents[name] = [])).push(el);
+	    }
+	    /* eslint-enable no-cond-assign */
+	    if (("development") !== 'production' && _utilIndex.getBindAttr(el, 'slot')) {
+	      _utilIndex.warn('The "slot" attribute must be static.', vm.$parent);
+	    }
+	  }
+	  for (name in contents) {
+	    contents[name] = extractFragment(contents[name], content);
+	  }
+	  if (content.hasChildNodes()) {
+	    contents['default'] = extractFragment(content.childNodes, content);
+	  }
+	}
+	
+	/**
+	 * Extract qualified content nodes from a node list.
+	 *
+	 * @param {NodeList} nodes
+	 * @return {DocumentFragment}
+	 */
+	
+	function extractFragment(nodes, parent) {
+	  var frag = document.createDocumentFragment();
+	  nodes = _utilIndex.toArray(nodes);
+	  for (var i = 0, l = nodes.length; i < l; i++) {
+	    var node = nodes[i];
+	    if (_utilIndex.isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
+	      parent.removeChild(node);
+	      node = _parsersTemplate.parseTemplate(node);
+	    }
+	    frag.appendChild(node);
+	  }
+	  return frag;
+	}
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
 	exports.__esModule = true;
 	
 	var _utilIndex = __webpack_require__(5);
@@ -9279,7 +9648,6 @@
 	var eventRE = /^v-on:|^@/;
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Setup the instance's option events & watchers.
 	   * If the value is a string, we pull it from the
@@ -9310,8 +9678,12 @@
 	      if (eventRE.test(name)) {
 	        name = name.replace(eventRE, '');
 	        handler = (vm._scope || vm._context).$eval(attrs[i].value, true);
-	        handler._fromParent = true;
-	        vm.$on(name.replace(eventRE), handler);
+	        if (typeof handler === 'function') {
+	          handler._fromParent = true;
+	          vm.$on(name.replace(eventRE), handler);
+	        } else if (true) {
+	          _utilIndex.warn('v-on:' + name + '="' + attrs[i].value + '" ' + 'expects a function value, got ' + handler, vm);
+	        }
 	      }
 	    }
 	  }
@@ -9359,7 +9731,7 @@
 	      if (method) {
 	        vm[action](key, method, options);
 	      } else {
-	        ("development") !== 'production' && _utilIndex.warn('Unknown method: "' + handler + '" when ' + 'registering callback for ' + action + ': "' + key + '".');
+	        ("development") !== 'production' && _utilIndex.warn('Unknown method: "' + handler + '" when ' + 'registering callback for ' + action + ': "' + key + '".', vm);
 	      }
 	    } else if (handler && type === 'object') {
 	      register(vm, action, key, handler.handler, handler);
@@ -9442,7 +9814,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9451,16 +9823,15 @@
 	
 	exports.__esModule = true;
 	
-	var _utilIndex = __webpack_require__(5);
-	
-	var _directive = __webpack_require__(94);
+	var _directive = __webpack_require__(95);
 	
 	var _directive2 = _interopRequireDefault(_directive);
+	
+	var _utilIndex = __webpack_require__(5);
 	
 	var _compilerIndex = __webpack_require__(60);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Update v-ref for component.
 	   *
@@ -9515,6 +9886,9 @@
 	    var contextOptions = this._context && this._context.$options;
 	    var rootLinker = _compilerIndex.compileRoot(el, options, contextOptions);
 	
+	    // resolve slot distribution
+	    _compilerIndex.resolveSlots(this, options._content);
+	
 	    // compile and link the rest
 	    var contentLinkFn;
 	    var ctor = this.constructor;
@@ -9558,7 +9932,7 @@
 	   */
 	
 	  Vue.prototype._initElement = function (el) {
-	    if (el instanceof DocumentFragment) {
+	    if (_utilIndex.isFragment(el)) {
 	      this._isFragment = true;
 	      this.$el = this._fragmentStart = el.firstChild;
 	      this._fragmentEnd = el.lastChild;
@@ -9577,10 +9951,8 @@
 	  /**
 	   * Create and bind a directive to an element.
 	   *
-	   * @param {String} name - directive name
+	   * @param {Object} descriptor - parsed directive descriptor
 	   * @param {Node} node   - target node
-	   * @param {Object} desc - parsed directive descriptor
-	   * @param {Object} def  - directive definition object
 	   * @param {Vue} [host] - transclusion host component
 	   * @param {Object} [scope] - v-for scope
 	   * @param {Fragment} [frag] - owner fragment
@@ -9709,7 +10081,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9737,18 +10109,21 @@
 	 * It registers a watcher with the expression and calls
 	 * the DOM update function when a change is triggered.
 	 *
-	 * @param {String} name
-	 * @param {Node} el
-	 * @param {Vue} vm
 	 * @param {Object} descriptor
 	 *                 - {String} name
 	 *                 - {Object} def
 	 *                 - {String} expression
 	 *                 - {Array<Object>} [filters]
+	 *                 - {Object} [modifiers]
 	 *                 - {Boolean} literal
 	 *                 - {String} attr
+	 *                 - {String} arg
 	 *                 - {String} raw
-	 * @param {Object} def - directive definition object
+	 *                 - {String} [ref]
+	 *                 - {Array<Object>} [interp]
+	 *                 - {Boolean} [hasOneTime]
+	 * @param {Vue} vm
+	 * @param {Node} el
 	 * @param {Vue} [host] - transclusion host component
 	 * @param {Object} [scope] - v-for scope
 	 * @param {Fragment} [frag] - owner fragment
@@ -9785,8 +10160,6 @@
 	 * Initialize the directive, mixin definition properties,
 	 * setup the watcher, call definition bind() and update()
 	 * if present.
-	 *
-	 * @param {Object} def
 	 */
 	
 	Directive.prototype._bind = function () {
@@ -9867,7 +10240,7 @@
 	  var i = params.length;
 	  var key, val, mappedKey;
 	  while (i--) {
-	    key = params[i];
+	    key = _utilIndex.hyphenate(params[i]);
 	    mappedKey = _utilIndex.camelize(key);
 	    val = _utilIndex.getBindAttr(this.el, key);
 	    if (val != null) {
@@ -10027,7 +10400,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10037,7 +10410,6 @@
 	var _utilIndex = __webpack_require__(5);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Apply a list of filter (descriptors) to a value.
 	   * Using plain for loops here because this will be called in
@@ -10054,11 +10426,8 @@
 	  Vue.prototype._applyFilters = function (value, oldValue, filters, write) {
 	    var filter, fn, args, arg, offset, i, l, j, k;
 	    for (i = 0, l = filters.length; i < l; i++) {
-	      filter = filters[i];
-	      fn = _utilIndex.resolveAsset(this.$options, 'filters', filter.name);
-	      if (true) {
-	        _utilIndex.assertAsset(fn, 'filter', filter.name);
-	      }
+	      filter = filters[write ? l - i - 1 : i];
+	      fn = _utilIndex.resolveAsset(this.$options, 'filters', filter.name, true);
 	      if (!fn) continue;
 	      fn = write ? fn.write : fn.read || fn;
 	      if (typeof fn !== 'function') continue;
@@ -10082,14 +10451,16 @@
 	   * resolves asynchronously and caches the resolved
 	   * constructor on the factory.
 	   *
-	   * @param {String} id
+	   * @param {String|Function} value
 	   * @param {Function} cb
 	   */
 	
-	  Vue.prototype._resolveComponent = function (id, cb) {
-	    var factory = _utilIndex.resolveAsset(this.$options, 'components', id);
-	    if (true) {
-	      _utilIndex.assertAsset(factory, 'component', id);
+	  Vue.prototype._resolveComponent = function (value, cb) {
+	    var factory;
+	    if (typeof value === 'function') {
+	      factory = value;
+	    } else {
+	      factory = _utilIndex.resolveAsset(this.$options, 'components', value, true);
 	    }
 	    if (!factory) {
 	      return;
@@ -10105,7 +10476,7 @@
 	      } else {
 	        factory.requested = true;
 	        var cbs = factory.pendingCallbacks = [cb];
-	        factory(function resolve(res) {
+	        factory.call(this, function resolve(res) {
 	          if (_utilIndex.isPlainObject(res)) {
 	            res = Vue.extend(res);
 	          }
@@ -10116,7 +10487,7 @@
 	            cbs[i](res);
 	          }
 	        }, function reject(reason) {
-	          ("development") !== 'production' && _utilIndex.warn('Failed to resolve async component: ' + id + '. ' + (reason ? '\nReason: ' + reason : ''));
+	          ("development") !== 'production' && _utilIndex.warn('Failed to resolve async component' + (typeof value === 'string' ? ': ' + value : '') + '. ' + (reason ? '\nReason: ' + reason : ''));
 	        });
 	      }
 	    } else {
@@ -10129,243 +10500,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _Object$create = __webpack_require__(41)['default'];
-	
-	var _interopRequireDefault = __webpack_require__(2)['default'];
-	
-	var _interopRequireWildcard = __webpack_require__(97)['default'];
-	
-	exports.__esModule = true;
-	
-	var _utilIndex = __webpack_require__(5);
-	
-	var _config = __webpack_require__(36);
-	
-	var _config2 = _interopRequireDefault(_config);
-	
-	var util = _interopRequireWildcard(_utilIndex);
-	
-	var _compilerIndex = __webpack_require__(60);
-	
-	var compiler = _interopRequireWildcard(_compilerIndex);
-	
-	var _parsersPath = __webpack_require__(58);
-	
-	var path = _interopRequireWildcard(_parsersPath);
-	
-	var _parsersText = __webpack_require__(39);
-	
-	var text = _interopRequireWildcard(_parsersText);
-	
-	var _parsersTemplate = __webpack_require__(65);
-	
-	var template = _interopRequireWildcard(_parsersTemplate);
-	
-	var _parsersDirective = __webpack_require__(43);
-	
-	var directive = _interopRequireWildcard(_parsersDirective);
-	
-	var _parsersExpression = __webpack_require__(57);
-	
-	var expression = _interopRequireWildcard(_parsersExpression);
-	
-	var _fragmentFactory = __webpack_require__(67);
-	
-	var _fragmentFactory2 = _interopRequireDefault(_fragmentFactory);
-	
-	var _directivesInternalIndex = __webpack_require__(83);
-	
-	var _directivesInternalIndex2 = _interopRequireDefault(_directivesInternalIndex);
-	
-	exports['default'] = function (Vue) {
-	
-	  /**
-	   * Expose useful internals
-	   */
-	
-	  Vue.util = util;
-	  Vue.config = _config2['default'];
-	  Vue.set = _utilIndex.set;
-	  Vue['delete'] = _utilIndex.del;
-	  Vue.nextTick = _utilIndex.nextTick;
-	
-	  /**
-	   * The following are exposed for advanced usage / plugins
-	   */
-	
-	  Vue.compiler = compiler;
-	  Vue.FragmentFactory = _fragmentFactory2['default'];
-	  Vue.internalDirectives = _directivesInternalIndex2['default'];
-	  Vue.parsers = {
-	    path: path,
-	    text: text,
-	    template: template,
-	    directive: directive,
-	    expression: expression
-	  };
-	
-	  /**
-	   * Each instance constructor, including Vue, has a unique
-	   * cid. This enables us to create wrapped "child
-	   * constructors" for prototypal inheritance and cache them.
-	   */
-	
-	  Vue.cid = 0;
-	  var cid = 1;
-	
-	  /**
-	   * Class inheritance
-	   *
-	   * @param {Object} extendOptions
-	   */
-	
-	  Vue.extend = function (extendOptions) {
-	    extendOptions = extendOptions || {};
-	    var Super = this;
-	    var isFirstExtend = Super.cid === 0;
-	    if (isFirstExtend && extendOptions._Ctor) {
-	      return extendOptions._Ctor;
-	    }
-	    var name = extendOptions.name || Super.options.name;
-	    if (true) {
-	      if (!/^[a-zA-Z][\w-]*$/.test(name)) {
-	        _utilIndex.warn('Invalid component name: "' + name + '". Component names ' + 'can only contain alphanumeric characaters and the hyphen.');
-	        name = null;
-	      }
-	    }
-	    var Sub = createClass(name || 'VueComponent');
-	    Sub.prototype = _Object$create(Super.prototype);
-	    Sub.prototype.constructor = Sub;
-	    Sub.cid = cid++;
-	    Sub.options = _utilIndex.mergeOptions(Super.options, extendOptions);
-	    Sub['super'] = Super;
-	    // allow further extension
-	    Sub.extend = Super.extend;
-	    // create asset registers, so extended classes
-	    // can have their private assets too.
-	    _config2['default']._assetTypes.forEach(function (type) {
-	      Sub[type] = Super[type];
-	    });
-	    // enable recursive self-lookup
-	    if (name) {
-	      Sub.options.components[name] = Sub;
-	    }
-	    // cache constructor
-	    if (isFirstExtend) {
-	      extendOptions._Ctor = Sub;
-	    }
-	    return Sub;
-	  };
-	
-	  /**
-	   * A function that returns a sub-class constructor with the
-	   * given name. This gives us much nicer output when
-	   * logging instances in the console.
-	   *
-	   * @param {String} name
-	   * @return {Function}
-	   */
-	
-	  function createClass(name) {
-	    return new Function('return function ' + _utilIndex.classify(name) + ' (options) { this._init(options) }')();
-	  }
-	
-	  /**
-	   * Plugin system
-	   *
-	   * @param {Object} plugin
-	   */
-	
-	  Vue.use = function (plugin) {
-	    /* istanbul ignore if */
-	    if (plugin.installed) {
-	      return;
-	    }
-	    // additional parameters
-	    var args = _utilIndex.toArray(arguments, 1);
-	    args.unshift(this);
-	    if (typeof plugin.install === 'function') {
-	      plugin.install.apply(plugin, args);
-	    } else {
-	      plugin.apply(null, args);
-	    }
-	    plugin.installed = true;
-	    return this;
-	  };
-	
-	  /**
-	   * Apply a global mixin by merging it into the default
-	   * options.
-	   */
-	
-	  Vue.mixin = function (mixin) {
-	    Vue.options = _utilIndex.mergeOptions(Vue.options, mixin);
-	  };
-	
-	  /**
-	   * Create asset registration methods with the following
-	   * signature:
-	   *
-	   * @param {String} id
-	   * @param {*} definition
-	   */
-	
-	  _config2['default']._assetTypes.forEach(function (type) {
-	    Vue[type] = function (id, definition) {
-	      if (!definition) {
-	        return this.options[type + 's'][id];
-	      } else {
-	        /* istanbul ignore if */
-	        if (true) {
-	          if (type === 'component' && (_utilIndex.commonTagRE.test(id) || _utilIndex.reservedTagRE.test(id))) {
-	            _utilIndex.warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
-	          }
-	        }
-	        if (type === 'component' && _utilIndex.isPlainObject(definition)) {
-	          definition.name = id;
-	          definition = Vue.extend(definition);
-	        }
-	        this.options[type + 's'][id] = definition;
-	        return definition;
-	      }
-	    };
-	  });
-	};
-	
-	module.exports = exports['default'];
-
-/***/ },
 /* 97 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	exports["default"] = function (obj) {
-	  if (obj && obj.__esModule) {
-	    return obj;
-	  } else {
-	    var newObj = {};
-	
-	    if (obj != null) {
-	      for (var key in obj) {
-	        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	      }
-	    }
-	
-	    newObj["default"] = obj;
-	    return newObj;
-	  }
-	};
-	
-	exports.__esModule = true;
-
-/***/ },
-/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10391,7 +10526,6 @@
 	var filterRE = /[^|]\|[^|]/;
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Get the value from an expression on this vm.
 	   *
@@ -10539,8 +10673,14 @@
 	    }
 	    // include computed fields
 	    if (!path) {
-	      for (var key in this.$options.computed) {
+	      var key;
+	      for (key in this.$options.computed) {
 	        data[key] = clean(this[key]);
+	      }
+	      if (this._props) {
+	        for (key in this._props) {
+	          data[key] = clean(this[key]);
+	        }
 	      }
 	    }
 	    console.log(data);
@@ -10562,7 +10702,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 99 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10574,7 +10714,6 @@
 	var _transitionIndex = __webpack_require__(45);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Convenience on-instance nextTick. The callback is
 	   * auto-bound to the instance, and this avoids component
@@ -10762,7 +10901,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 100 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10772,7 +10911,6 @@
 	var _utilIndex = __webpack_require__(5);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Listen on the given `event` with `fn`.
 	   *
@@ -10966,7 +11104,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 101 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10978,7 +11116,6 @@
 	var _compilerIndex = __webpack_require__(60);
 	
 	exports['default'] = function (Vue) {
-	
 	  /**
 	   * Set instance target element and kick off the compilation
 	   * process. The passed in `el` can be a selector string, an
@@ -10991,7 +11128,7 @@
 	
 	  Vue.prototype.$mount = function (el) {
 	    if (this._isCompiled) {
-	      ("development") !== 'production' && _utilIndex.warn('$mount() should be called only once.');
+	      ("development") !== 'production' && _utilIndex.warn('$mount() should be called only once.', this);
 	      return;
 	    }
 	    el = _utilIndex.query(el);
@@ -11022,6 +11159,9 @@
 	  /**
 	   * Teardown the instance, simply delegate to the internal
 	   * _destroy.
+	   *
+	   * @param {Boolean} remove
+	   * @param {Boolean} deferCleanup
 	   */
 	
 	  Vue.prototype.$destroy = function (remove, deferCleanup) {
@@ -11034,6 +11174,8 @@
 	   *
 	   * @param {Element|DocumentFragment} el
 	   * @param {Vue} [host]
+	   * @param {Object} [scope]
+	   * @param {Fragment} [frag]
 	   * @return {Function}
 	   */
 	
@@ -11045,7 +11187,282 @@
 	module.exports = exports['default'];
 
 /***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Object$create = __webpack_require__(41)['default'];
+	
+	var _interopRequireDefault = __webpack_require__(2)['default'];
+	
+	var _interopRequireWildcard = __webpack_require__(102)['default'];
+	
+	exports.__esModule = true;
+	
+	var _utilIndex = __webpack_require__(5);
+	
+	var _config = __webpack_require__(36);
+	
+	var _config2 = _interopRequireDefault(_config);
+	
+	var _directivesPublicIndex = __webpack_require__(62);
+	
+	var _directivesPublicIndex2 = _interopRequireDefault(_directivesPublicIndex);
+	
+	var _directivesElementIndex = __webpack_require__(103);
+	
+	var _directivesElementIndex2 = _interopRequireDefault(_directivesElementIndex);
+	
+	var _filtersIndex = __webpack_require__(106);
+	
+	var _filtersIndex2 = _interopRequireDefault(_filtersIndex);
+	
+	var util = _interopRequireWildcard(_utilIndex);
+	
+	var _compilerIndex = __webpack_require__(60);
+	
+	var compiler = _interopRequireWildcard(_compilerIndex);
+	
+	var _parsersPath = __webpack_require__(58);
+	
+	var path = _interopRequireWildcard(_parsersPath);
+	
+	var _parsersText = __webpack_require__(39);
+	
+	var text = _interopRequireWildcard(_parsersText);
+	
+	var _parsersTemplate = __webpack_require__(65);
+	
+	var template = _interopRequireWildcard(_parsersTemplate);
+	
+	var _parsersDirective = __webpack_require__(43);
+	
+	var directive = _interopRequireWildcard(_parsersDirective);
+	
+	var _parsersExpression = __webpack_require__(57);
+	
+	var expression = _interopRequireWildcard(_parsersExpression);
+	
+	var _transitionIndex = __webpack_require__(45);
+	
+	var transition = _interopRequireWildcard(_transitionIndex);
+	
+	var _fragmentFactory = __webpack_require__(67);
+	
+	var _fragmentFactory2 = _interopRequireDefault(_fragmentFactory);
+	
+	var _directivesInternalIndex = __webpack_require__(83);
+	
+	var _directivesInternalIndex2 = _interopRequireDefault(_directivesInternalIndex);
+	
+	exports['default'] = function (Vue) {
+	  /**
+	   * Vue and every constructor that extends Vue has an
+	   * associated options object, which can be accessed during
+	   * compilation steps as `this.constructor.options`.
+	   *
+	   * These can be seen as the default options of every
+	   * Vue instance.
+	   */
+	
+	  Vue.options = {
+	    directives: _directivesPublicIndex2['default'],
+	    elementDirectives: _directivesElementIndex2['default'],
+	    filters: _filtersIndex2['default'],
+	    transitions: {},
+	    components: {},
+	    partials: {},
+	    replace: true
+	  };
+	
+	  /**
+	   * Expose useful internals
+	   */
+	
+	  Vue.util = util;
+	  Vue.config = _config2['default'];
+	  Vue.set = _utilIndex.set;
+	  Vue['delete'] = _utilIndex.del;
+	  Vue.nextTick = _utilIndex.nextTick;
+	
+	  /**
+	   * The following are exposed for advanced usage / plugins
+	   */
+	
+	  Vue.compiler = compiler;
+	  Vue.FragmentFactory = _fragmentFactory2['default'];
+	  Vue.internalDirectives = _directivesInternalIndex2['default'];
+	  Vue.parsers = {
+	    path: path,
+	    text: text,
+	    template: template,
+	    directive: directive,
+	    expression: expression
+	  };
+	
+	  /**
+	   * Each instance constructor, including Vue, has a unique
+	   * cid. This enables us to create wrapped "child
+	   * constructors" for prototypal inheritance and cache them.
+	   */
+	
+	  Vue.cid = 0;
+	  var cid = 1;
+	
+	  /**
+	   * Class inheritance
+	   *
+	   * @param {Object} extendOptions
+	   */
+	
+	  Vue.extend = function (extendOptions) {
+	    extendOptions = extendOptions || {};
+	    var Super = this;
+	    var isFirstExtend = Super.cid === 0;
+	    if (isFirstExtend && extendOptions._Ctor) {
+	      return extendOptions._Ctor;
+	    }
+	    var name = extendOptions.name || Super.options.name;
+	    if (true) {
+	      if (!/^[a-zA-Z][\w-]*$/.test(name)) {
+	        _utilIndex.warn('Invalid component name: "' + name + '". Component names ' + 'can only contain alphanumeric characaters and the hyphen.');
+	        name = null;
+	      }
+	    }
+	    var Sub = createClass(name || 'VueComponent');
+	    Sub.prototype = _Object$create(Super.prototype);
+	    Sub.prototype.constructor = Sub;
+	    Sub.cid = cid++;
+	    Sub.options = _utilIndex.mergeOptions(Super.options, extendOptions);
+	    Sub['super'] = Super;
+	    // allow further extension
+	    Sub.extend = Super.extend;
+	    // create asset registers, so extended classes
+	    // can have their private assets too.
+	    _config2['default']._assetTypes.forEach(function (type) {
+	      Sub[type] = Super[type];
+	    });
+	    // enable recursive self-lookup
+	    if (name) {
+	      Sub.options.components[name] = Sub;
+	    }
+	    // cache constructor
+	    if (isFirstExtend) {
+	      extendOptions._Ctor = Sub;
+	    }
+	    return Sub;
+	  };
+	
+	  /**
+	   * A function that returns a sub-class constructor with the
+	   * given name. This gives us much nicer output when
+	   * logging instances in the console.
+	   *
+	   * @param {String} name
+	   * @return {Function}
+	   */
+	
+	  function createClass(name) {
+	    /* eslint-disable no-new-func */
+	    return new Function('return function ' + _utilIndex.classify(name) + ' (options) { this._init(options) }')();
+	    /* eslint-enable no-new-func */
+	  }
+	
+	  /**
+	   * Plugin system
+	   *
+	   * @param {Object} plugin
+	   */
+	
+	  Vue.use = function (plugin) {
+	    /* istanbul ignore if */
+	    if (plugin.installed) {
+	      return;
+	    }
+	    // additional parameters
+	    var args = _utilIndex.toArray(arguments, 1);
+	    args.unshift(this);
+	    if (typeof plugin.install === 'function') {
+	      plugin.install.apply(plugin, args);
+	    } else {
+	      plugin.apply(null, args);
+	    }
+	    plugin.installed = true;
+	    return this;
+	  };
+	
+	  /**
+	   * Apply a global mixin by merging it into the default
+	   * options.
+	   */
+	
+	  Vue.mixin = function (mixin) {
+	    Vue.options = _utilIndex.mergeOptions(Vue.options, mixin);
+	  };
+	
+	  /**
+	   * Create asset registration methods with the following
+	   * signature:
+	   *
+	   * @param {String} id
+	   * @param {*} definition
+	   */
+	
+	  _config2['default']._assetTypes.forEach(function (type) {
+	    Vue[type] = function (id, definition) {
+	      if (!definition) {
+	        return this.options[type + 's'][id];
+	      } else {
+	        /* istanbul ignore if */
+	        if (true) {
+	          if (type === 'component' && (_utilIndex.commonTagRE.test(id) || _utilIndex.reservedTagRE.test(id))) {
+	            _utilIndex.warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
+	          }
+	        }
+	        if (type === 'component' && _utilIndex.isPlainObject(definition)) {
+	          definition.name = id;
+	          definition = Vue.extend(definition);
+	        }
+	        this.options[type + 's'][id] = definition;
+	        return definition;
+	      }
+	    };
+	  });
+	
+	  // expose internal transition API
+	  _utilIndex.extend(Vue.transition, transition);
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
 /* 102 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	exports["default"] = function (obj) {
+	  if (obj && obj.__esModule) {
+	    return obj;
+	  } else {
+	    var newObj = {};
+	
+	    if (obj != null) {
+	      for (var key in obj) {
+	        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	      }
+	    }
+	
+	    newObj["default"] = obj;
+	    return newObj;
+	  }
+	};
+	
+	exports.__esModule = true;
+
+/***/ },
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11054,21 +11471,22 @@
 	
 	exports.__esModule = true;
 	
-	var _slot = __webpack_require__(103);
+	var _slot = __webpack_require__(104);
 	
-	var _partial = __webpack_require__(104);
+	var _slot2 = _interopRequireDefault(_slot);
+	
+	var _partial = __webpack_require__(105);
 	
 	var _partial2 = _interopRequireDefault(_partial);
 	
 	exports['default'] = {
-	  slot: _slot.slot,
-	  _namedSlot: _slot.namedSlot, // same as slot but with higher priority
+	  slot: _slot2['default'],
 	  partial: _partial2['default']
 	};
 	module.exports = exports['default'];
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11077,54 +11495,21 @@
 	
 	var _priorities = __webpack_require__(69);
 	
-	var _parsersTemplate = __webpack_require__(65);
-	
 	var _utilIndex = __webpack_require__(5);
 	
-	// This is the elementDirective that handles <content>
-	// transclusions. It relies on the raw content of an
-	// instance being stored as `$options._content` during
-	// the transclude phase.
-	
-	// We are exporting two versions, one for named and one
-	// for unnamed, because the unnamed slots must be compiled
-	// AFTER all named slots have selected their content. So
-	// we need to give them different priorities in the compilation
-	// process. (See #1965)
-	
-	var slot = {
+	exports['default'] = {
 	
 	  priority: _priorities.SLOT,
+	  params: ['name'],
 	
 	  bind: function bind() {
-	    var host = this.vm;
-	    var raw = host.$options._content;
-	    if (!raw) {
+	    // this was resolved during component transclusion
+	    var name = this.params.name || 'default';
+	    var content = this.vm._slotContents && this.vm._slotContents[name];
+	    if (!content || !content.hasChildNodes()) {
 	      this.fallback();
-	      return;
-	    }
-	    var context = host._context;
-	    var slotName = this.params && this.params.name;
-	    if (!slotName) {
-	      // Default slot
-	      this.tryCompile(extractFragment(raw.childNodes, raw, true), context, host);
 	    } else {
-	      // Named slot
-	      var selector = '[slot="' + slotName + '"]';
-	      var nodes = raw.querySelectorAll(selector);
-	      if (nodes.length) {
-	        this.tryCompile(extractFragment(nodes, raw), context, host);
-	      } else {
-	        this.fallback();
-	      }
-	    }
-	  },
-	
-	  tryCompile: function tryCompile(content, context, host) {
-	    if (content.hasChildNodes()) {
-	      this.compile(content, context, host);
-	    } else {
-	      this.fallback();
+	      this.compile(content.cloneNode(true), this.vm._context, this.vm);
 	    }
 	  },
 	
@@ -11136,6 +11521,8 @@
 	        var elseBlock = document.createElement('template');
 	        elseBlock.setAttribute('v-else', '');
 	        elseBlock.innerHTML = this.el.innerHTML;
+	        // the else block should be compiled in child scope
+	        elseBlock._context = this.vm;
 	        content.appendChild(elseBlock);
 	      }
 	      var scope = host ? host._scope : this._scope;
@@ -11158,53 +11545,10 @@
 	    }
 	  }
 	};
-	
-	exports.slot = slot;
-	var namedSlot = _utilIndex.extend(_utilIndex.extend({}, slot), {
-	  priority: slot.priority + 1,
-	  params: ['name']
-	});
-	
-	exports.namedSlot = namedSlot;
-	/**
-	 * Extract qualified content nodes from a node list.
-	 *
-	 * @param {NodeList} nodes
-	 * @param {Element} parent
-	 * @param {Boolean} main
-	 * @return {DocumentFragment}
-	 */
-	
-	function extractFragment(nodes, parent, main) {
-	  var frag = document.createDocumentFragment();
-	  for (var i = 0, l = nodes.length; i < l; i++) {
-	    var node = nodes[i];
-	    // if this is the main outlet, we want to skip all
-	    // previously selected nodes;
-	    // otherwise, we want to mark the node as selected.
-	    // clone the node so the original raw content remains
-	    // intact. this ensures proper re-compilation in cases
-	    // where the outlet is inside a conditional block
-	    if (main && !node.__v_selected) {
-	      append(node);
-	    } else if (!main && node.parentNode === parent) {
-	      node.__v_selected = true;
-	      append(node);
-	    }
-	  }
-	  return frag;
-	
-	  function append(node) {
-	    if (_utilIndex.isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
-	      node = _parsersTemplate.parseTemplate(node);
-	    }
-	    node = _parsersTemplate.cloneNode(node);
-	    frag.appendChild(node);
-	  }
-	}
+	module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11248,10 +11592,7 @@
 	  },
 	
 	  insert: function insert(id) {
-	    var partial = _utilIndex.resolveAsset(this.vm.$options, 'partials', id);
-	    if (true) {
-	      _utilIndex.assertAsset(partial, 'partial', id);
-	    }
+	    var partial = _utilIndex.resolveAsset(this.vm.$options, 'partials', id, true);
 	    if (partial) {
 	      this.factory = new _fragmentFactory2['default'](this.vm, partial);
 	      _publicIf2['default'].insert.call(this);
@@ -11267,7 +11608,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11276,7 +11617,7 @@
 	
 	var _utilIndex = __webpack_require__(5);
 	
-	var _arrayFilters = __webpack_require__(106);
+	var _arrayFilters = __webpack_require__(107);
 	
 	var digitsRE = /(\d{3})(?=\d)/g;
 	
@@ -11348,7 +11689,7 @@
 	    var head = i > 0 ? _int.slice(0, i) + (_int.length > 3 ? ',' : '') : '';
 	    var _float = stringified.slice(-3);
 	    var sign = value < 0 ? '-' : '';
-	    return _currency + sign + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
+	    return sign + _currency + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
 	  },
 	
 	  /**
@@ -11388,7 +11729,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11447,9 +11788,7 @@
 	  // because why not
 	  var n = delimiter === 'in' ? 3 : 2;
 	  // extract and flatten keys
-	  var keys = _utilIndex.toArray(arguments, n).reduce(function (prev, cur) {
-	    return prev.concat(cur);
-	  }, []);
+	  var keys = Array.prototype.concat.apply([], _utilIndex.toArray(arguments, n));
 	  var res = [];
 	  var item, key, val, j;
 	  for (var i = 0, l = arr.length; i < l; i++) {
@@ -11474,26 +11813,58 @@
 	/**
 	 * Filter filter for arrays
 	 *
-	 * @param {String} sortKey
-	 * @param {String} reverse
+	 * @param {String|Array<String>|Function} ...sortKeys
+	 * @param {Number} [order]
 	 */
 	
-	function orderBy(arr, sortKey, reverse) {
+	function orderBy(arr) {
+	  var comparator = null;
+	  var sortKeys = undefined;
 	  arr = convertArray(arr);
-	  if (!sortKey) {
-	    return arr;
+	
+	  // determine order (last argument)
+	  var args = _utilIndex.toArray(arguments, 1);
+	  var order = args[args.length - 1];
+	  if (typeof order === 'number') {
+	    order = order < 0 ? -1 : 1;
+	    args = args.length > 1 ? args.slice(0, -1) : args;
+	  } else {
+	    order = 1;
 	  }
-	  var order = reverse && reverse < 0 ? -1 : 1;
-	  // sort on a copy to avoid mutating original array
-	  return arr.slice().sort(function (a, b) {
-	    if (sortKey !== '$key') {
-	      if (_utilIndex.isObject(a) && '$value' in a) a = a.$value;
-	      if (_utilIndex.isObject(b) && '$value' in b) b = b.$value;
+	
+	  // determine sortKeys & comparator
+	  var firstArg = args[0];
+	  if (!firstArg) {
+	    return arr;
+	  } else if (typeof firstArg === 'function') {
+	    // custom comparator
+	    comparator = function (a, b) {
+	      return firstArg(a, b) * order;
+	    };
+	  } else {
+	    // string keys. flatten first
+	    sortKeys = Array.prototype.concat.apply([], args);
+	    comparator = function (a, b, i) {
+	      i = i || 0;
+	      return i >= sortKeys.length - 1 ? baseCompare(a, b, i) : baseCompare(a, b, i) || comparator(a, b, i + 1);
+	    };
+	  }
+	
+	  function baseCompare(a, b, sortKeyIndex) {
+	    var sortKey = sortKeys[sortKeyIndex];
+	    if (sortKey) {
+	      if (sortKey !== '$key') {
+	        if (_utilIndex.isObject(a) && '$value' in a) a = a.$value;
+	        if (_utilIndex.isObject(b) && '$value' in b) b = b.$value;
+	      }
+	      a = _utilIndex.isObject(a) ? _parsersPath.getPath(a, sortKey) : a;
+	      b = _utilIndex.isObject(b) ? _parsersPath.getPath(b, sortKey) : b;
 	    }
-	    a = _utilIndex.isObject(a) ? _parsersPath.getPath(a, sortKey) : a;
-	    b = _utilIndex.isObject(b) ? _parsersPath.getPath(b, sortKey) : b;
 	    return a === b ? 0 : a > b ? order : -order;
-	  });
+	  }
+	
+	  // sort on a copy to avoid mutating original array
+	  return arr.slice().sort(comparator);
 	}
 	
 	/**
@@ -11526,14 +11897,13 @@
 	}
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./api/data_spec": 108,
-		"./api/dom_spec": 109,
-		"./api/events_spec": 110,
-		"./api/global_spec": 111,
+		"./api/data_spec": 109,
+		"./api/dom_spec": 110,
+		"./api/events_spec": 111,
 		"./api/lifecycle_spec": 112,
 		"./async_component_spec": 113,
 		"./batcher_spec": 114,
@@ -11563,26 +11933,27 @@
 		"./directives/public/show_spec": 138,
 		"./directives/public/text_spec": 139,
 		"./filters/filters_spec": 140,
-		"./instance/events_spec": 141,
-		"./instance/init_spec": 142,
-		"./instance/misc_spec": 143,
-		"./instance/state_spec": 144,
-		"./misc_spec": 145,
-		"./observer/dep_spec": 146,
-		"./observer/observer_spec": 147,
-		"./parsers/directive_spec": 148,
-		"./parsers/expression_spec": 149,
-		"./parsers/path_spec": 150,
-		"./parsers/template_spec": 151,
-		"./parsers/text_spec": 152,
-		"./transition/transition_spec": 153,
-		"./util/component_spec": 154,
-		"./util/debug_spec": 155,
-		"./util/dom_spec": 156,
-		"./util/env_spec": 157,
-		"./util/lang_spec": 158,
-		"./util/options_spec": 159,
-		"./watcher_spec": 160
+		"./global_api_spec": 141,
+		"./instance/events_spec": 142,
+		"./instance/init_spec": 143,
+		"./instance/misc_spec": 144,
+		"./instance/state_spec": 145,
+		"./misc_spec": 146,
+		"./observer/dep_spec": 147,
+		"./observer/observer_spec": 148,
+		"./parsers/directive_spec": 149,
+		"./parsers/expression_spec": 150,
+		"./parsers/path_spec": 151,
+		"./parsers/template_spec": 152,
+		"./parsers/text_spec": 153,
+		"./transition/transition_spec": 154,
+		"./util/component_spec": 155,
+		"./util/debug_spec": 156,
+		"./util/dom_spec": 157,
+		"./util/env_spec": 158,
+		"./util/lang_spec": 159,
+		"./util/options_spec": 160,
+		"./watcher_spec": 161
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -11595,11 +11966,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 107;
+	webpackContext.id = 108;
 
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
@@ -11607,11 +11978,13 @@
 	var nextTick = _.nextTick
 	
 	describe('Data API', function () {
-	
 	  var vm
 	  beforeEach(function () {
-	    spyWarns()
+	    var el = document.createElement('div')
+	    el.setAttribute('prop', 'foo')
 	    vm = new Vue({
+	      el: el,
+	      props: ['prop'],
 	      data: {
 	        a: 1,
 	        b: {
@@ -11638,7 +12011,7 @@
 	    expect(vm.$get('c')).toBeUndefined()
 	    // invalid, should warn
 	    vm.$get('a(')
-	    expect(hasWarned('Invalid expression')).toBe(true)
+	    expect('Invalid expression').toHaveBeenWarned()
 	  })
 	
 	  it('$set', function () {
@@ -11650,12 +12023,12 @@
 	    vm.$set('c.d', 2)
 	    expect(vm.c.d).toBe(2)
 	    // warn against setting unexisting
-	    expect(hasWarned('Consider pre-initializing')).toBe(true)
+	    expect('Consider pre-initializing').toHaveBeenWarned()
 	  })
 	
 	  it('$set invalid', function () {
 	    vm.$set('c + d', 1)
-	    expect(hasWarned('Invalid setter expression')).toBe(true)
+	    expect('Invalid setter expression').toHaveBeenWarned()
 	  })
 	
 	  it('$delete', function () {
@@ -11756,6 +12129,7 @@
 	        expect(val.a).toBe(1)
 	        expect(val.b.c).toBe(2)
 	        expect(val.d).toBe(2)
+	        expect(val.prop).toBe('foo')
 	        spy()
 	      }
 	      vm.$log()
@@ -11773,7 +12147,7 @@
 
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11785,7 +12159,6 @@
 	var _ = __webpack_require__(5)
 	
 	describe('DOM API', function () {
-	
 	  var vm, vm2, parent, target, sibling, empty, spy
 	  beforeEach(function () {
 	    spy = jasmine.createSpy('dom')
@@ -11807,7 +12180,6 @@
 	  })
 	
 	  describe('$appendTo', function () {
-	
 	    it('normal instance', function () {
 	      vm.$appendTo(parent, spy)
 	      expect(parent.childNodes.length).toBe(3)
@@ -11825,11 +12197,9 @@
 	      expect(parent.childNodes[5]).toBe(vm2._fragmentEnd)
 	      expect(spy.calls.count()).toBe(1)
 	    })
-	
 	  })
 	
 	  describe('$prependTo', function () {
-	
 	    it('normal instance', function () {
 	      vm.$prependTo(parent, spy)
 	      expect(parent.childNodes.length).toBe(3)
@@ -11860,11 +12230,9 @@
 	      expect(empty.childNodes[3]).toBe(vm2._fragmentEnd)
 	      expect(spy.calls.count()).toBe(2)
 	    })
-	
 	  })
 	
 	  describe('$before', function () {
-	
 	    it('normal instance', function () {
 	      vm.$before(sibling, spy)
 	      expect(parent.childNodes.length).toBe(3)
@@ -11882,11 +12250,9 @@
 	      expect(parent.childNodes[4]).toBe(vm2._fragmentEnd)
 	      expect(spy.calls.count()).toBe(1)
 	    })
-	
 	  })
 	
 	  describe('$after', function () {
-	
 	    it('normal instance', function () {
 	      vm.$after(target, spy)
 	      expect(parent.childNodes.length).toBe(3)
@@ -11922,11 +12288,9 @@
 	      expect(parent.childNodes[5]).toBe(vm2._fragmentEnd)
 	      expect(spy.calls.count()).toBe(1)
 	    })
-	
 	  })
 	
 	  describe('$remove', function () {
-	
 	    it('normal instance', function () {
 	      vm.$before(sibling)
 	      expect(parent.childNodes.length).toBe(3)
@@ -11957,11 +12321,9 @@
 	      vm.$remove(spy)
 	      expect(spy.calls.count()).toBe(1)
 	    })
-	
 	  })
 	
 	  describe('$nextTick', function () {
-	
 	    it('should work', function (done) {
 	      var context
 	      var called = false
@@ -11981,13 +12343,12 @@
 
 
 /***/ },
-/* 110 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
 	
 	describe('Events API', function () {
-	
 	  var vm, spy
 	  beforeEach(function () {
 	    vm = new Vue()
@@ -12218,135 +12579,6 @@
 	    parent.$refs.child.$dispatch('test')
 	    expect(spy.calls.count()).toBe(3)
 	  })
-	
-	})
-
-
-/***/ },
-/* 111 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Vue = __webpack_require__(1)
-	var _ = __webpack_require__(5)
-	var config = __webpack_require__(36)
-	
-	describe('Global API', function () {
-	
-	  beforeEach(function () {
-	    spyWarns()
-	  })
-	
-	  it('exposed utilities', function () {
-	    expect(Vue.util).toBe(_)
-	    expect(Vue.nextTick).toBe(_.nextTick)
-	    expect(Vue.config).toBe(config)
-	  })
-	
-	  it('extend', function () {
-	    var Test = Vue.extend({
-	      name: 'test',
-	      a: 1,
-	      b: 2
-	    })
-	    expect(Test.options.a).toBe(1)
-	    expect(Test.options.b).toBe(2)
-	    expect(Test.super).toBe(Vue)
-	    // function.name is not available in IE
-	    expect(Test.toString().match(/^function Test\s?\(/)).toBeTruthy()
-	    var t = new Test({
-	      a: 2
-	    })
-	    expect(t.$options.a).toBe(2)
-	    expect(t.$options.b).toBe(2)
-	    // inheritance
-	    var Test2 = Test.extend({
-	      a: 2
-	    })
-	    expect(Test2.options.a).toBe(2)
-	    expect(Test2.options.b).toBe(2)
-	    var t2 = new Test2({
-	      a: 3
-	    })
-	    expect(t2.$options.a).toBe(3)
-	    expect(t2.$options.b).toBe(2)
-	  })
-	
-	  it('extend warn invalid names', function () {
-	    Vue.extend({ name: '123' })
-	    expect(hasWarned('Invalid component name: "123"')).toBe(true)
-	    Vue.extend({ name: '_fesf' })
-	    expect(hasWarned('Invalid component name: "_fesf"')).toBe(true)
-	    Vue.extend({ name: 'Some App' })
-	    expect(hasWarned('Invalid component name: "Some App"')).toBe(true)
-	  })
-	
-	  it('use', function () {
-	    var def = {}
-	    var options = {}
-	    var pluginStub = {
-	      install: function (Vue, opts) {
-	        Vue.directive('plugin-test', def)
-	        expect(opts).toBe(options)
-	      }
-	    }
-	    Vue.use(pluginStub, options)
-	    expect(Vue.options.directives['plugin-test']).toBe(def)
-	    delete Vue.options.directives['plugin-test']
-	    // use a function
-	    Vue.use(pluginStub.install, options)
-	    expect(Vue.options.directives['plugin-test']).toBe(def)
-	    delete Vue.options.directives['plugin-test']
-	  })
-	
-	  it('global mixin', function () {
-	    var options = Vue.options
-	    var spy = jasmine.createSpy('global mixin')
-	    Vue.mixin({
-	      created: function () {
-	        spy(this.$options.myOption)
-	      }
-	    })
-	    new Vue({
-	      myOption: 'hello'
-	    })
-	    expect(spy).toHaveBeenCalledWith('hello')
-	    Vue.options = options
-	  })
-	
-	  describe('Asset registration', function () {
-	
-	    var Test = Vue.extend()
-	
-	    it('directive / elementDirective / filter / transition', function () {
-	      var assets = ['directive', 'elementDirective', 'filter', 'transition']
-	      assets.forEach(function (type) {
-	        var def = {}
-	        Test[type]('test', def)
-	        expect(Test.options[type + 's'].test).toBe(def)
-	        expect(Test[type]('test')).toBe(def)
-	        // extended registration should not pollute global
-	        expect(Vue.options[type + 's'].test).toBeUndefined()
-	      })
-	    })
-	
-	    it('component', function () {
-	      var def = { a: 1 }
-	      Test.component('test', def)
-	      var component = Test.options.components.test
-	      expect(typeof component).toBe('function')
-	      expect(component.super).toBe(Vue)
-	      expect(component.options.a).toBe(1)
-	      expect(component.options.name).toBe('test')
-	      expect(Test.component('test')).toBe(component)
-	      // already extended
-	      Test.component('test2', component)
-	      expect(Test.component('test2')).toBe(component)
-	      // extended registration should not pollute global
-	      expect(Vue.options.components.test).toBeUndefined()
-	    })
-	
-	  })
-	
 	})
 
 
@@ -12358,28 +12590,25 @@
 	var compiler = __webpack_require__(60)
 	
 	describe('Lifecycle API', function () {
-	
 	  describe('$mount', function () {
-	
 	    var el, frag
 	    beforeEach(function () {
 	      el = document.createElement('div')
 	      el.textContent = '{{test}}'
 	      frag = document.createDocumentFragment()
 	      frag.appendChild(el)
-	      spyWarns()
 	    })
 	
 	    it('normal', function () {
 	      var vm = new Vue({
 	        data: {
-	          test: 'hi!'
+	          test: 'foo'
 	        }
 	      })
 	      vm.$mount(el)
 	      expect(vm.$el).toBe(el)
 	      expect(el.__vue__).toBe(vm)
-	      expect(el.textContent).toBe('hi!')
+	      expect(el.textContent).toBe('foo')
 	    })
 	
 	    it('auto-create', function () {
@@ -12399,19 +12628,19 @@
 	      el.id = 'mount-test'
 	      document.body.appendChild(el)
 	      var vm = new Vue({
-	        data: { test: 'hi!' }
+	        data: { test: 'foo' }
 	      })
 	      vm.$mount('#mount-test')
 	      expect(vm.$el).toBe(el)
 	      expect(el.__vue__).toBe(vm)
-	      expect(el.textContent).toBe('hi!')
+	      expect(el.textContent).toBe('foo')
 	      document.body.removeChild(el)
 	    })
 	
 	    it('warn invalid selector', function () {
 	      var vm = new Vue()
 	      vm.$mount('#none-exist')
-	      expect(hasWarned('Cannot find element')).toBe(true)
+	      expect('Cannot find element').toHaveBeenWarned()
 	    })
 	
 	    it('replace', function () {
@@ -12419,12 +12648,12 @@
 	      document.body.appendChild(el)
 	      var vm = new Vue({
 	        replace: true,
-	        data: { test: 'hi!' },
+	        data: { test: 'foo' },
 	        template: '<div>{{test}}</div>'
 	      })
 	      vm.$mount(el)
 	      expect(vm.$el).not.toBe(el)
-	      expect(vm.$el.textContent).toBe('hi!')
+	      expect(vm.$el.textContent).toBe('foo')
 	      expect(document.body.contains(el)).toBe(false)
 	      expect(document.body.lastChild).toBe(vm.$el)
 	      expect(vm.$el.className).toBe('replace-test')
@@ -12436,13 +12665,13 @@
 	      var vm = new Vue({
 	        _linker: linker,
 	        data: {
-	          test: 'hi!'
+	          test: 'foo'
 	        }
 	      })
 	      vm.$mount(el)
 	      expect(vm.$el).toBe(el)
 	      expect(el.__vue__).toBe(vm)
-	      expect(el.textContent).toBe('hi!')
+	      expect(el.textContent).toBe('foo')
 	    })
 	
 	    it('mount to fragment', function () {
@@ -12458,13 +12687,13 @@
 	      document.body.appendChild(el)
 	      var vm = new Vue({
 	        replace: true,
-	        data: { test: 'hi!' },
-	        template: '<div>{{test}}</div><div>{{test + "!"}}</div>'
+	        data: { test: 'foo' },
+	        template: '<div>{{test}}</div><div>{{test + "bar"}}</div>'
 	      })
 	      vm.$mount(el)
 	      expect(vm.$el).not.toBe(el)
-	      expect(vm.$el.nextSibling.textContent).toBe('hi!')
-	      expect(vm.$el.nextSibling.nextSibling.textContent).toBe('hi!!')
+	      expect(vm.$el.nextSibling.textContent).toBe('foo')
+	      expect(vm.$el.nextSibling.nextSibling.textContent).toBe('foobar')
 	      expect(document.body.contains(el)).toBe(false)
 	      expect(document.body.lastChild).toBe(vm._fragmentEnd)
 	      vm.$remove()
@@ -12474,7 +12703,7 @@
 	      var hooks = ['created', 'beforeCompile', 'compiled', 'attached', 'ready']
 	      var options = {
 	        data: {
-	          test: 'hihi'
+	          test: 'foo'
 	        }
 	      }
 	      hooks.forEach(function (hook) {
@@ -12499,13 +12728,11 @@
 	        el: el
 	      })
 	      vm.$mount(el)
-	      expect(hasWarned('$mount() should be called only once')).toBe(true)
+	      expect('$mount() should be called only once').toHaveBeenWarned()
 	    })
-	
 	  })
 	
 	  describe('$destroy', function () {
-	
 	    it('normal', function () {
 	      var vm = new Vue()
 	      expect(vm._isDestroyed).toBe(false)
@@ -12652,38 +12879,34 @@
 	        vm.$destroy()
 	      }).not.toThrow()
 	    })
-	
 	  })
 	
 	  describe('$compile', function () {
-	
 	    it('should partial compile and teardown stuff', function (done) {
 	      var el = document.createElement('div')
 	      var vm = new Vue({
 	        el: el,
 	        template: '{{a}}',
 	        data: {
-	          a: 'hi'
+	          a: 'foo'
 	        }
 	      })
 	      expect(vm._directives.length).toBe(1)
 	      var partial = document.createElement('span')
 	      partial.textContent = '{{a}}'
 	      var decompile = vm.$compile(partial)
-	      expect(partial.textContent).toBe('hi')
+	      expect(partial.textContent).toBe('foo')
 	      expect(vm._directives.length).toBe(2)
 	      decompile()
 	      expect(vm._directives.length).toBe(1)
-	      vm.a = 'ha'
+	      vm.a = 'bar'
 	      Vue.nextTick(function () {
-	        expect(el.textContent).toBe('ha')
-	        expect(partial.textContent).toBe('hi')
+	        expect(el.textContent).toBe('bar')
+	        expect(partial.textContent).toBe('foo')
 	        done()
 	      })
 	    })
-	
 	  })
-	
 	})
 
 
@@ -12695,12 +12918,10 @@
 	var _ = Vue.util
 	
 	describe('Async components', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	    document.body.appendChild(el)
-	    spyWarns()
 	  })
 	
 	  afterEach(function () {
@@ -12708,14 +12929,22 @@
 	  })
 	
 	  it('normal', function (done) {
+	    var go = jasmine.createSpy()
 	    new Vue({
 	      el: el,
-	      template: '<test></test>',
+	      template: '<test foo="bar" @ready="go"></test>',
+	      methods: {
+	        go: go
+	      },
 	      components: {
 	        test: function (resolve) {
 	          setTimeout(function () {
 	            resolve({
-	              template: 'ok'
+	              props: ['foo'],
+	              template: '{{ foo }}',
+	              ready: function () {
+	                this.$emit('ready')
+	              }
 	            })
 	            next()
 	          }, 0)
@@ -12723,7 +12952,8 @@
 	      }
 	    })
 	    function next () {
-	      expect(el.textContent).toBe('ok')
+	      expect(el.textContent).toBe('bar')
+	      expect(go).toHaveBeenCalled()
 	      done()
 	    }
 	  })
@@ -12884,7 +13114,7 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Reason: nooooo')).toBe(true)
+	    expect('Reason: nooooo').toHaveBeenWarned()
 	  })
 	
 	  it('v-for', function (done) {
@@ -12923,12 +13153,9 @@
 	var nextTick = __webpack_require__(5).nextTick
 	
 	describe('Batcher', function () {
-	
 	  var spy
-	
 	  beforeEach(function () {
 	    spy = jasmine.createSpy('batcher')
-	    spyWarns()
 	  })
 	
 	  it('pushWatcher', function (done) {
@@ -13015,7 +13242,29 @@
 	    batcher.pushWatcher(job)
 	    nextTick(function () {
 	      expect(count).toBe(config._maxUpdateCount + 1)
-	      expect(hasWarned('infinite update loop')).toBe(true)
+	      expect('infinite update loop').toHaveBeenWarned()
+	      done()
+	    })
+	  })
+	
+	  it('should call newly pushed watcher after current watcher is done', function (done) {
+	    var callOrder = []
+	    batcher.pushWatcher({
+	      id: 1,
+	      user: true,
+	      run: function () {
+	        callOrder.push(1)
+	        batcher.pushWatcher({
+	          id: 2,
+	          run: function () {
+	            callOrder.push(3)
+	          }
+	        })
+	        callOrder.push(2)
+	      }
+	    })
+	    nextTick(function () {
+	      expect(callOrder.join()).toBe('1,2,3')
 	      done()
 	    })
 	  })
@@ -13048,7 +13297,6 @@
 	}
 	
 	describe('Cache', function () {
-	
 	  var c = new Cache(4)
 	
 	  it('put', function () {
@@ -13111,13 +13359,13 @@
 
 	var Vue = __webpack_require__(1)
 	var _ = __webpack_require__(5)
+	var FragmentFactory = __webpack_require__(67)
 	var compiler = __webpack_require__(60)
 	var compile = compiler.compile
 	var publicDirectives = __webpack_require__(62)
 	var internalDirectives = __webpack_require__(83)
 	
 	describe('Compile', function () {
-	
 	  var vm, el, data, directiveBind, directiveTeardown
 	  beforeEach(function () {
 	    // We mock vms here so we can assert what the generated
@@ -13139,6 +13387,9 @@
 	          _teardown: directiveTeardown
 	        })
 	      },
+	      $get: function (exp) {
+	        return (new Vue()).$get(exp)
+	      },
 	      $eval: function (value) {
 	        return data[value]
 	      },
@@ -13155,12 +13406,11 @@
 	    spyOn(vm, '_bindDir').and.callThrough()
 	    spyOn(vm, '$eval').and.callThrough()
 	    spyOn(vm, '$interpolate').and.callThrough()
-	    spyWarns()
 	  })
 	
 	  it('normal directives', function () {
 	    el.setAttribute('v-a', 'b')
-	    el.innerHTML = '<p v-a:hello.a.b="a" v-b="1">hello</p><div v-b.literal="hi"></div>'
+	    el.innerHTML = '<p v-a:hello.a.b="a" v-b="1">hello</p><div v-b.literal="foo"></div>'
 	    var defA = { priority: 1 }
 	    var defB = { priority: 2 }
 	    var options = _.mergeOptions(Vue.options, {
@@ -13204,7 +13454,7 @@
 	    // 4 (explicit literal)
 	    args = vm._bindDir.calls.argsFor(3)
 	    expect(args[0].name).toBe('b')
-	    expect(args[0].expression).toBe('hi')
+	    expect(args[0].expression).toBe('foo')
 	    expect(args[0].def).toBe(defB)
 	    expect(args[0].modifiers.literal).toBe(true)
 	    expect(args[1]).toBe(el.lastChild)
@@ -13328,7 +13578,7 @@
 	  })
 	
 	  it('inline html', function () {
-	    data.html = '<div>yoyoyo</div>'
+	    data.html = '<div>foo</div>'
 	    el.innerHTML = '{{{html}}} {{{*html}}}'
 	    var htmlDef = Vue.options.directives.html
 	    var linker = compile(el, Vue.options)
@@ -13339,7 +13589,7 @@
 	    expect(htmlArgs[0].expression).toBe('html')
 	    expect(htmlArgs[0].def).toBe(htmlDef)
 	    // with placeholder comments & interpolated one-time html
-	    expect(el.innerHTML).toBe('<!--v-html--> <div>yoyoyo</div>')
+	    expect(el.innerHTML).toBe('<!--v-html--> <div>foo</div>')
 	  })
 	
 	  it('terminal directives', function () {
@@ -13357,6 +13607,48 @@
 	    expect(args[0].expression).toBe('item in items')
 	    expect(args[0].def).toBe(def)
 	    expect(args[1]).toBe(el.firstChild)
+	  })
+	
+	  it('custom terminal directives', function () {
+	    var defTerminal = {
+	      terminal: true,
+	      priority: Vue.options.directives.if.priority + 1
+	    }
+	    var options = _.mergeOptions(Vue.options, {
+	      directives: { term: defTerminal }
+	    })
+	    el.innerHTML = '<div v-term:arg1.modifier1.modifier2="foo"></div>'
+	    var linker = compile(el, options)
+	    linker(vm, el)
+	    expect(vm._bindDir.calls.count()).toBe(1)
+	    var args = vm._bindDir.calls.argsFor(0)
+	    expect(args[0].name).toBe('term')
+	    expect(args[0].expression).toBe('foo')
+	    expect(args[0].attr).toBe('v-term:arg1.modifier1.modifier2')
+	    expect(args[0].arg).toBe('arg1')
+	    expect(args[0].modifiers.modifier1).toBe(true)
+	    expect(args[0].modifiers.modifier2).toBe(true)
+	    expect(args[0].def).toBe(defTerminal)
+	  })
+	
+	  it('custom terminal directives priority', function () {
+	    var defTerminal = {
+	      terminal: true,
+	      priority: Vue.options.directives.if.priority + 1
+	    }
+	    var options = _.mergeOptions(Vue.options, {
+	      directives: { term: defTerminal }
+	    })
+	    el.innerHTML = '<div v-term:arg1 v-if="ok"></div>'
+	    var linker = compile(el, options)
+	    linker(vm, el)
+	    expect(vm._bindDir.calls.count()).toBe(1)
+	    var args = vm._bindDir.calls.argsFor(0)
+	    expect(args[0].name).toBe('term')
+	    expect(args[0].expression).toBe('')
+	    expect(args[0].attr).toBe('v-term:arg1')
+	    expect(args[0].arg).toBe('arg1')
+	    expect(args[0].def).toBe(defTerminal)
 	  })
 	
 	  it('custom element components', function () {
@@ -13401,7 +13693,7 @@
 	      ':test-two-way.sync="a" ' +
 	      ':two-way-warn.sync="a + 1" ' +
 	      ':test-one-time.once="a" ' +
-	      ':literal-with-filter="\'HI\' | lowercase"' +
+	      ':literal-with-filter="\'FOO\' | lowercase"' +
 	      '></div>'
 	    compiler.compileAndLinkProps(vm, el.firstChild, props)
 	    // check bindDir calls:
@@ -13409,18 +13701,12 @@
 	    expect(vm._bindDir.calls.count()).toBe(4)
 	    // literal
 	    expect(vm.testLiteral).toBe('1')
-	    expect(vm._data.testLiteral).toBe('1')
 	    expect(vm.testBoolean).toBe(true)
-	    expect(vm._data.testBoolean).toBe(true)
 	    expect(vm.optimizeLiteral).toBe(1)
-	    expect(vm._data.optimizeLiteral).toBe(1)
 	    expect(vm.optimizeLiteralStr).toBe('true')
-	    expect(vm._data.optimizeLiteralStr).toBe('true')
 	    expect(vm.optimizeLiteralNegativeNumber).toBe(-1)
-	    expect(vm._data.optimizeLiteralNegativeNumber).toBe(-1)
 	    // one time
 	    expect(vm.testOneTime).toBe('from parent: a')
-	    expect(vm._data.testOneTime).toBe('from parent: a')
 	    // normal
 	    var args = vm._bindDir.calls.argsFor(0)
 	    var prop = args[0].prop
@@ -13436,13 +13722,13 @@
 	    expect(prop.parentPath).toBe('a')
 	    expect(prop.mode).toBe(bindingModes.TWO_WAY)
 	    // two way warn
-	    expect(hasWarned('non-settable parent path')).toBe(true)
+	    expect('non-settable parent path').toHaveBeenWarned()
 	    // literal with filter
 	    args = vm._bindDir.calls.argsFor(3)
 	    prop = args[0].prop
 	    expect(args[0].name).toBe('prop')
 	    expect(prop.path).toBe('literalWithFilter')
-	    expect(prop.parentPath).toBe("'HI'")
+	    expect(prop.parentPath).toBe("'FOO'")
 	    expect(prop.filters.length).toBe(1)
 	    expect(prop.mode).toBe(bindingModes.ONE_WAY)
 	  })
@@ -13451,12 +13737,12 @@
 	    // temporarily remove vm.$parent
 	    var context = vm._context
 	    vm._context = null
-	    el.setAttribute('v-bind:a', '"hi"')
-	    el.setAttribute(':b', 'hi')
+	    el.setAttribute('v-bind:a', '"foo"')
+	    el.setAttribute(':b', '[1,2,3]')
 	    compiler.compileAndLinkProps(vm, el, { a: null, b: null })
 	    expect(vm._bindDir.calls.count()).toBe(0)
-	    expect(vm._data.a).toBe('hi')
-	    expect(hasWarned('Cannot bind dynamic prop on a root')).toBe(true)
+	    expect(vm.a).toBe('foo')
+	    expect(vm.b.join(',')).toBe('1,2,3')
 	    // restore parent mock
 	    vm._context = context
 	  })
@@ -13526,7 +13812,7 @@
 	      el: el,
 	      template: '<test :msg="msg"></test>',
 	      data: {
-	        msg: 'hi'
+	        msg: 'foo'
 	      },
 	      components: {
 	        test: {
@@ -13555,7 +13841,7 @@
 	      },
 	      components: {
 	        test: {
-	          template: 'hi'
+	          template: 'foo'
 	        }
 	      }
 	    })
@@ -13694,7 +13980,7 @@
 	      }
 	    })
 	    expect(el.innerHTML).toBe('<div></div>')
-	    expect(hasWarned('attribute interpolation is not allowed in Vue.js directives')).toBe(true)
+	    expect('attribute interpolation is not allowed in Vue.js directives').toHaveBeenWarned()
 	  })
 	
 	  it('attribute interpolation: warn mixed usage with v-bind', function () {
@@ -13702,16 +13988,16 @@
 	      el: el,
 	      template: '<div class="{{a}}" :class="bcd"></div>',
 	      data: {
-	        a: 'hi'
+	        a: 'foo'
 	      }
 	    })
-	    expect(hasWarned('Do not mix mustache interpolation and v-bind')).toBe(true)
+	    expect('Do not mix mustache interpolation and v-bind').toHaveBeenWarned()
 	  })
 	
 	  it('warn directives on fragment instances', function () {
 	    new Vue({
 	      el: el,
-	      template: '<test id="hi" class="ok" :prop="123"></test>',
+	      template: '<test id="foo" class="ok" :prop="123"></test>',
 	      components: {
 	        test: {
 	          replace: true,
@@ -13721,10 +14007,10 @@
 	      }
 	    })
 	    expect(getWarnCount()).toBe(1)
-	    expect(
-	      hasWarned('Attributes "id", "class" are ignored on component <test>', true) ||
-	      hasWarned('Attributes "class", "id" are ignored on component <test>')
-	    ).toBe(true)
+	    expect([
+	      'Attributes "id", "class" are ignored on component <test>',
+	      'Attributes "class", "id" are ignored on component <test>'
+	    ]).toHaveBeenWarned()
 	  })
 	
 	  it('should compile component container directives using correct context', function () {
@@ -13738,10 +14024,54 @@
 	        }
 	      },
 	      template: '<comp v-test></comp>',
-	      components: { comp: { template: '<div></div>'}}
+	      components: { comp: { template: '<div></div>' }}
 	    })
 	    expect(el.textContent).toBe('worked!')
 	    expect(getWarnCount()).toBe(0)
+	  })
+	
+	  // #xxx
+	  it('should compile build-in terminal directive wihtout loop', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      data: { show: false },
+	      template: '<p v-if:arg1.modifier1="show">hello world</p>'
+	    })
+	    vm.show = true
+	    _.nextTick(function () {
+	      expect(el.textContent).toBe('hello world')
+	      done()
+	    })
+	  })
+	
+	  it('should compile custom terminal directive wihtout loop', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      data: { show: false },
+	      template: '<p v-if="show" v-inject:modal.modifier1="foo">hello world</p>',
+	      directives: {
+	        inject: {
+	          terminal: true,
+	          priority: Vue.options.directives.if.priority + 1,
+	          bind: function () {
+	            this.anchor = _.createAnchor('v-inject')
+	            _.replace(this.el, this.anchor)
+	            var factory = new FragmentFactory(this.vm, this.el)
+	            this.frag = factory.create(this._host, this._scope, this._frag)
+	            this.frag.before(this.anchor)
+	          },
+	          unbind: function () {
+	            this.frag.remove()
+	            _.replace(this.anchor, this.el)
+	          }
+	        }
+	      }
+	    })
+	    vm.show = true
+	    _.nextTick(function () {
+	      expect(el.textContent).toBe('hello world')
+	      done()
+	    })
 	  })
 	})
 
@@ -13755,12 +14085,10 @@
 	var _ = __webpack_require__(5)
 	
 	describe('Transclude', function () {
-	
 	  var el, options
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	    options = _.extend({}, Vue.options)
-	    spyWarns()
 	  })
 	
 	  it('normal', function () {
@@ -13779,7 +14107,7 @@
 	    options.template = '#non-existent-stuff'
 	    var res = transclude(el, options)
 	    expect(res).toBeUndefined()
-	    expect(hasWarned('Invalid template option')).toBe(true)
+	    expect('Invalid template option').toHaveBeenWarned()
 	  })
 	
 	  it('template replace', function () {
@@ -13800,44 +14128,44 @@
 	    // multiple root
 	    options.template = '<div></div><div></div>'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // non-element
 	    options.template = '{{hi}}'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // single component: <component>
 	    options.template = '<component bind-is="hi"></component>'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // single component: custom element
 	    options.template = '<test></test>'
 	    options.components = { test: {}}
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // single component: is
 	    options.template = '<div is="test"></div>'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // element directive
 	    options.template = '<el-dir></el-dir>'
 	    options.elementDirectives = { 'el-dir': {}}
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // v-for
 	    options.template = '<div v-for="item in list"></div>'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	
 	    // v-if
 	    options.template = '<div v-if="ok"></div>'
 	    res = transclude(el, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	  })
 	
 	  it('direct fragment instance', function () {
@@ -13855,7 +14183,7 @@
 	    var tpl = document.createElement('template')
 	    tpl.innerHTML = '<div>123</div>'
 	    var res = transclude(tpl, options)
-	    expect(res instanceof DocumentFragment).toBe(true)
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(3)
 	    expect(res.childNodes[0].nodeType).toBe(3)
 	    expect(res.childNodes[1].textContent).toBe('123')
@@ -13890,16 +14218,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
-	var Directive = __webpack_require__(94)
+	var Directive = __webpack_require__(95)
 	var nextTick = Vue.nextTick
 	
 	describe('Directive', function () {
-	
 	  var el, vm, def
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	    def = {
-	      params: ['foo'],
+	      params: ['foo', 'keBab'],
 	      paramWatchers: {
 	        foo: jasmine.createSpy('foo')
 	      },
@@ -14051,6 +14378,7 @@
 	
 	  it('static params', function () {
 	    el.setAttribute('foo', 'hello')
+	    el.setAttribute('ke-bab', 'yo')
 	    var d = new Directive({
 	      name: 'test',
 	      def: def,
@@ -14058,10 +14386,12 @@
 	    }, vm, el)
 	    d._bind()
 	    expect(d.params.foo).toBe('hello')
+	    expect(d.params.keBab).toBe('yo')
 	  })
 	
 	  it('dynamic params', function (done) {
 	    el.setAttribute(':foo', 'a')
+	    el.setAttribute(':ke-bab', '123')
 	    var d = new Directive({
 	      name: 'test',
 	      def: def,
@@ -14069,6 +14399,7 @@
 	    }, vm, el)
 	    d._bind()
 	    expect(d.params.foo).toBe(vm.a)
+	    expect(d.params.keBab).toBe(123)
 	    vm.a = 2
 	    nextTick(function () {
 	      expect(def.paramWatchers.foo).toHaveBeenCalledWith(2, 1)
@@ -14088,7 +14419,6 @@
 	var compiler = __webpack_require__(60)
 	
 	describe('Partial', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -14097,18 +14427,18 @@
 	  it('static', function (done) {
 	    var vm = new Vue({
 	      el: el,
-	      template: '<partial name="yo"></partial>',
+	      template: '<partial name="p"></partial>',
 	      data: {
-	        msg: 'hello'
+	        msg: 'foo'
 	      },
 	      partials: {
-	        yo: '{{msg}}'
+	        p: '{{msg}}'
 	      }
 	    })
-	    expect(el.textContent).toBe('hello')
-	    vm.msg = 'what'
+	    expect(el.textContent).toBe('foo')
+	    vm.msg = 'bar'
 	    _.nextTick(function () {
-	      expect(el.textContent).toBe('what')
+	      expect(el.textContent).toBe('bar')
 	      done()
 	    })
 	  })
@@ -14138,14 +14468,14 @@
 	      el: el,
 	      template: '<div v-for="id in list"><partial v-bind:name="\'test-\' + id"></partial></div>',
 	      data: {
-	        list: ['a', 'b']
+	        list: ['foo', 'bar']
 	      },
 	      partials: {
-	        'test-a': 'a {{id}}',
-	        'test-b': 'b {{id}}'
+	        'test-foo': 'foo {{id}}',
+	        'test-bar': 'bar {{id}}'
 	      }
 	    })
-	    expect(el.textContent).toBe('a ab b')
+	    expect(el.textContent).toBe('foo foobar bar')
 	  })
 	
 	  it('caching', function () {
@@ -14161,16 +14491,16 @@
 	        '<partial name="cache-test"></partial> ' +
 	        '<partial name="cache-test"></partial>',
 	      partials: {
-	        'cache-test': 'cache-test {{msg}}'
+	        'cache-test': 'foo {{msg}}'
 	      }
 	    })
 	    new Comp({
 	      el: el,
 	      data: {
-	        msg: 'hi'
+	        msg: 'bar'
 	      }
 	    })
-	    expect(el.textContent).toBe('cache-test hi cache-test hi')
+	    expect(el.textContent).toBe('foo bar foo bar')
 	    // one call for instance, and one for partial
 	    expect(calls).toBe(2)
 	    // cleanup
@@ -14203,7 +14533,6 @@
 	    expect(vm._directives[0].name).toBe('partial')
 	    expect(vm._watchers.length).toBe(0)
 	  })
-	
 	})
 
 
@@ -14215,7 +14544,6 @@
 	var nextTick = Vue.nextTick
 	
 	describe('Slot Distribution', function () {
-	
 	  var el, vm, options
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -14238,20 +14566,20 @@
 	  })
 	
 	  it('default content', function () {
-	    el.innerHTML = '<p>hi</p>'
+	    el.innerHTML = '<p>foo</p>'
 	    options.template = '<div><slot></slot></div>'
 	    mount()
 	    expect(el.firstChild.tagName).toBe('DIV')
 	    expect(el.firstChild.firstChild.tagName).toBe('P')
-	    expect(el.firstChild.firstChild.textContent).toBe('hi')
+	    expect(el.firstChild.firstChild.textContent).toBe('foo')
 	  })
 	
 	  it('no template auto content', function () {
-	    el.innerHTML = '<p>hi</p>'
+	    el.innerHTML = '<p>foo</p>'
 	    options._asComponent = true
 	    mount()
 	    expect(el.firstChild.tagName).toBe('P')
-	    expect(el.firstChild.textContent).toBe('hi')
+	    expect(el.firstChild.textContent).toBe('foo')
 	  })
 	
 	  it('fallback content', function () {
@@ -14291,17 +14619,17 @@
 	  })
 	
 	  it('default content should only render parts not selected', function () {
-	    el.innerHTML = '<div>hi</div><p slot="a">1</p><p slot="b">2</p>'
+	    el.innerHTML = '<div>foo</div><p slot="a">1</p><p slot="b">2</p>'
 	    options.template =
 	      '<slot name="a"></slot>' +
 	      '<slot></slot>' +
 	      '<slot name="b"></slot>'
 	    mount()
-	    expect(el.innerHTML).toBe('<p slot="a">1</p><div>hi</div><p slot="b">2</p>')
+	    expect(el.innerHTML).toBe('<p slot="a">1</p><div>foo</div><p slot="b">2</p>')
 	  })
 	
 	  it('content transclusion with replace', function () {
-	    el.innerHTML = '<p>hi</p>'
+	    el.innerHTML = '<p>foo</p>'
 	    options.template = '<div><div><slot></slot></div></div>'
 	    options.replace = true
 	    mount()
@@ -14309,11 +14637,11 @@
 	    expect(res).not.toBe(el)
 	    expect(res.firstChild.tagName).toBe('DIV')
 	    expect(res.firstChild.firstChild.tagName).toBe('P')
-	    expect(res.firstChild.firstChild.textContent).toBe('hi')
+	    expect(res.firstChild.firstChild.textContent).toBe('foo')
 	  })
 	
 	  it('block instance content transclusion', function () {
-	    el.innerHTML = '<p slot="p">hi</p><span slot="span">ho</span>'
+	    el.innerHTML = '<p slot="p">foo</p><span slot="span">ho</span>'
 	    options.template = '<div></div><slot name="p"></slot><slot name="span"></slot>'
 	    options.replace = true
 	    mount()
@@ -14360,7 +14688,7 @@
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        msg: 'hello'
+	        msg: 'foo'
 	      },
 	      template: '<test>{{msg}}</test>',
 	      components: {
@@ -14369,10 +14697,10 @@
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<test>hello</test>')
-	    vm.msg = 'what'
+	    expect(el.innerHTML).toBe('<test>foo</test>')
+	    vm.msg = 'bar'
 	    nextTick(function () {
-	      expect(el.innerHTML).toBe('<test>what</test>')
+	      expect(el.innerHTML).toBe('<test>bar</test>')
 	      done()
 	    })
 	  })
@@ -14431,7 +14759,7 @@
 	      template: '<test v-for="n in list" :class="cls" :a="n.a">{{msg}}</test>',
 	      data: {
 	        cls: 'parent',
-	        msg: 'hi',
+	        msg: 'foo',
 	        list: [{a: 1}, {a: 2}, {a: 3}]
 	      },
 	      components: {
@@ -14443,12 +14771,12 @@
 	      }
 	    })
 	    var markup = vm.list.map(function (item) {
-	      return '<div class="child parent">' + item.a + ' hi</div>'
+	      return '<div class="child parent">' + item.a + ' foo</div>'
 	    }).join('')
 	    expect(el.innerHTML).toBe(markup)
-	    vm.msg = 'ho'
+	    vm.msg = 'bar'
 	    markup = vm.list.map(function (item) {
-	      return '<div class="child parent">' + item.a + ' ho</div>'
+	      return '<div class="child parent">' + item.a + ' bar</div>'
 	    }).join('')
 	    nextTick(function () {
 	      expect(el.innerHTML).toBe(markup)
@@ -14598,28 +14926,32 @@
 	      template: '<div v-for="n in 3"><comp></comp></div>',
 	      components: {
 	        comp: {
-	          template: '<div><slot>{{something}}</slot></div>',
+	          template: '<div><slot>{{foo}}</slot></div>',
 	          data: function () {
 	            return {
-	              something: 'hi'
+	              foo: 'bar'
 	            }
 	          }
 	        }
 	      }
 	    })
-	    expect(el.textContent).toBe('hihihi')
+	    expect(el.textContent).toBe('barbarbar')
 	  })
 	
 	  it('fallback for slot with v-if', function (done) {
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        ok: false
+	        ok: false,
+	        msg: 'inserted'
 	      },
-	      template: '<div><comp><div v-if="ok">inserted</div></comp></div>',
+	      template: '<div><comp><div v-if="ok">{{ msg }}</div></comp></div>',
 	      components: {
 	        comp: {
-	          template: '<div><slot>fallback</slot></div>'
+	          data: function () {
+	            return { msg: 'fallback' }
+	          },
+	          template: '<div><slot>{{ msg }}</slot></div>'
 	        }
 	      }
 	    })
@@ -14631,6 +14963,42 @@
 	    })
 	  })
 	
+	  // #2435
+	  it('slot inside template', function () {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<test>foo</test>',
+	      components: {
+	        test: {
+	          data: function () {
+	            return { ok: true }
+	          },
+	          template:
+	            '<div>' +
+	              '<template v-if="ok">' +
+	                '<template v-if="ok">' +
+	                  '<slot>{{ msg }}</slot>' +
+	                '</template>' +
+	              '</template>' +
+	            '</div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('foo')
+	  })
+	
+	  it('warn dynamic slot attribute', function () {
+	    new Vue({
+	      el: el,
+	      template: '<test><div :slot="1"></div></test>',
+	      components: {
+	        test: {
+	          template: '<div><slot></slot></div>'
+	        }
+	      }
+	    })
+	    expect('"slot" attribute must be static').toHaveBeenWarned()
+	  })
 	})
 
 
@@ -14642,39 +15010,48 @@
 	var def = __webpack_require__(84)
 	
 	describe(':class', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	  })
 	
 	  it('plain string', function () {
-	    el.className = 'haha'
+	    el.className = 'foo'
 	    var dir = _.extend({ el: el }, def)
-	    dir.update('test')
-	    expect(el.className).toBe('haha test')
-	    dir.update('what now test')
-	    expect(el.className).toBe('haha test now what')
-	    dir.update('ok cool')
-	    expect(el.className).toBe('haha cool ok')
+	    dir.update('bar')
+	    expect(el.className).toBe('foo bar')
+	    dir.update('baz')
+	    expect(el.className).toBe('foo baz')
+	    dir.update('qux')
+	    expect(el.className).toBe('foo qux')
 	    dir.update()
-	    expect(el.className).toBe('haha')
+	    expect(el.className).toBe('foo')
 	  })
 	
 	  it('object value', function () {
-	    el.className = 'hoho'
+	    el.className = 'foo'
 	    var dir = _.extend({ el: el }, def)
 	    dir.update({
-	      a: true,
-	      b: false
+	      bar: true,
+	      baz: false
 	    })
-	    expect(el.className).toBe('hoho a')
+	    expect(el.className).toBe('foo bar')
 	    dir.update({
-	      b: true
+	      baz: true
 	    })
-	    expect(el.className).toBe('hoho b')
+	    expect(el.className).toBe('foo baz')
 	    dir.update(null)
-	    expect(el.className).toBe('hoho')
+	    expect(el.className).toBe('foo')
+	
+	    dir.update({
+	      'bar baz': true,
+	      qux: false
+	    })
+	    expect(el.className).toBe('foo bar baz')
+	    dir.update({
+	      qux: true
+	    })
+	    expect(el.className).toBe('foo qux')
 	  })
 	
 	  it('array value', function () {
@@ -14683,7 +15060,7 @@
 	    dir.update(['b', 'c'])
 	    expect(el.className).toBe('a b c')
 	    dir.update(['d', 'c'])
-	    expect(el.className).toBe('a c d')
+	    expect(el.className).toBe('a d c')
 	    dir.update()
 	    expect(el.className).toBe('a')
 	    // test mutating array
@@ -14694,6 +15071,19 @@
 	    arr.push('f')
 	    dir.update(arr)
 	    expect(el.className).toBe('a f')
+	    // test array with objects
+	    dir.update(['x', {y: true, z: true}])
+	    expect(el.className).toBe('a x y z')
+	    dir.update(['x', {y: true, z: false}])
+	    expect(el.className).toBe('a x y')
+	    dir.update(['f', {z: true}])
+	    expect(el.className).toBe('a f z')
+	    dir.update(['l', 'f', {n: true, z: true}])
+	    expect(el.className).toBe('a l f n z')
+	    dir.update(['x', {}])
+	    expect(el.className).toBe('a x')
+	    dir.update()
+	    expect(el.className).toBe('a')
 	  })
 	})
 
@@ -14706,12 +15096,10 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('Component', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	    document.body.appendChild(el)
-	    spyWarns()
 	  })
 	
 	  afterEach(function () {
@@ -14813,14 +15201,14 @@
 	      },
 	      components: {
 	        'view-a': {
-	          template: '<div>AAA</div>',
+	          template: '<div>foo</div>',
 	          replace: true,
 	          data: function () {
 	            return { view: 'a' }
 	          }
 	        },
 	        'view-b': {
-	          template: '<div>BBB</div>',
+	          template: '<div>bar</div>',
 	          replace: true,
 	          data: function () {
 	            return { view: 'b' }
@@ -14828,16 +15216,36 @@
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<div view="view-a">AAA</div>')
+	    expect(el.innerHTML).toBe('<div view="view-a">foo</div>')
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
-	      expect(el.innerHTML).toBe('<div view="view-b">BBB</div>')
+	      expect(el.innerHTML).toBe('<div view="view-b">bar</div>')
 	      vm.view = ''
 	      _.nextTick(function () {
 	        expect(el.innerHTML).toBe('')
 	        done()
 	      })
 	    })
+	  })
+	
+	  it(':is using raw component constructor', function () {
+	    new Vue({
+	      el: el,
+	      template:
+	        '<component :is="$options.components.test"></component>' +
+	        '<component :is="$options.components.async"></component>',
+	      components: {
+	        test: {
+	          template: 'foo'
+	        },
+	        async: function (resolve) {
+	          resolve({
+	            template: 'bar'
+	          })
+	        }
+	      }
+	    })
+	    expect(el.textContent).toBe('foobar')
 	  })
 	
 	  it('keep-alive', function (done) {
@@ -14852,32 +15260,32 @@
 	      components: {
 	        'view-a': {
 	          created: spyA,
-	          template: '<div>AAA</div>',
+	          template: '<div>foo</div>',
 	          replace: true
 	        },
 	        'view-b': {
 	          created: spyB,
-	          template: '<div>BBB</div>',
+	          template: '<div>bar</div>',
 	          replace: true
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<div>AAA</div>')
+	    expect(el.innerHTML).toBe('<div>foo</div>')
 	    expect(spyA.calls.count()).toBe(1)
 	    expect(spyB.calls.count()).toBe(0)
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
-	      expect(el.innerHTML).toBe('<div>BBB</div>')
+	      expect(el.innerHTML).toBe('<div>bar</div>')
 	      expect(spyA.calls.count()).toBe(1)
 	      expect(spyB.calls.count()).toBe(1)
 	      vm.view = 'view-a'
 	      _.nextTick(function () {
-	        expect(el.innerHTML).toBe('<div>AAA</div>')
+	        expect(el.innerHTML).toBe('<div>foo</div>')
 	        expect(spyA.calls.count()).toBe(1)
 	        expect(spyB.calls.count()).toBe(1)
 	        vm.view = 'view-b'
 	        _.nextTick(function () {
-	          expect(el.innerHTML).toBe('<div>BBB</div>')
+	          expect(el.innerHTML).toBe('<div>bar</div>')
 	          expect(spyA.calls.count()).toBe(1)
 	          expect(spyB.calls.count()).toBe(1)
 	          done()
@@ -14972,12 +15380,41 @@
 	      template: '<view-a></view-a>',
 	      components: {
 	        'view-a': {
-	          template: 'AAA',
+	          template: 'foo',
 	          activate: function (ready) {
 	            setTimeout(function () {
 	              expect(el.textContent).toBe('')
 	              ready()
-	              expect(el.textContent).toBe('AAA')
+	              expect(el.textContent).toBe('foo')
+	              done()
+	            }, 0)
+	          }
+	        }
+	      }
+	    })
+	  })
+	
+	  it('multiple activate hooks', function (done) {
+	    var mixinSpy = jasmine.createSpy('mixin activate')
+	    new Vue({
+	      el: el,
+	      template: '<view-a></view-a>',
+	      components: {
+	        'view-a': {
+	          template: 'foo',
+	          mixins: [{
+	            activate: function (done) {
+	              expect(el.textContent).toBe('')
+	              mixinSpy()
+	              done()
+	            }
+	          }],
+	          activate: function (ready) {
+	            setTimeout(function () {
+	              expect(mixinSpy).toHaveBeenCalled()
+	              expect(el.textContent).toBe('')
+	              ready()
+	              expect(el.textContent).toBe('foo')
 	              done()
 	            }, 0)
 	          }
@@ -14996,13 +15433,13 @@
 	      template: '<component :is="view"></component>',
 	      components: {
 	        'view-a': {
-	          template: 'AAA',
+	          template: 'foo',
 	          activate: function (ready) {
 	            next = ready
 	          }
 	        },
 	        'view-b': {
-	          template: 'BBB',
+	          template: 'bar',
 	          activate: function (ready) {
 	            next = ready
 	          }
@@ -15012,14 +15449,14 @@
 	    expect(next).toBeTruthy()
 	    expect(el.textContent).toBe('')
 	    next()
-	    expect(el.textContent).toBe('AAA')
+	    expect(el.textContent).toBe('foo')
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
-	      expect(el.textContent).toBe('AAA')
+	      expect(el.textContent).toBe('foo')
 	      // old vm is already removed, this is the new vm
 	      expect(vm.$children.length).toBe(1)
 	      next()
-	      expect(el.textContent).toBe('BBB')
+	      expect(el.textContent).toBe('bar')
 	      // ensure switching before ready event correctly
 	      // cleans up the component being waited on.
 	      // see #1152
@@ -15030,7 +15467,7 @@
 	        vm.view = 'view-b'
 	        _.nextTick(function () {
 	          expect(vm.$children.length).toBe(1)
-	          expect(vm.$children[0].$el.textContent).toBe('BBB')
+	          expect(vm.$children[0].$el.textContent).toBe('bar')
 	          // calling view-a's ready callback here should not throw
 	          // because it should've been cancelled (#1994)
 	          expect(callback).not.toThrow()
@@ -15050,13 +15487,13 @@
 	      template: '<component :is="view" keep-alive></component>',
 	      components: {
 	        'view-a': {
-	          template: 'AAA',
+	          template: 'foo',
 	          activate: function (ready) {
 	            next = ready
 	          }
 	        },
 	        'view-b': {
-	          template: 'BBB',
+	          template: 'bar',
 	          activate: function (ready) {
 	            next = ready
 	          }
@@ -15064,17 +15501,17 @@
 	      }
 	    })
 	    next()
-	    expect(el.textContent).toBe('AAA')
+	    expect(el.textContent).toBe('foo')
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
 	      expect(vm.$children.length).toBe(2)
 	      next()
-	      expect(el.textContent).toBe('BBB')
+	      expect(el.textContent).toBe('bar')
 	      vm.view = 'view-a'
 	      _.nextTick(function () {
 	        // should switch without the need to emit
 	        // because of keep-alive
-	        expect(el.textContent).toBe('AAA')
+	        expect(el.textContent).toBe('foo')
 	        done()
 	      })
 	    })
@@ -15091,8 +15528,8 @@
 	      },
 	      template: '<component :is="view" transition="test" transition-mode="in-out"></component>',
 	      components: {
-	        'view-a': { template: 'AAA' },
-	        'view-b': { template: 'BBB' }
+	        'view-a': { template: 'foo' },
+	        'view-b': { template: 'bar' }
 	      },
 	      transitions: {
 	        test: {
@@ -15107,17 +15544,17 @@
 	        }
 	      }
 	    })
-	    expect(el.textContent).toBe('AAA')
+	    expect(el.textContent).toBe('foo')
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
 	      expect(spy1).toHaveBeenCalled()
 	      expect(spy2).not.toHaveBeenCalled()
-	      expect(el.textContent).toBe('AAABBB')
+	      expect(el.textContent).toBe('foobar')
 	      next()
 	      _.nextTick(function () {
 	        expect(spy2).toHaveBeenCalled()
 	        _.nextTick(function () {
-	          expect(el.textContent).toBe('BBB')
+	          expect(el.textContent).toBe('bar')
 	          done()
 	        })
 	      })
@@ -15135,8 +15572,8 @@
 	      },
 	      template: '<component :is="view" transition="test" transition-mode="out-in"></component>',
 	      components: {
-	        'view-a': { template: 'AAA' },
-	        'view-b': { template: 'BBB' }
+	        'view-a': { template: 'foo' },
+	        'view-b': { template: 'bar' }
 	      },
 	      transitions: {
 	        test: {
@@ -15151,15 +15588,15 @@
 	        }
 	      }
 	    })
-	    expect(el.textContent).toBe('AAA')
+	    expect(el.textContent).toBe('foo')
 	    vm.view = 'view-b'
 	    _.nextTick(function () {
 	      expect(spy1).toHaveBeenCalled()
 	      expect(spy2).not.toHaveBeenCalled()
-	      expect(el.textContent).toBe('AAA')
+	      expect(el.textContent).toBe('foo')
 	      next()
 	      expect(spy2).toHaveBeenCalled()
-	      expect(el.textContent).toBe('BBB')
+	      expect(el.textContent).toBe('bar')
 	      done()
 	    })
 	  })
@@ -15195,7 +15632,7 @@
 	    new Vue({
 	      el: el
 	    })
-	    expect(hasWarned('cannot mount component "test" on already mounted element')).toBe(true)
+	    expect('cannot mount component "test" on already mounted element').toHaveBeenWarned()
 	  })
 	
 	  it('not found component should not throw', function () {
@@ -15205,6 +15642,17 @@
 	        template: '<div is="non-existent"></div>'
 	      })
 	    }).not.toThrow()
+	  })
+	
+	  it('warn possible camelCase components', function () {
+	    new Vue({
+	      el: document.createElement('div'),
+	      template: '<HelloWorld></HelloWorld>',
+	      components: {
+	        'hello-world': {}
+	      }
+	    })
+	    expect('did you mean <hello-world>?').toHaveBeenWarned()
 	  })
 	})
 
@@ -15216,18 +15664,16 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('prop', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
 	  })
 	
 	  it('one way binding', function (done) {
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        b: 'B'
+	        b: 'bar'
 	      },
 	      template: '<test v-bind:b="b" v-ref:child></test>',
 	      components: {
@@ -15237,14 +15683,14 @@
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<test>B</test>')
-	    vm.b = 'BB'
+	    expect(el.innerHTML).toBe('<test>bar</test>')
+	    vm.b = 'baz'
 	    Vue.nextTick(function () {
-	      expect(el.innerHTML).toBe('<test>BB</test>')
-	      vm.$refs.child.b = 'BBB'
-	      expect(vm.b).toBe('BB')
+	      expect(el.innerHTML).toBe('<test>baz</test>')
+	      vm.$refs.child.b = 'qux'
+	      expect(vm.b).toBe('baz')
 	      Vue.nextTick(function () {
-	        expect(el.innerHTML).toBe('<test>BBB</test>')
+	        expect(el.innerHTML).toBe('<test>qux</test>')
 	        done()
 	      })
 	    })
@@ -15299,17 +15745,17 @@
 	    vm.b = 'BB'
 	    Vue.nextTick(function () {
 	      expect(el.firstChild.textContent).toBe('AA BB AA')
-	      vm.test = { a: 'AAA' }
+	      vm.test = { a: 'foo' }
 	      Vue.nextTick(function () {
-	        expect(el.firstChild.textContent).toBe('AAA BB AAA')
+	        expect(el.firstChild.textContent).toBe('foo BB foo')
 	        vm.$data = {
-	          b: 'BBB',
+	          b: 'bar',
 	          test: {
-	            a: 'AAAA'
+	            a: 'fooA'
 	          }
 	        }
 	        Vue.nextTick(function () {
-	          expect(el.firstChild.textContent).toBe('AAAA BBB AAAA')
+	          expect(el.firstChild.textContent).toBe('fooA bar fooA')
 	          // test two-way
 	          vm.$refs.child.bb = 'B'
 	          vm.$refs.child.testt = { a: 'A' }
@@ -15334,7 +15780,7 @@
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        b: 'B'
+	        b: 'foo'
 	      },
 	      template: '<test :b.once="b" v-ref:child></test>',
 	      components: {
@@ -15344,10 +15790,10 @@
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<test>B</test>')
-	    vm.b = 'BB'
+	    expect(el.innerHTML).toBe('<test>foo</test>')
+	    vm.b = 'bar'
 	    Vue.nextTick(function () {
-	      expect(el.innerHTML).toBe('<test>B</test>')
+	      expect(el.innerHTML).toBe('<test>foo</test>')
 	      done()
 	    })
 	  })
@@ -15356,9 +15802,9 @@
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        b: 'B'
+	        b: 'foo'
 	      },
-	      template: '<test :b.sync=" b + \'B\'" v-ref:child></test>',
+	      template: '<test :b.sync=" b + \'bar\'" v-ref:child></test>',
 	      components: {
 	        test: {
 	          props: ['b'],
@@ -15366,15 +15812,15 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Cannot bind two-way prop with non-settable parent path')).toBe(true)
-	    expect(el.innerHTML).toBe('<test>BB</test>')
-	    vm.b = 'BB'
+	    expect('Cannot bind two-way prop with non-settable parent path').toHaveBeenWarned()
+	    expect(el.innerHTML).toBe('<test>foobar</test>')
+	    vm.b = 'baz'
 	    Vue.nextTick(function () {
-	      expect(el.innerHTML).toBe('<test>BBB</test>')
-	      vm.$refs.child.b = 'hahaha'
+	      expect(el.innerHTML).toBe('<test>bazbar</test>')
+	      vm.$refs.child.b = 'qux'
 	      Vue.nextTick(function () {
-	        expect(vm.b).toBe('BB')
-	        expect(el.innerHTML).toBe('<test>hahaha</test>')
+	        expect(vm.b).toBe('baz')
+	        expect(el.innerHTML).toBe('<test>qux</test>')
 	        done()
 	      })
 	    })
@@ -15383,9 +15829,9 @@
 	  it('warn expect two-way', function () {
 	    new Vue({
 	      el: el,
-	      template: '<test :test="ok"></test>',
+	      template: '<test :test="foo"></test>',
 	      data: {
-	        ok: 'hi'
+	        foo: 'bar'
 	      },
 	      components: {
 	        test: {
@@ -15397,7 +15843,7 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('expects a two-way binding type')).toBe(true)
+	    expect('expects a two-way binding type').toHaveBeenWarned()
 	  })
 	
 	  it('warn $data as prop', function () {
@@ -15405,7 +15851,7 @@
 	      el: el,
 	      template: '<test></test>',
 	      data: {
-	        ok: 'hi'
+	        foo: 'bar'
 	      },
 	      components: {
 	        test: {
@@ -15413,7 +15859,7 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Do not use $data as prop')).toBe(true)
+	    expect('Do not use $data as prop').toHaveBeenWarned()
 	  })
 	
 	  it('warn invalid keys', function () {
@@ -15426,14 +15872,14 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Invalid prop key')).toBe(true)
+	    expect('Invalid prop key').toHaveBeenWarned()
 	  })
 	
 	  it('warn props with no el option', function () {
 	    new Vue({
 	      props: ['a']
 	    })
-	    expect(hasWarned('Props will not be compiled if no `el`')).toBe(true)
+	    expect('Props will not be compiled if no `el`').toHaveBeenWarned()
 	  })
 	
 	  it('warn object/array default values', function () {
@@ -15450,7 +15896,7 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Use a factory function to return the default value')).toBe(true)
+	    expect('use a factory function to return the default value').toHaveBeenWarned()
 	    expect(getWarnCount()).toBe(2)
 	  })
 	
@@ -15479,10 +15925,10 @@
 	      // unbind the two props
 	      child._directives[0].unbind()
 	      child._directives[1].unbind()
-	      child.aa = 'AAA'
+	      child.aa = 'foo'
 	      vm.b = 'BBB'
 	      Vue.nextTick(function () {
-	        expect(el.firstChild.textContent).toBe('AAA BB')
+	        expect(el.firstChild.textContent).toBe('foo BB')
 	        expect(vm.a).toBe('AA')
 	        done()
 	      })
@@ -15494,8 +15940,8 @@
 	      el: el,
 	      template: '<test :b="a" :c="d"></test>',
 	      data: {
-	        a: 'AAA',
-	        d: 'DDD'
+	        a: 'foo',
+	        d: 'bar'
 	      },
 	      components: {
 	        test: {
@@ -15505,12 +15951,11 @@
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<p>AAA</p><p>DDD</p>')
+	    expect(el.innerHTML).toBe('<p>foo</p><p>bar</p>')
 	  })
 	
 	  describe('assertions', function () {
-	
-	    function makeInstance (value, type, validator, coerce) {
+	    function makeInstance (value, type, validator, coerce, required) {
 	      return new Vue({
 	        el: document.createElement('div'),
 	        template: '<test :test="val"></test>',
@@ -15523,7 +15968,8 @@
 	              test: {
 	                type: type,
 	                validator: validator,
-	                coerce: coerce
+	                coerce: coerce,
+	                required: required
 	              }
 	            }
 	          }
@@ -15535,42 +15981,42 @@
 	      makeInstance('hello', String)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance(123, String)
-	      expect(hasWarned('Expected String')).toBe(true)
+	      expect('Expected String').toHaveBeenWarned()
 	    })
 	
 	    it('number', function () {
 	      makeInstance(123, Number)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance('123', Number)
-	      expect(hasWarned('Expected Number')).toBe(true)
+	      expect('Expected Number').toHaveBeenWarned()
 	    })
 	
 	    it('boolean', function () {
 	      makeInstance(true, Boolean)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance('123', Boolean)
-	      expect(hasWarned('Expected Boolean')).toBe(true)
+	      expect('Expected Boolean').toHaveBeenWarned()
 	    })
 	
 	    it('function', function () {
 	      makeInstance(function () {}, Function)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance(123, Function)
-	      expect(hasWarned('Expected Function')).toBe(true)
+	      expect('Expected Function').toHaveBeenWarned()
 	    })
 	
 	    it('object', function () {
 	      makeInstance({}, Object)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance([], Object)
-	      expect(hasWarned('Expected Object')).toBe(true)
+	      expect('Expected Object').toHaveBeenWarned()
 	    })
 	
 	    it('array', function () {
 	      makeInstance([], Array)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance({}, Array)
-	      expect(hasWarned('Expected Array')).toBe(true)
+	      expect('Expected Array').toHaveBeenWarned()
 	    })
 	
 	    it('custom constructor', function () {
@@ -15578,7 +16024,14 @@
 	      makeInstance(new Class(), Class)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance({}, Class)
-	      expect(hasWarned('Expected custom type')).toBe(true)
+	      expect('Expected custom type').toHaveBeenWarned()
+	    })
+	
+	    it('multiple types', function () {
+	      makeInstance([], [Array, Number, Boolean])
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance({}, [Array, Number, Boolean])
+	      expect('Expected Array, Number, Boolean').toHaveBeenWarned()
 	    })
 	
 	    it('custom validator', function () {
@@ -15589,7 +16042,7 @@
 	      makeInstance(123, null, function (v) {
 	        return v === 234
 	      })
-	      expect(hasWarned('custom validator check failed')).toBe(true)
+	      expect('custom validator check failed').toHaveBeenWarned()
 	    })
 	
 	    it('type check + custom validator', function () {
@@ -15600,11 +16053,26 @@
 	      makeInstance(123, Number, function (v) {
 	        return v === 234
 	      })
-	      expect(hasWarned('custom validator check failed')).toBe(true)
+	      expect('custom validator check failed').toHaveBeenWarned()
 	      makeInstance(123, String, function (v) {
 	        return v === 123
 	      })
-	      expect(hasWarned('Expected String')).toBe(true)
+	      expect('Expected String').toHaveBeenWarned()
+	    })
+	
+	    it('multiple types + custom validator', function () {
+	      makeInstance(123, [Number, String, Boolean], function (v) {
+	        return v === 123
+	      })
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance(123, [Number, String, Boolean], function (v) {
+	        return v === 234
+	      })
+	      expect('custom validator check failed').toHaveBeenWarned()
+	      makeInstance(123, [String, Boolean], function (v) {
+	        return v === 123
+	      })
+	      expect('Expected String, Boolean').toHaveBeenWarned()
 	    })
 	
 	    it('type check + coerce', function () {
@@ -15613,6 +16081,17 @@
 	      makeInstance('123', Number, null, Number)
 	      expect(getWarnCount()).toBe(0)
 	      makeInstance('123', Boolean, null, function (val) {
+	        return val === '123'
+	      })
+	      expect(getWarnCount()).toBe(0)
+	    })
+	
+	    it('multiple types + custom validator', function () {
+	      makeInstance(123, [String, Boolean, Number], null, String)
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance('123', [String, Boolean, Number], null, Number)
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance('123', [String, Boolean, Function], null, function (val) {
 	        return val === '123'
 	      })
 	      expect(getWarnCount()).toBe(0)
@@ -15630,9 +16109,24 @@
 	          }
 	        }
 	      })
-	      expect(hasWarned('Missing required prop')).toBe(true)
+	      expect('Missing required prop').toHaveBeenWarned()
 	    })
 	
+	    it('optional with type + null/undefined', function () {
+	      makeInstance(undefined, String)
+	      expect(getWarnCount()).toBe(0)
+	      makeInstance(null, String)
+	      expect(getWarnCount()).toBe(0)
+	    })
+	
+	    it('required with type + null/undefined', function () {
+	      makeInstance(undefined, String, null, null, true)
+	      expect(getWarnCount()).toBe(1)
+	      expect('Expected String').toHaveBeenWarned()
+	      makeInstance(null, Boolean, null, null, true)
+	      expect(getWarnCount()).toBe(2)
+	      expect('Expected Boolean').toHaveBeenWarned()
+	    })
 	  })
 	
 	  it('alternative syntax', function () {
@@ -15640,8 +16134,8 @@
 	      el: el,
 	      template: '<test :b="a" :c="d"></test>',
 	      data: {
-	        a: 'AAA',
-	        d: 'DDD'
+	        a: 'foo',
+	        d: 'bar'
 	      },
 	      components: {
 	        test: {
@@ -15658,9 +16152,9 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Missing required prop')).toBe(true)
-	    expect(hasWarned('Expected Number')).toBe(true)
-	    expect(el.textContent).toBe('AAA')
+	    expect('Missing required prop').toHaveBeenWarned()
+	    expect('Expected Number').toHaveBeenWarned()
+	    expect(el.textContent).toBe('foo')
 	  })
 	
 	  it('mixed syntax', function () {
@@ -15668,8 +16162,8 @@
 	      el: el,
 	      template: '<test :b="a" :c="d"></test>',
 	      data: {
-	        a: 'AAA',
-	        d: 'DDD'
+	        a: 'foo',
+	        d: 'bar'
 	      },
 	      components: {
 	        test: {
@@ -15688,34 +16182,9 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('Missing required prop')).toBe(true)
-	    expect(hasWarned('Expected Number')).toBe(true)
-	    expect(el.textContent).toBe('AAA')
-	  })
-	
-	  it('should not overwrite default value for an absent Boolean prop', function () {
-	    var vm = new Vue({
-	      el: el,
-	      template: '<test></test>',
-	      components: {
-	        test: {
-	          props: {
-	            prop: Boolean
-	          },
-	          data: function () {
-	            return {
-	              prop: true
-	            }
-	          },
-	          template: '{{prop}}'
-	        }
-	      }
-	    })
-	    expect(vm.$children[0].prop).toBe(true)
-	    expect(vm.$el.textContent).toBe('true')
-	    expect(JSON.stringify(vm.$children[0].$data)).toBe(JSON.stringify({
-	      prop: true
-	    }))
+	    expect('Missing required prop').toHaveBeenWarned()
+	    expect('Expected Number').toHaveBeenWarned()
+	    expect(el.textContent).toBe('foo')
 	  })
 	
 	  it('should respect default value of a Boolean prop', function () {
@@ -15792,7 +16261,7 @@
 	        comp: Comp
 	      }
 	    })
-	    expect(hasWarned('already defined as a prop')).toBe(true)
+	    expect('already defined as a prop').toHaveBeenWarned()
 	  })
 	
 	  it('should not warn data fields already defined as a prop if it is from instantiation call', function () {
@@ -15853,18 +16322,222 @@
 	  it('treat boolean props properly', function () {
 	    var vm = new Vue({
 	      el: el,
-	      template: '<comp v-ref:child prop-a></comp>',
+	      template: '<comp v-ref:child prop-a prop-b="prop-b"></comp>',
 	      components: {
 	        comp: {
 	          props: {
 	            propA: Boolean,
-	            propB: Boolean
+	            propB: Boolean,
+	            propC: Boolean
 	          }
 	        }
 	      }
 	    })
 	    expect(vm.$refs.child.propA).toBe(true)
-	    expect(vm.$refs.child.propB).toBe(false)
+	    expect(vm.$refs.child.propB).toBe(true)
+	    expect(vm.$refs.child.propC).toBe(false)
+	  })
+	
+	  it('detect possible camelCase prop usage', function () {
+	    new Vue({
+	      el: el,
+	      template: '<comp propA="true" :propB="true" v-bind:propC.sync="true"></comp>',
+	      components: {
+	        comp: {
+	          props: ['propA', 'propB', 'prop-c']
+	        }
+	      }
+	    })
+	    expect(getWarnCount()).toBe(3)
+	    expect('did you mean `prop-a`').toHaveBeenWarned()
+	    expect('did you mean `prop-b`').toHaveBeenWarned()
+	    expect('did you mean `prop-c`').toHaveBeenWarned()
+	  })
+	
+	  it('should use default for undefined values', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp :a="a"></comp>',
+	      data: {
+	        a: undefined
+	      },
+	      components: {
+	        comp: {
+	          template: '{{a}}',
+	          props: {
+	            a: {
+	              default: 1
+	            }
+	          }
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('1')
+	    vm.a = 2
+	    Vue.nextTick(function () {
+	      expect(vm.$el.textContent).toBe('2')
+	      vm.a = undefined
+	      Vue.nextTick(function () {
+	        expect(vm.$el.textContent).toBe('1')
+	        done()
+	      })
+	    })
+	  })
+	
+	  it('non reactive values passed down as prop should not be converted', function (done) {
+	    var a = Object.freeze({
+	      nested: {
+	        msg: 'hello'
+	      }
+	    })
+	    var parent = new Vue({
+	      el: el,
+	      template: '<comp :a="a.nested"></comp>',
+	      data: {
+	        a: a
+	      },
+	      components: {
+	        comp: {
+	          props: ['a']
+	        }
+	      }
+	    })
+	    var child = parent.$children[0]
+	    expect(child.a.msg).toBe('hello')
+	    expect(child.a.__ob__).toBeUndefined() // should not be converted
+	    parent.a = Object.freeze({
+	      nested: {
+	        msg: 'yo'
+	      }
+	    })
+	    Vue.nextTick(function () {
+	      expect(child.a.msg).toBe('yo')
+	      expect(child.a.__ob__).toBeUndefined()
+	      done()
+	    })
+	  })
+	
+	  it('inline prop values should be converted', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp :a="[1, 2, 3]"></comp>',
+	      components: {
+	        comp: {
+	          props: ['a'],
+	          template: '<div v-for="i in a">{{ i }}</div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('123')
+	    vm.$children[0].a.pop()
+	    Vue.nextTick(function () {
+	      expect(vm.$el.textContent).toBe('12')
+	      done()
+	    })
+	  })
+	
+	  // #2549
+	  it('mutating child prop binding should be reactive', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp :list="list"></comp>',
+	      data: {
+	        list: [1, 2, 3]
+	      },
+	      components: {
+	        comp: {
+	          props: ['list'],
+	          template: '<div v-for="i in list">{{ i }}</div>',
+	          created: function () {
+	            this.list = [2, 3, 4]
+	          }
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('234')
+	    vm.$children[0].list.push(5)
+	    Vue.nextTick(function () {
+	      expect(vm.$el.textContent).toBe('2345')
+	      done()
+	    })
+	  })
+	
+	  it('prop default value should be reactive', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp :list="list"></comp>',
+	      data: {
+	        list: undefined
+	      },
+	      components: {
+	        comp: {
+	          props: {
+	            list: {
+	              default: function () {
+	                return [2, 3, 4]
+	              }
+	            }
+	          },
+	          template: '<div v-for="i in list">{{ i }}</div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('234')
+	    vm.$children[0].list.push(5)
+	    Vue.nextTick(function () {
+	      expect(vm.$el.textContent).toBe('2345')
+	      done()
+	    })
+	  })
+	
+	  it('prop coerced value should be reactive', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp :obj="obj"></comp>',
+	      data: {
+	        obj: { ok: true }
+	      },
+	      components: {
+	        comp: {
+	          props: {
+	            obj: {
+	              coerce: function () {
+	                return { ok: false }
+	              }
+	            }
+	          },
+	          template: '<div>{{ obj.ok }}</div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('false')
+	    vm.$children[0].obj.ok = true
+	    Vue.nextTick(function () {
+	      expect(vm.$el.textContent).toBe('true')
+	      done()
+	    })
+	  })
+	
+	  it('prop coercion should be applied after defaulting', function () {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<comp></comp>',
+	      components: {
+	        comp: {
+	          props: {
+	            color: {
+	              type: String,
+	              default: 'blue',
+	              coerce: function (color) {
+	                return 'color-' + color
+	              }
+	            }
+	          },
+	          template: '<div>{{ color }}</div>'
+	        }
+	      }
+	    })
+	    expect(vm.$el.textContent).toBe('color-blue')
 	  })
 	})
 
@@ -15893,7 +16566,6 @@
 	}
 	
 	describe(':style', function () {
-	
 	  var el, dir
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -15988,7 +16660,7 @@
 	    el.setAttribute(':style', 'divStyling')
 	    var vm = new Vue({
 	      el: el,
-	      data: {divStyling: { display: 'none'}}
+	      data: {divStyling: { display: 'none' }}
 	    })
 	    expect(el.style.display).toBe('none')
 	    vm.divStyling.display = 'block'
@@ -16006,11 +16678,10 @@
 
 	var _ = __webpack_require__(5)
 	var Vue = __webpack_require__(1)
-	var Directive = __webpack_require__(94)
-	var def = __webpack_require__(87)
+	var Directive = __webpack_require__(95)
+	var def = __webpack_require__(88)
 	
 	describe('transition', function () {
-	
 	  it('should instantiate a transition object with correct args', function () {
 	    var fns = {}
 	    var el = document.createElement('div')
@@ -16040,23 +16711,6 @@
 	    expect(transition.leaveClass).toBe('lol-leave')
 	    expect(transition.fns).toBeUndefined()
 	    expect(dir.el.className === 'lol-transition')
-	  })
-	
-	  it('should bind the transition to closest vm', function () {
-	    var vm1 = new Vue()
-	    var vm2 = new Vue()
-	    var el = document.createElement('div')
-	    var dir = new Directive({
-	      name: 'transition',
-	      raw: 'test',
-	      def: def,
-	      modifiers: {
-	        literal: true
-	      }
-	    }, vm1, el)
-	    dir.el.__vue__ = vm2
-	    dir._bind()
-	    expect(dir.el.__v_trans.vm).toBe(vm2)
 	  })
 	
 	  it('dynamic transitions', function (done) {
@@ -16138,7 +16792,6 @@
 	var xlinkNS = 'http://www.w3.org/1999/xlink'
 	
 	describe('v-bind', function () {
-	
 	  var el, dir
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -16169,8 +16822,8 @@
 	  it('should set property for input value', function () {
 	    dir.el = document.createElement('input')
 	    dir.arg = 'value'
-	    dir.update('what')
-	    expect(dir.el.value).toBe('what')
+	    dir.update('foo')
+	    expect(dir.el.value).toBe('foo')
 	    dir.el = document.createElement('input')
 	    dir.el.type = 'checkbox'
 	    dir.arg = 'checked'
@@ -16192,11 +16845,11 @@
 	  it('object format', function () {
 	    dir.el = document.createElement('input')
 	    dir.update({
-	      'test': 'hi',
-	      'value': 'what'
+	      'test': 'foo',
+	      'value': 'bar'
 	    })
-	    expect(dir.el.getAttribute('test')).toBe('hi')
-	    expect(dir.el.value).toBe('what')
+	    expect(dir.el.getAttribute('test')).toBe('foo')
+	    expect(dir.el.value).toBe('bar')
 	    dir.update({
 	      'xlink:special': 'ok'
 	    })
@@ -16216,6 +16869,16 @@
 	    dir.update('0 0 1500 1000')
 	    expect(dir.el.getAttribute('viewBox')).toBe('0 0 1500 1000')
 	  })
+	
+	  it('enumrated non-boolean attributes', function () {
+	    ['draggable', 'contenteditable', 'spellcheck'].forEach(function (attr) {
+	      dir.arg = attr
+	      dir.update(true)
+	      expect(el.getAttribute(attr)).toBe('true')
+	      dir.update(false)
+	      expect(el.getAttribute(attr)).toBe('false')
+	    })
+	  })
 	})
 
 
@@ -16227,7 +16890,6 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('v-cloak', function () {
-	
 	  it('should not remove during compile', function () {
 	    var el = document.createElement('div')
 	    el.setAttribute('v-cloak', '')
@@ -16254,11 +16916,9 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('el', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
 	  })
 	
 	  it('normal', function (done) {
@@ -16290,7 +16950,6 @@
 	    })
 	    expect(vm.$el.textContent).toBe('1122')
 	  })
-	
 	})
 
 
@@ -16302,7 +16961,6 @@
 	var _ = Vue.util
 	
 	describe('v-for + ref', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -16386,30 +17044,14 @@
 
 	var _ = __webpack_require__(5)
 	var Vue = __webpack_require__(1)
-	var config = __webpack_require__(36)
 	
 	describe('v-for', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
-	    config.convertAllProperties = false
 	  })
 	
 	  it('objects', function (done) {
-	    var vm = new Vue({
-	      el: el,
-	      data: {
-	        items: [{a: 1}, {a: 2}]
-	      },
-	      template: '<div v-for="item in items">{{$index}} {{item.a}}</div>'
-	    })
-	    assertMutations(vm, el, done)
-	  })
-	
-	  it('objects with convertAllProperties on', function (done) {
-	    config.convertAllProperties = true
 	    var vm = new Vue({
 	      el: el,
 	      data: {
@@ -16507,6 +17149,28 @@
 	      }
 	    })
 	    expect(el.innerHTML).toBe('<div>aaa a</div><div>bbb b</div>')
+	  })
+	
+	  it('check priorities: v-if before v-for', function () {
+	    new Vue({
+	      el: el,
+	      data: {
+	        items: [1, 2, 3]
+	      },
+	      template: '<div v-if="item < 3" v-for="item in items">{{item}}</div>'
+	    })
+	    expect(el.textContent).toBe('12')
+	  })
+	
+	  it('check priorities: v-if after v-for', function () {
+	    new Vue({
+	      el: el,
+	      data: {
+	        items: [1, 2, 3]
+	      },
+	      template: '<div v-for="item in items" v-if="item < 3">{{item}}</div>'
+	    })
+	    expect(el.textContent).toBe('12')
 	  })
 	
 	  it('component', function (done) {
@@ -16658,17 +17322,17 @@
 	      },
 	      components: {
 	        'view-a': {
-	          template: 'AAA'
+	          template: 'foo'
 	        },
 	        'view-b': {
-	          template: 'BBB'
+	          template: 'bar'
 	        },
 	        'view-c': {
-	          template: 'CCC'
+	          template: 'baz'
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<component>AAA</component><component>BBB</component><component>CCC</component>')
+	    expect(el.innerHTML).toBe('<component>foo</component><component>bar</component><component>baz</component>')
 	    // primitive
 	    el = document.createElement('div')
 	    new Vue({
@@ -16679,17 +17343,17 @@
 	      },
 	      components: {
 	        'view-a': {
-	          template: 'AAA'
+	          template: 'foo'
 	        },
 	        'view-b': {
-	          template: 'BBB'
+	          template: 'bar'
 	        },
 	        'view-c': {
-	          template: 'CCC'
+	          template: 'baz'
 	        }
 	      }
 	    })
-	    expect(el.innerHTML).toBe('<component>AAA</component><component>BBB</component><component>CCC</component>')
+	    expect(el.innerHTML).toBe('<component>foo</component><component>bar</component><component>baz</component>')
 	  })
 	
 	  it('fragment loop', function (done) {
@@ -16773,13 +17437,13 @@
 	      el: el,
 	      template: '<div v-for="item in list | filterBy filterKey | orderBy sortKey -1 | limitBy 2">{{item.id}}</div>',
 	      data: {
-	        filterKey: 'hi!',
+	        filterKey: 'foo',
 	        sortKey: 'id',
 	        list: [
-	          { id: 1, id2: 4, msg: 'hi!' },
-	          { id: 2, id2: 3, msg: 'na' },
-	          { id: 3, id2: 2, msg: 'hi!' },
-	          { id: 4, id2: 1, msg: 'na' }
+	          { id: 1, id2: 4, msg: 'foo' },
+	          { id: 2, id2: 3, msg: 'bar' },
+	          { id: 3, id2: 2, msg: 'foo' },
+	          { id: 4, id2: 1, msg: 'bar' }
 	        ]
 	      }
 	    })
@@ -16787,7 +17451,7 @@
 	
 	    go(
 	      function () {
-	        vm.filterKey = 'na'
+	        vm.filterKey = 'bar'
 	      }, assertMarkup
 	    )
 	    .then(
@@ -16802,14 +17466,14 @@
 	    )
 	    .then(
 	      function () {
-	        vm.list.push({ id: 0, id2: 4, msg: 'na' })
+	        vm.list.push({ id: 0, id2: 4, msg: 'bar' })
 	      }, assertMarkup
 	    )
 	    .then(
 	      function () {
 	        vm.list = [
-	          { id: 33, id2: 4, msg: 'hi!' },
-	          { id: 44, id2: 3, msg: 'na' }
+	          { id: 33, id2: 4, msg: 'foo' },
+	          { id: 44, id2: 3, msg: 'bar' }
 	        ]
 	      }, assertMarkup
 	    )
@@ -16865,15 +17529,14 @@
 	  })
 	
 	  it('track by id', function (done) {
-	
 	    var vm = new Vue({
 	      el: el,
 	      template: '<test v-for="item in list" :item="item" track-by="id"></test>',
 	      data: {
 	        list: [
-	          { id: 1, msg: 'hi' },
-	          { id: 2, msg: 'ha' },
-	          { id: 3, msg: 'ho' }
+	          { id: 1, msg: 'foo' },
+	          { id: 2, msg: 'bar' },
+	          { id: 3, msg: 'baz' }
 	        ]
 	      },
 	      components: {
@@ -16888,8 +17551,52 @@
 	    // swap the data with different objects, but with
 	    // the same ID!
 	    vm.list = [
-	      { id: 1, msg: 'wa' },
-	      { id: 2, msg: 'wo' }
+	      { id: 1, msg: 'qux' },
+	      { id: 2, msg: 'quux' }
+	    ]
+	    _.nextTick(function () {
+	      assertMarkup()
+	      // should reuse old vms!
+	      var i = 2
+	      while (i--) {
+	        expect(vm.$children[i]).toBe(oldVms[i])
+	      }
+	      done()
+	    })
+	
+	    function assertMarkup () {
+	      var markup = vm.list.map(function (item) {
+	        return '<test>' + item.msg + '</test>'
+	      }).join('')
+	      expect(el.innerHTML).toBe(markup)
+	    }
+	  })
+	
+	  it('track by nested id path', function (done) {
+	    var vm = new Vue({
+	      el: el,
+	      template: '<test v-for="item in list" :item="item" track-by="nested.id"></test>',
+	      data: {
+	        list: [
+	          { nested: { id: 1 }, msg: 'foo' },
+	          { nested: { id: 2 }, msg: 'bar' },
+	          { nested: { id: 3 }, msg: 'baz' }
+	        ]
+	      },
+	      components: {
+	        test: {
+	          props: ['item'],
+	          template: '{{item.msg}}'
+	        }
+	      }
+	    })
+	    assertMarkup()
+	    var oldVms = vm.$children.slice()
+	    // swap the data with different objects, but with
+	    // the same ID!
+	    vm.list = [
+	      { nested: { id: 1 }, msg: 'qux' },
+	      { nested: { id: 2 }, msg: 'quux' }
 	    ]
 	    _.nextTick(function () {
 	      assertMarkup()
@@ -16953,7 +17660,7 @@
 	      el: el,
 	      template: '<div v-for="items"></div>'
 	    })
-	    expect(hasWarned('Alias is required in v-for')).toBe(true)
+	    expect('alias is required').toHaveBeenWarned()
 	  })
 	
 	  it('warn duplicate objects', function () {
@@ -16965,7 +17672,7 @@
 	        items: [obj, obj]
 	      }
 	    })
-	    expect(hasWarned('Duplicate value')).toBe(true)
+	    expect('Duplicate value').toHaveBeenWarned()
 	  })
 	
 	  it('warn duplicate objects on diff', function (done) {
@@ -16980,7 +17687,7 @@
 	    expect(getWarnCount()).toBe(0)
 	    vm.items.push(obj)
 	    _.nextTick(function () {
-	      expect(hasWarned('Duplicate value')).toBe(true)
+	      expect('Duplicate value').toHaveBeenWarned()
 	      done()
 	    })
 	  })
@@ -16993,7 +17700,7 @@
 	        items: [{id: 1}, {id: 1}]
 	      }
 	    })
-	    expect(hasWarned('Duplicate value')).toBe(true)
+	    expect('Duplicate value').toHaveBeenWarned()
 	  })
 	
 	  it('key val syntax with object', function (done) {
@@ -17127,7 +17834,7 @@
 	      }
 	    })
 	    trigger(vm.$el.querySelector('input'), 'input')
-	    expect(hasWarned('It seems you are using two-way binding')).toBe(true)
+	    expect('It seems you are using two-way binding').toHaveBeenWarned()
 	  })
 	
 	  it('nested track by', function (done) {
@@ -17145,8 +17852,8 @@
 	          { id: 1, msg: 'hi', list: [
 	            { id: 1, msg: 'hi foo' }
 	          ] },
-	          { id: 2, msg: 'ha', list: [] },
-	          { id: 3, msg: 'ho', list: [] }
+	          { id: 2, msg: 'bar', list: [] },
+	          { id: 3, msg: 'baz', list: [] }
 	        ]
 	      }
 	    })
@@ -17156,11 +17863,11 @@
 	    var oldInnerNodes = el.children[0].children
 	
 	    vm.list = [
-	      { id: 1, msg: 'wa', list: [
+	      { id: 1, msg: 'baz', list: [
 	        { id: 1, msg: 'hi foo' },
 	        { id: 2, msg: 'hi bar' }
 	      ] },
-	      { id: 2, msg: 'wo', list: [] }
+	      { id: 2, msg: 'qux', list: [] }
 	    ]
 	
 	    _.nextTick(function () {
@@ -17187,8 +17894,8 @@
 	
 	  it('switch between object-converted & array mode', function (done) {
 	    var obj = {
-	      a: { msg: 'AA' },
-	      b: { msg: 'BB' }
+	      a: { msg: 'foo' },
+	      b: { msg: 'bar' }
 	    }
 	    var arr = [obj.b, obj.a]
 	    var vm = new Vue({
@@ -17203,7 +17910,7 @@
 	    }).join(''))
 	    vm.obj = arr
 	    _.nextTick(function () {
-	      expect(el.innerHTML).toBe('<div>BB</div><div>AA</div>')
+	      expect(el.innerHTML).toBe('<div>bar</div><div>foo</div>')
 	      // make sure it cleared the cache
 	      expect(vm._directives[0].cache.a).toBeNull()
 	      expect(vm._directives[0].cache.b).toBeNull()
@@ -17275,7 +17982,7 @@
 	        ready: false
 	      }
 	    })
-	    expect(vm.$els.a instanceof Element).toBe(true)
+	    expect(vm.$els.a.nodeType).toBe(1)
 	    expect(vm.$els.a.innerHTML).toContain('<div>0</div><div>0</div>')
 	    vm.ready = true
 	    vm.$nextTick(function () {
@@ -17616,7 +18323,6 @@
 	var _ = Vue.util
 	
 	describe('v-for staggering transitions', function () {
-	
 	  var el
 	  var delayAmount = 50
 	  var multiplier = 2.5 // the bigger the slower, but safer
@@ -17788,7 +18494,6 @@
 	var def = __webpack_require__(64)
 	
 	describe('v-html', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -17846,11 +18551,9 @@
 	var nextTick = Vue.nextTick
 	
 	describe('v-if', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
 	  })
 	
 	  it('normal', function (done) {
@@ -17958,10 +18661,10 @@
 	      template: '<component :is="view" v-if="ok"></component>',
 	      components: {
 	        'view-a': {
-	          template: 'AAA'
+	          template: 'foo'
 	        },
 	        'view-b': {
-	          template: 'BBB'
+	          template: 'bar'
 	        }
 	      }
 	    })
@@ -17970,12 +18673,12 @@
 	    // toggle if with lazy instantiation
 	    vm.ok = true
 	    nextTick(function () {
-	      expect(el.innerHTML).toBe('<component>AAA</component>')
+	      expect(el.innerHTML).toBe('<component>foo</component>')
 	      expect(vm.$children.length).toBe(1)
 	      // switch view when if=true
 	      vm.view = 'view-b'
 	      nextTick(function () {
-	        expect(el.innerHTML).toBe('<component>BBB</component>')
+	        expect(el.innerHTML).toBe('<component>bar</component>')
 	        expect(vm.$children.length).toBe(1)
 	        // toggle if when already instantiated
 	        vm.ok = false
@@ -17986,7 +18689,7 @@
 	          vm.view = 'view-a'
 	          vm.ok = true
 	          nextTick(function () {
-	            expect(el.innerHTML).toBe('<component>AAA</component>')
+	            expect(el.innerHTML).toBe('<component>foo</component>')
 	            expect(vm.$children.length).toBe(1)
 	            done()
 	          })
@@ -18016,7 +18719,7 @@
 	    new Vue({
 	      el: el
 	    })
-	    expect(hasWarned('cannot be used on an instance root element')).toBe(true)
+	    expect('cannot be used on an instance root element').toHaveBeenWarned()
 	  })
 	
 	  it('call attach/detach for transcluded components', function (done) {
@@ -18174,7 +18877,7 @@
 	      template: '<template v-if="show"><test></test></template>',
 	      components: {
 	        test: {
-	          template: 'hi',
+	          template: 'foo',
 	          replace: true,
 	          attached: attachSpy,
 	          detached: detachSpy
@@ -18202,7 +18905,7 @@
 	    })
 	
 	    function assertMarkup () {
-	      expect(el.innerHTML).toBe(vm.show ? 'hi' : '')
+	      expect(el.innerHTML).toBe(vm.show ? 'foo' : '')
 	    }
 	
 	    function assertCalls (attach, detach) {
@@ -18321,13 +19024,11 @@
 	}
 	
 	describe('v-model', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
 	    el.style.display = 'none'
 	    document.body.appendChild(el)
-	    spyWarns()
 	  })
 	
 	  it('radio buttons', function (done) {
@@ -18787,6 +19488,7 @@
 	    _.nextTick(function () {
 	      expect(el.firstChild.value).toBe('cc')
 	      expect(vm.test).toBe('cc')
+	      trigger(el.firstChild, 'change')
 	      trigger(el.firstChild, 'blur')
 	      _.nextTick(function () {
 	        expect(el.firstChild.value).toBe('CC')
@@ -18817,6 +19519,7 @@
 	    _.nextTick(function () {
 	      expect(el.firstChild.value).toBe('cc')
 	      expect(vm.test).toBe('CC')
+	      trigger(el.firstChild, 'change')
 	      trigger(el.firstChild, 'blur')
 	      _.nextTick(function () {
 	        expect(el.firstChild.value).toBe('CC')
@@ -18846,15 +19549,15 @@
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        test: 'aaa'
+	        test: 'foo'
 	      },
 	      template: '<input v-model="test">'
 	    })
 	    var input = el.firstChild
-	    input.value = 'aa'
+	    input.value = 'bar'
 	    trigger(input, 'cut')
 	    _.nextTick(function () {
-	      expect(vm.test).toBe('aa')
+	      expect(vm.test).toBe('bar')
 	      input.value = 'a'
 	      trigger(input, 'keyup', function (e) {
 	        e.keyCode = 8
@@ -18862,7 +19565,7 @@
 	      expect(vm.test).toBe('a')
 	      // teardown
 	      vm._directives[0]._teardown()
-	      input.value = 'bbb'
+	      input.value = 'bar'
 	      trigger(input, 'keyup', function (e) {
 	        e.keyCode = 8
 	      })
@@ -18877,8 +19580,8 @@
 	      var vm = new Vue({
 	        el: el,
 	        data: {
-	          test: 'aaa',
-	          test2: 'bbb'
+	          test: 'foo',
+	          test2: 'bar'
 	        },
 	        template: '<input v-model="test"><input v-model="test2 | uppercase">'
 	      })
@@ -18886,19 +19589,19 @@
 	      var input2 = el.childNodes[1]
 	      trigger(input, 'compositionstart')
 	      trigger(input2, 'compositionstart')
-	      input.value = input2.value = 'ccc'
+	      input.value = input2.value = 'baz'
 	      // input before composition unlock should not call set
 	      trigger(input, 'input')
 	      trigger(input2, 'input')
-	      expect(vm.test).toBe('aaa')
-	      expect(vm.test2).toBe('bbb')
+	      expect(vm.test).toBe('foo')
+	      expect(vm.test2).toBe('bar')
 	      // after composition unlock it should work
 	      trigger(input, 'compositionend')
 	      trigger(input2, 'compositionend')
 	      trigger(input, 'input')
 	      trigger(input2, 'input')
-	      expect(vm.test).toBe('ccc')
-	      expect(vm.test2).toBe('ccc')
+	      expect(vm.test).toBe('baz')
+	      expect(vm.test2).toBe('baz')
 	      // IE complains about "unspecified error" when calling
 	      // setSelectionRange() on an input element that's been
 	      // removed from the DOM, so we wait until the
@@ -18911,13 +19614,13 @@
 	    var vm = new Vue({
 	      el: el,
 	      data: {
-	        test: 'b',
-	        b: 'BB'
+	        test: 'foo',
+	        b: 'bar'
 	      },
-	      template: '<textarea v-model="test">a {{b}} c</textarea>'
+	      template: '<textarea v-model="test">foo {{b}} baz</textarea>'
 	    })
-	    expect(vm.test).toBe('a BB c')
-	    expect(el.firstChild.value).toBe('a BB c')
+	    expect(vm.test).toBe('foo bar baz')
+	    expect(el.firstChild.value).toBe('foo bar baz')
 	  })
 	
 	  it('warn invalid tag', function () {
@@ -18925,7 +19628,7 @@
 	      el: el,
 	      template: '<div v-model="test"></div>'
 	    })
-	    expect(hasWarned('does not support element type')).toBe(true)
+	    expect('does not support element type').toHaveBeenWarned()
 	  })
 	
 	  it('warn read-only filters', function () {
@@ -18938,7 +19641,7 @@
 	        }
 	      }
 	    })
-	    expect(hasWarned('read-only filter')).toBe(true)
+	    expect('read-only filter').toHaveBeenWarned()
 	  })
 	
 	  it('support jQuery change event', function (done) {
@@ -19000,7 +19703,8 @@
 	      expect(vm.test).toBe('d')
 	      setTimeout(function () {
 	        el.firstChild.value = 'e'
-	        // blur should trigger change instantly without debounce
+	        // change should trigger change instantly without debounce
+	        trigger(el.firstChild, 'change')
 	        trigger(el.firstChild, 'blur')
 	        _.nextTick(function () {
 	          expect(spy.calls.count()).toBe(2)
@@ -19051,7 +19755,7 @@
 	        '</form>',
 	      data: {
 	        ok: true,
-	        msg: 'hi'
+	        msg: 'foo'
 	      },
 	      methods: {
 	        save: function () {
@@ -19086,11 +19790,9 @@
 	}
 	
 	describe('v-on', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
 	  })
 	
 	  it('methods', function () {
@@ -19351,7 +20053,7 @@
 	      data: { test: 123 },
 	      template: '<a v-on:keyup="test"></a>'
 	    })
-	    expect(hasWarned('expects a function value')).toBe(true)
+	    expect('expects a function value').toHaveBeenWarned()
 	  })
 	
 	  it('iframe', function () {
@@ -19413,11 +20115,6 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('v-pre', function () {
-	
-	  beforeEach(function () {
-	    spyWarns()
-	  })
-	
 	  it('should work', function () {
 	    var vm = new Vue({
 	      el: document.createElement('div'),
@@ -19452,11 +20149,9 @@
 	var Vue = __webpack_require__(1)
 	
 	describe('ref', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
-	    spyWarns()
 	  })
 	
 	  var components = {
@@ -19573,16 +20268,16 @@
 	        comp: {
 	          template: '<slot></slot>',
 	          data: function () {
-	            return { msg: 'hi' }
+	            return { msg: 'foo' }
 	          }
 	        }
 	      }
 	    })
 	    expect(getWarnCount()).toBe(0)
-	    expect(vm.$el.textContent).toBe('hi')
-	    vm.$children[0].msg = 'ho'
+	    expect(vm.$el.textContent).toBe('foo')
+	    vm.$children[0].msg = 'bar'
 	    _.nextTick(function () {
-	      expect(vm.$el.textContent).toBe('ho')
+	      expect(vm.$el.textContent).toBe('bar')
 	      done()
 	    })
 	  })
@@ -19592,7 +20287,7 @@
 	      el: el,
 	      template: '<div v-ref:test></div>'
 	    })
-	    expect(hasWarned('must be used on a child component')).toBe(true)
+	    expect('must be used on a child component').toHaveBeenWarned()
 	  })
 	})
 
@@ -19606,7 +20301,6 @@
 	var def = __webpack_require__(71)
 	
 	describe('v-show', function () {
-	
 	  var el
 	  beforeEach(function () {
 	    el = document.createElement('div')
@@ -19664,15 +20358,14 @@
 	var def = __webpack_require__(63)
 	
 	describe('v-text', function () {
-	
 	  it('element', function () {
 	    var dir = {
 	      el: document.createElement('div')
 	    }
 	    _.extend(dir, def)
 	    dir.bind()
-	    dir.update('hi')
-	    expect(dir.el.textContent).toBe('hi')
+	    dir.update('foo')
+	    expect(dir.el.textContent).toBe('foo')
 	    dir.update(123)
 	    expect(dir.el.textContent).toBe('123')
 	  })
@@ -19683,8 +20376,8 @@
 	    }
 	    _.extend(dir, def)
 	    dir.bind()
-	    dir.update('hi')
-	    expect(dir.el.nodeValue).toBe('hi')
+	    dir.update('foo')
+	    expect(dir.el.nodeValue).toBe('foo')
 	    dir.update(123)
 	    expect(dir.el.nodeValue).toBe('123')
 	  })
@@ -19695,10 +20388,9 @@
 /* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var filters = __webpack_require__(105)
+	var filters = __webpack_require__(106)
 	
 	describe('Filters', function () {
-	
 	  it('json read', function () {
 	    var filter = filters.json.read
 	    var obj = {a: {b: 2}}
@@ -19772,9 +20464,9 @@
 	    expect(filter(undefined)).toBe('')
 	    expect(filter(Infinity)).toBe('')
 	    // negative numbers
-	    expect(filter(-50)).toBe('$-50.00')
-	    expect(filter(-150.43)).toBe('$-150.43')
-	    expect(filter(-1500.4343434)).toBe('$-1,500.43')
+	    expect(filter(-50)).toBe('-$50.00')
+	    expect(filter(-150.43)).toBe('-$150.43')
+	    expect(filter(-1500.4343434)).toBe('-$1,500.43')
 	  })
 	
 	  it('debounce', function (done) {
@@ -19826,7 +20518,7 @@
 	    var filter = filters.filterBy
 	    var arr = [
 	      { a: 1, b: { c: 'hello' }},
-	      { a: 2, b: 'hello'},
+	      { a: 2, b: 'hello' },
 	      { a: 3, b: ['yoyo'] }
 	    ]
 	    var res
@@ -19885,9 +20577,9 @@
 	  it('orderBy', function () {
 	    var filter = filters.orderBy
 	    var arr = [
-	      { a: { b: 0 }, c: 'b'},
-	      { a: { b: 2 }, c: 'c'},
-	      { a: { b: 1 }, c: 'a'}
+	      { a: { b: 0 }, c: 'b' },
+	      { a: { b: 2 }, c: 'c' },
+	      { a: { b: 1 }, c: 'a' }
 	    ]
 	    var res
 	    // sort key
@@ -19901,6 +20593,8 @@
 	    assertArray(res, [arr[2], arr[0], arr[1]])
 	    // no sort key
 	    res = filter(arr, null)
+	    expect(res).toBe(arr)
+	    res = filter(arr)
 	    expect(res).toBe(arr)
 	  })
 	
@@ -19925,7 +20619,69 @@
 	    res = filter(arr, 'v')
 	    assertArray(res, [arr[1], arr[2], arr[0]])
 	  })
+	
+	  it('orderBy primitive values', function () {
+	    var filter = filters.orderBy
+	    var arr = [9, 11, 1, 2]
+	    var res = filter(arr, true)
+	    assertArray(res, [arr[2], arr[3], arr[0], arr[1]])
+	  })
+	
+	  it('orderBy multiple fields', function () {
+	    var filter = filters.orderBy
+	    var arr = [
+	      { a: 1, b: 1, c: 1 }, // 0
+	      { a: 0, b: 1, c: 1 }, // 1
+	      { a: 1, b: 2, c: 0 }, // 2
+	      { a: 1, b: 0, c: 0 }, // 3
+	      { a: 0, b: 0, c: 0 }, // 4
+	      { a: 0, b: 1, c: 0 }  // 5
+	    ]
+	    var res
+	    // sort two keys
+	    res = filter(arr, ['a', 'b'])
+	    assertArray(res, [arr[4], arr[1], arr[5], arr[3], arr[0], arr[2]])
+	    res = filter(arr, 'a', 'b')
+	    assertArray(res, [arr[4], arr[1], arr[5], arr[3], arr[0], arr[2]])
+	
+	    // sort two keys with order
+	    res = filter(arr, ['a', 'b'], 1)
+	    assertArray(res, [arr[4], arr[1], arr[5], arr[3], arr[0], arr[2]])
+	    res = filter(arr, 'a', 'b', 1)
+	    assertArray(res, [arr[4], arr[1], arr[5], arr[3], arr[0], arr[2]])
+	
+	    // sort three keys
+	    res = filter(arr, ['a', 'b', 'c'])
+	    assertArray(res, [arr[4], arr[5], arr[1], arr[3], arr[0], arr[2]])
+	    res = filter(arr, 'a', 'b', 'c')
+	    assertArray(res, [arr[4], arr[5], arr[1], arr[3], arr[0], arr[2]])
+	
+	    // reverse two key. Preserves order when equal: 1 then 5
+	    res = filter(arr, ['a', 'b'], -1)
+	    assertArray(res, [arr[2], arr[0], arr[3], arr[1], arr[5], arr[4]])
+	    res = filter(arr, 'a', 'b', -1)
+	    assertArray(res, [arr[2], arr[0], arr[3], arr[1], arr[5], arr[4]])
+	  })
+	
+	  it('orderBy using a compare function', function () {
+	    var filter = filters.orderBy
+	    var arr = [9, 11, 1, 2]
+	    var res = filter(arr, evenBeforeOdd)
+	    assertArray(res, [arr[3], arr[2], arr[0], arr[1]])
+	    res = filter(arr, evenBeforeOdd, 1)
+	    assertArray(res, [arr[3], arr[2], arr[0], arr[1]])
+	    res = filter(arr, evenBeforeOdd, -1)
+	    assertArray(res, [arr[1], arr[0], arr[2], arr[3]])
+	  })
 	})
+	
+	function evenBeforeOdd (a, b) {
+	  if (a % 2 === 0) {
+	    if (b % 2 === 0) return a - b
+	    else return -1
+	  } else if (b % 2 === 0) return 1
+	    else return a - b
+	}
 	
 	function assertArray (res, expectations) {
 	  expect(res.length).toBe(expectations.length)
@@ -19950,18 +20706,137 @@
 
 	var Vue = __webpack_require__(1)
 	var _ = __webpack_require__(5)
+	var config = __webpack_require__(36)
+	var transition = __webpack_require__(45)
+	
+	describe('Global API', function () {
+	  it('exposed utilities', function () {
+	    expect(Vue.util).toBe(_)
+	    expect(Vue.nextTick).toBe(_.nextTick)
+	    expect(Vue.config).toBe(config)
+	    expect(Vue.transition.applyTransition).toBe(transition.applyTransition)
+	  })
+	
+	  it('extend', function () {
+	    var Test = Vue.extend({
+	      name: 'test',
+	      a: 1,
+	      b: 2
+	    })
+	    expect(Test.options.a).toBe(1)
+	    expect(Test.options.b).toBe(2)
+	    expect(Test.super).toBe(Vue)
+	    // function.name is not available in IE
+	    expect(Test.toString().match(/^function Test\s?\(/)).toBeTruthy()
+	    var t = new Test({
+	      a: 2
+	    })
+	    expect(t.$options.a).toBe(2)
+	    expect(t.$options.b).toBe(2)
+	    // inheritance
+	    var Test2 = Test.extend({
+	      a: 2
+	    })
+	    expect(Test2.options.a).toBe(2)
+	    expect(Test2.options.b).toBe(2)
+	    var t2 = new Test2({
+	      a: 3
+	    })
+	    expect(t2.$options.a).toBe(3)
+	    expect(t2.$options.b).toBe(2)
+	  })
+	
+	  it('extend warn invalid names', function () {
+	    Vue.extend({ name: '123' })
+	    expect('Invalid component name: "123"').toHaveBeenWarned()
+	    Vue.extend({ name: '_fesf' })
+	    expect('Invalid component name: "_fesf"').toHaveBeenWarned()
+	    Vue.extend({ name: 'Some App' })
+	    expect('Invalid component name: "Some App"').toHaveBeenWarned()
+	  })
+	
+	  it('use', function () {
+	    var def = {}
+	    var options = {}
+	    var pluginStub = {
+	      install: function (Vue, opts) {
+	        Vue.directive('plugin-test', def)
+	        expect(opts).toBe(options)
+	      }
+	    }
+	    Vue.use(pluginStub, options)
+	    expect(Vue.options.directives['plugin-test']).toBe(def)
+	    delete Vue.options.directives['plugin-test']
+	    // use a function
+	    Vue.use(pluginStub.install, options)
+	    expect(Vue.options.directives['plugin-test']).toBe(def)
+	    delete Vue.options.directives['plugin-test']
+	  })
+	
+	  it('global mixin', function () {
+	    var options = Vue.options
+	    var spy = jasmine.createSpy('global mixin')
+	    Vue.mixin({
+	      created: function () {
+	        spy(this.$options.myOption)
+	      }
+	    })
+	    new Vue({
+	      myOption: 'hello'
+	    })
+	    expect(spy).toHaveBeenCalledWith('hello')
+	    Vue.options = options
+	  })
+	
+	  describe('Asset registration', function () {
+	    var Test = Vue.extend()
+	
+	    it('directive / elementDirective / filter / transition', function () {
+	      var assets = ['directive', 'elementDirective', 'filter', 'transition']
+	      assets.forEach(function (type) {
+	        var def = {}
+	        Test[type]('test', def)
+	        expect(Test.options[type + 's'].test).toBe(def)
+	        expect(Test[type]('test')).toBe(def)
+	        // extended registration should not pollute global
+	        expect(Vue.options[type + 's'].test).toBeUndefined()
+	      })
+	    })
+	
+	    it('component', function () {
+	      var def = { a: 1 }
+	      Test.component('test', def)
+	      var component = Test.options.components.test
+	      expect(typeof component).toBe('function')
+	      expect(component.super).toBe(Vue)
+	      expect(component.options.a).toBe(1)
+	      expect(component.options.name).toBe('test')
+	      expect(Test.component('test')).toBe(component)
+	      // already extended
+	      Test.component('test2', component)
+	      expect(Test.component('test2')).toBe(component)
+	      // extended registration should not pollute global
+	      expect(Vue.options.components.test).toBeUndefined()
+	    })
+	  })
+	})
+
+
+/***/ },
+/* 142 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Vue = __webpack_require__(1)
+	var _ = __webpack_require__(5)
 	
 	describe('Instance Events', function () {
-	
 	  var spy, spy2
 	  beforeEach(function () {
 	    spy = jasmine.createSpy()
 	    spy2 = jasmine.createSpy()
-	    spyWarns()
 	  })
 	
 	  describe('option events', function () {
-	
 	    it('normal events', function () {
 	      var vm = new Vue({
 	        events: {
@@ -19997,13 +20872,11 @@
 	      vm.$emit('test', 123)
 	      expect(spy).toHaveBeenCalledWith(123)
 	      vm.$emit('test2')
-	      expect(hasWarned('Unknown method')).toBe(true)
+	      expect('Unknown method').toHaveBeenWarned()
 	    })
-	
 	  })
 	
 	  describe('option watchers', function () {
-	
 	    it('normal', function (done) {
 	      var spyA = jasmine.createSpy()
 	      var spyB = jasmine.createSpy()
@@ -20064,11 +20937,9 @@
 	        done()
 	      })
 	    })
-	
 	  })
 	
 	  describe('hooks', function () {
-	
 	    it('created', function () {
 	      var ctx
 	      var vm = new Vue({
@@ -20187,6 +21058,17 @@
 	      expect(vm.a).toBe(1)
 	    })
 	
+	    it('warn missing handler for child component v-on', function () {
+	      new Vue({
+	        el: document.createElement('div'),
+	        template: '<comp @test="onThat"></comp>',
+	        components: {
+	          comp: {}
+	        }
+	      })
+	      expect('v-on:test="onThat" expects a function value').toHaveBeenWarned()
+	    })
+	
 	    it('passing $arguments', function () {
 	      new Vue({
 	        el: document.createElement('div'),
@@ -20206,7 +21088,6 @@
 	    })
 	
 	    describe('attached/detached', function () {
-	
 	      it('in DOM', function () {
 	        var el = document.createElement('div')
 	        var childEl = document.createElement('div')
@@ -20280,14 +21161,13 @@
 
 
 /***/ },
-/* 142 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
 	var init = Vue.prototype._init
 	
 	describe('Instance Init', function () {
-	
 	  var stub = {
 	    constructor: {
 	      options: { a: 1, b: 2 }
@@ -20339,18 +21219,16 @@
 
 
 /***/ },
-/* 143 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
 	
 	describe('misc', function () {
-	
 	  describe('_applyFilters', function () {
-	
 	    var vm = new Vue({
 	      data: {
-	        msg: 'BBB'
+	        msg: 'bar'
 	      },
 	      filters: {
 	        read: function (v, arg) {
@@ -20365,21 +21243,33 @@
 	          write: function (v, oldV) {
 	            return v + ' ' + oldV
 	          }
+	        },
+	        duplex1: {
+	          read: function (v) {
+	            return v.split('').reverse().join('')
+	          },
+	          write: function (v) {
+	            return v.split('').reverse().join('')
+	          }
+	        },
+	        duplex2: {
+	          read: function (v) {
+	            return v + 'hi'
+	          },
+	          write: function (v) {
+	            return v.replace('hi', '')
+	          }
 	        }
 	      }
 	    })
 	
-	    beforeEach(function () {
-	      spyWarns()
-	    })
-	
 	    it('read', function () {
 	      var filters = [
-	        { name: 'read', args: [{dynamic: false, value: 'AAA'}] },
+	        { name: 'read', args: [{dynamic: false, value: 'foo'}] },
 	        { name: 'read2', args: [{dynamic: true, value: 'msg'}] }
 	      ]
 	      var val = vm._applyFilters('test', null, filters, false)
-	      expect(val).toBe('test read:AAA read2:BBB')
+	      expect(val).toBe('test read:foo read2:bar')
 	    })
 	
 	    it('write', function () {
@@ -20390,25 +21280,41 @@
 	      expect(val).toBe('test oldTest')
 	    })
 	
+	    it('chained read + write', function () {
+	      var filters = [
+	        { name: 'duplex1' },
+	        { name: 'duplex2' }
+	      ]
+	      var val = vm._applyFilters('test', 'oldTest', filters)
+	      expect(val).toBe('tsethi')
+	      val = vm._applyFilters('tsethi', 'oldTest', filters, true)
+	      expect(val).toBe('test')
+	    })
+	
 	    it('warn not found', function () {
-	      vm._applyFilters('what', null, [{name: 'wtf'}])
-	      expect(hasWarned('Failed to resolve filter')).toBe(true)
+	      vm._applyFilters('waldo', null, [{name: 'nemo'}])
+	      expect('Failed to resolve filter').toHaveBeenWarned()
 	    })
 	  })
 	})
 
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
 	var _ = __webpack_require__(5)
 	
 	describe('Instance state initialization', function () {
+	  it('should warn data functions that do not return an object', function () {
+	    new Vue({
+	      data: function () {}
+	    })
+	    expect('should return an object').toHaveBeenWarned()
+	  })
 	
 	  describe('data proxy', function () {
-	
 	    var data = {
 	      a: 0,
 	      b: 0
@@ -20433,11 +21339,9 @@
 	      expect(vm.b).toBe(2)
 	      expect(vm.b).toBe(data.b)
 	    })
-	
 	  })
 	
 	  describe('$data', function () {
-	
 	    it('should initialize props', function () {
 	      var vm = new Vue({
 	        el: document.createElement('div'),
@@ -20480,14 +21384,12 @@
 	        props: ['c'],
 	        data: function () {
 	          expect(this.c).toBe(2)
-	          expect(this._data.c).toBe(2)
 	          return {
 	            d: this.c + 1
 	          }
 	        },
 	        created: function () {
 	          expect(this.c).toBe(2)
-	          expect(this._data.c).toBe(2)
 	        }
 	      })
 	      expect(vm.d).toBe(3)
@@ -20508,7 +21410,6 @@
 	  })
 	
 	  describe('computed', function () {
-	
 	    var spyE = jasmine.createSpy('computed e')
 	    var spyF = jasmine.createSpy('cached computed f')
 	    var spyCachedWatcher = jasmine.createSpy('cached computed watcher')
@@ -20641,7 +21542,6 @@
 	  })
 	
 	  describe('methods', function () {
-	
 	    it('should work and have correct context', function () {
 	      var vm = new Vue({
 	        data: {
@@ -20656,11 +21556,9 @@
 	      })
 	      expect(vm.test()).toBe(1)
 	    })
-	
 	  })
 	
 	  describe('meta', function () {
-	
 	    var vm = new Vue({
 	      _meta: {
 	        $index: 0,
@@ -20674,14 +21572,12 @@
 	      expect('$index' in vm.$data).toBe(false)
 	      expect('$value' in vm.$data).toBe(false)
 	    })
-	
 	  })
-	
 	})
 
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// test cases for edge cases & bug fixes
@@ -20689,28 +21585,23 @@
 	var _ = Vue.util
 	
 	describe('Misc', function () {
-	
-	  beforeEach(function () {
-	    spyWarns()
-	  })
-	
 	  it('should handle directive.bind() altering its childNode structure', function () {
 	    var vm = new Vue({
 	      el: document.createElement('div'),
 	      template: '<div v-test>{{test}}</div>',
 	      data: {
-	        test: 'hi'
+	        test: 'foo'
 	      },
 	      directives: {
 	        test: {
 	          bind: function () {
-	            this.el.insertBefore(document.createTextNode('yo '),
+	            this.el.insertBefore(document.createTextNode('bar '),
 	              this.el.firstChild)
 	          }
 	        }
 	      }
 	    })
-	    expect(vm.$el.textContent).toBe('yo hi')
+	    expect(vm.$el.textContent).toBe('bar foo')
 	  })
 	
 	  it('attached/detached hooks for transcluded components', function () {
@@ -20727,7 +21618,7 @@
 	          template: '<slot></slot>'
 	        },
 	        inner: {
-	          template: 'hi',
+	          template: 'foo',
 	          attached: spy1,
 	          detached: spy2
 	        }
@@ -20885,13 +21776,13 @@
 	      el: document.createElement('div'),
 	      template: '{{msg}}',
 	      data: Object.freeze({
-	        msg: 'hi!'
+	        msg: 'foo'
 	      })
 	    })
-	    expect(vm.$el.textContent).toBe('hi!')
-	    try { vm.msg = 'ho!' } catch (e) {}
+	    expect(vm.$el.textContent).toBe('foo')
+	    try { vm.msg = 'bar' } catch (e) {}
 	    Vue.nextTick(function () {
-	      expect(vm.$el.textContent).toBe('hi!')
+	      expect(vm.$el.textContent).toBe('foo')
 	      done()
 	    })
 	  })
@@ -20901,14 +21792,14 @@
 	      el: document.createElement('div'),
 	      template: '{{msg}} {{frozen.msg}}',
 	      data: {
-	        msg: 'hi',
+	        msg: 'foo',
 	        frozen: Object.freeze({
 	          msg: 'frozen'
 	        })
 	      }
 	    })
-	    expect(vm.$el.textContent).toBe('hi frozen')
-	    vm.msg = 'ho'
+	    expect(vm.$el.textContent).toBe('foo frozen')
+	    vm.msg = 'bar'
 	    try {
 	      vm.frozen.msg = 'changed'
 	    } catch (error) {
@@ -20917,7 +21808,7 @@
 	      }
 	    }
 	    Vue.nextTick(function () {
-	      expect(vm.$el.textContent).toBe('ho frozen')
+	      expect(vm.$el.textContent).toBe('bar frozen')
 	      done()
 	    })
 	  })
@@ -21005,7 +21896,7 @@
 	      el: document.createElement('div'),
 	      template: '<custom-stuff></custom-stuff>'
 	    })
-	    expect(hasWarned('Unknown custom element')).toBe(true)
+	    expect('Unknown custom element').toHaveBeenWarned()
 	  })
 	
 	  it('prefer bound attributes over static attributes', function (done) {
@@ -21029,13 +21920,13 @@
 	    new Vue({
 	      el: el,
 	      template:
-	        '<div>\
-	          <comp v-bind:title="title"></comp>\
-	          <comp title="static" v-bind:title="title"></comp>\
-	          <comp title="static"></comp>\
-	          <comp :title="title"></comp>\
-	          <comp title="static" :title="title"></comp>\
-	        </div>',
+	        '<div>' +
+	          '<comp v-bind:title="title"></comp>' +
+	          '<comp title="static" v-bind:title="title"></comp>' +
+	          '<comp title="static"></comp>' +
+	          '<comp :title="title"></comp>' +
+	          '<comp title="static" :title="title"></comp>' +
+	        '</div>',
 	      data: {
 	        title: 'bound'
 	      },
@@ -21087,11 +21978,11 @@
 	      components: {
 	        test: {
 	          replace: true,
-	          template: '<div :class="{\'inner\': true}"></div>'
+	          template: '<div class="static-inner" :class="{\'inner\': true}"></div>'
 	        }
 	      }
 	    })
-	    expect(vm.$el.firstChild.className).toBe('outer inner')
+	    expect(vm.$el.firstChild.className).toBe('static-inner outer inner')
 	  })
 	
 	  it('SVG class interpolation', function () {
@@ -21115,10 +22006,10 @@
 	      el: document.createElement('div'),
 	      template: '<div class="{{test}}" transition="test"></div>',
 	      data: {
-	        test: 'hi'
+	        test: 'foo'
 	      }
 	    })
-	    expect(vm.$el.firstChild.className).toBe('hi test-transition')
+	    expect(vm.$el.firstChild.className).toBe('foo test-transition')
 	  })
 	
 	  it('transclude class merging should skip interpolated class', function () {
@@ -21126,7 +22017,7 @@
 	      el: document.createElement('div'),
 	      template: '<test class="outer-{{test}}"></test>',
 	      data: {
-	        test: 'hi'
+	        test: 'foo'
 	      },
 	      components: {
 	        test: {
@@ -21135,7 +22026,7 @@
 	        }
 	      }
 	    })
-	    expect(vm.$el.firstChild.className).toBe('outer-hi')
+	    expect(vm.$el.firstChild.className).toBe('outer-foo')
 	  })
 	
 	  // #2163
@@ -21160,17 +22051,84 @@
 	    })
 	    expect(vm.$el.textContent).toBe('default content slot1')
 	  })
+	
+	  // #2426
+	  it('class merge untrimmed', function () {
+	    expect(function () {
+	      new Vue({
+	        el: document.createElement('div'),
+	        template: '<test class="p1 p2 "></test>',
+	        components: {
+	          test: {
+	            template: '<div class="hi"></div>',
+	            replace: true
+	          }
+	        }
+	      })
+	    }).not.toThrow()
+	  })
+	
+	  // #2445
+	  it('fragment attach hook should check if child is inDoc', function (done) {
+	    var el = document.createElement('div')
+	    document.body.appendChild(el)
+	    var spyParent = jasmine.createSpy('attached parent')
+	    var spyChild = jasmine.createSpy('attached child')
+	
+	    new Vue({
+	      el: el,
+	      template: '<comp v-for="n in 1"></comp>',
+	      components: {
+	        comp: {
+	          template: '<div><child></child></div>',
+	          attached: function () {
+	            expect(_.inDoc(this.$el)).toBe(true)
+	            spyParent()
+	          },
+	          activate: function (next) {
+	            setTimeout(function () {
+	              next()
+	              check()
+	            }, 100)
+	          },
+	          components: {
+	            child: {
+	              template: 'foo',
+	              attached: spyChild
+	            }
+	          }
+	        }
+	      }
+	    })
+	
+	    function check () {
+	      expect(spyParent).toHaveBeenCalled()
+	      expect(spyChild).toHaveBeenCalled()
+	      done()
+	    }
+	  })
+	
+	  // #2500
+	  it('template parser tag match should include hyphen', function () {
+	    var vm = new Vue({
+	      el: document.createElement('div'),
+	      template: '<div>{{{ test }}}</div>',
+	      data: {
+	        test: '<image-field></image-field>'
+	      }
+	    })
+	    expect(vm.$el.querySelector('image-field').namespaceURI).not.toMatch(/svg/)
+	  })
 	})
 
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Dep = __webpack_require__(53)
 	
 	describe('Dep', function () {
-	
 	  var d
 	  beforeEach(function () {
 	    d = new Dep()
@@ -21203,7 +22161,7 @@
 
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
@@ -21212,14 +22170,8 @@
 	var observe = ob.observe
 	var Dep = __webpack_require__(53)
 	var _ = __webpack_require__(5)
-	var config = __webpack_require__(36)
 	
 	describe('Observer', function () {
-	
-	  beforeEach(function () {
-	    spyWarns()
-	  })
-	
 	  it('create on non-observables', function () {
 	    // skip primitive value
 	    var ob = observe(1)
@@ -21268,9 +22220,6 @@
 	  })
 	
 	  it('create on already observed object', function () {
-	    var previousConvertAllProperties = config.convertAllProperties
-	    config.convertAllProperties = true
-	
 	    // on object
 	    var obj = {}
 	    var val = 0
@@ -21306,14 +22255,9 @@
 	    // should call underlying setter
 	    obj.a = 10
 	    expect(val).toBe(10)
-	
-	    config.convertAllProperties = previousConvertAllProperties
 	  })
 	
 	  it('create on property with only getter', function () {
-	    var previousConvertAllProperties = config.convertAllProperties
-	    config.convertAllProperties = true
-	
 	    // on object
 	    var obj = {}
 	    Object.defineProperty(obj, 'a', {
@@ -21343,14 +22287,9 @@
 	      obj.a = 101
 	    } catch (e) {}
 	    expect(obj.a).toBe(123)
-	
-	    config.convertAllProperties = previousConvertAllProperties
 	  })
 	
 	  it('create on property with only setter', function () {
-	    var previousConvertAllProperties = config.convertAllProperties
-	    config.convertAllProperties = true
-	
 	    // on object
 	    var obj = {}
 	    var val = 10
@@ -21377,14 +22316,9 @@
 	    // writes should call the set function
 	    obj.a = 100
 	    expect(val).toBe(100)
-	
-	    config.convertAllProperties = previousConvertAllProperties
 	  })
 	
 	  it('create on property which is marked not configurable', function () {
-	    var previousConvertAllProperties = config.convertAllProperties
-	    config.convertAllProperties = true
-	
 	    // on object
 	    var obj = {}
 	    Object.defineProperty(obj, 'a', {
@@ -21397,8 +22331,6 @@
 	    expect(ob instanceof Observer).toBe(true)
 	    expect(ob.value).toBe(obj)
 	    expect(obj.__ob__).toBe(ob)
-	
-	    config.convertAllProperties = previousConvertAllProperties
 	  })
 	
 	  it('create on array', function () {
@@ -21446,9 +22378,6 @@
 	  })
 	
 	  it('observing object prop change on defined property', function () {
-	    var previousConvertAllProperties = config.convertAllProperties
-	    config.convertAllProperties = true
-	
 	    var obj = { val: 2 }
 	    Object.defineProperty(obj, 'a', {
 	      configurable: true,
@@ -21480,8 +22409,6 @@
 	    expect(obj.val).toBe(3) // make sure 'setter' was called
 	    obj.val = 5
 	    expect(obj.a).toBe(5) // make sure 'getter' was called
-	
-	    config.convertAllProperties = previousConvertAllProperties
 	  })
 	
 	  it('observing set/delete', function () {
@@ -21590,18 +22517,16 @@
 	    expect(dep2.notify).toHaveBeenCalled()
 	    _.hasProto = true
 	  })
-	
 	})
 
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var parse = __webpack_require__(43).parseDirective
 	
 	describe('Directive Parser', function () {
-	
 	  it('simple', function () {
 	    var res = parse('exp')
 	    expect(res.expression).toBe('exp')
@@ -21695,7 +22620,7 @@
 
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var expParser = __webpack_require__(57)
@@ -21705,7 +22630,7 @@
 	    // simple path
 	    exp: 'a.b.d',
 	    scope: {
-	      a: {b: {d: 123}}
+	      a: { b: { d: 123 }}
 	    },
 	    expected: 123,
 	    paths: ['a']
@@ -21714,7 +22639,7 @@
 	  {
 	    exp: 'a["b"].c',
 	    scope: {
-	      a: {b: {c: 234}}
+	      a: { b: { c: 234 }}
 	    },
 	    expected: 234,
 	    paths: ['a']
@@ -21808,15 +22733,15 @@
 	  },
 	  {
 	    // expressions with inline object literals
-	    exp: "sortRows({ column: 'name', test: haha, durrr: 123 })",
+	    exp: "sortRows({ column: 'name', test: foo, durrr: 123 })",
 	    scope: {
 	      sortRows: function (params) {
 	        return params.column + params.test + params.durrr
 	      },
-	      haha: 'hoho'
+	      foo: 'bar'
 	    },
-	    expected: 'namehoho123',
-	    paths: ['sortRows', 'haha']
+	    expected: 'namebar123',
+	    paths: ['sortRows', 'bar']
 	  },
 	  {
 	    // space between path segments
@@ -21949,7 +22874,6 @@
 	]
 	
 	describe('Expression Parser', function () {
-	
 	  testCases.forEach(function (testCase) {
 	    it('parse getter: ' + testCase.exp, function () {
 	      var res = expParser.parseExpression(testCase.exp, true)
@@ -21987,35 +22911,51 @@
 	    expect(res1).toBe(res2)
 	  })
 	
-	  describe('invalid expression', function () {
-	
-	    beforeEach(function () {
-	      spyWarns()
+	  if (canMakeTemplateStringFunction()) {
+	    it('ES2015 template string handling', function () {
+	      var res = expParser.parseExpression('a + `hi ${ b }` + c')
+	      expect(res.get.toString().indexOf('scope.a+`hi ${scope.b}`+scope.c') > -1).toBe(true)
+	      res = expParser.parseExpression('`hi ${ b + `${ d }` }`')
+	      expect(res.get.toString().indexOf('`hi ${scope.b+`${scope.d}`}`') > -1).toBe(true)
+	      res = expParser.parseExpression('{transform:`rotate(${x}deg)`}')
+	      expect(res.get.toString().indexOf('{transform:`rotate(${scope.x}deg)`}') > -1).toBe(true)
 	    })
+	  }
 	
+	  describe('invalid expression', function () {
 	    it('should warn on invalid expression', function () {
 	      expect(getWarnCount()).toBe(0)
 	      expParser.parseExpression('a--b"ffff')
-	      expect(hasWarned('Invalid expression')).toBe(true)
+	      expect('Invalid expression').toHaveBeenWarned()
 	    })
 	
 	    it('should warn on invalid setter expression', function () {
 	      expect(getWarnCount()).toBe(0)
 	      expParser.parseExpression('a+b', true)
-	      expect(hasWarned('Invalid setter expression')).toBe(true)
+	      expect('Invalid setter expression').toHaveBeenWarned()
 	    })
 	
 	    it('should warn if expression contains improper reserved keywords', function () {
 	      expect(getWarnCount()).toBe(0)
 	      expParser.parseExpression('break + 1')
-	      expect(hasWarned('Avoid using reserved keywords')).toBe(true)
+	      expect('Avoid using reserved keywords').toHaveBeenWarned()
 	    })
 	  })
 	})
+	
+	function canMakeTemplateStringFunction () {
+	  try {
+	    /* eslint-disable no-new-func */
+	    new Function('a', 'return `${a}`')
+	  } catch (e) {
+	    return false
+	  }
+	  return true
+	}
 
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Path = __webpack_require__(58)
@@ -22048,7 +22988,6 @@
 	}
 	
 	describe('Path Parser', function () {
-	
 	  it('parse simple paths', function () {
 	    assertPath('', [])
 	    assertPath(' ', [])
@@ -22183,12 +23122,11 @@
 	    var res = Path.setPath({}, 'ab[c]d', 123)
 	    expect(res).toBe(false)
 	  })
-	
 	})
 
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var templateParser = __webpack_require__(65)
@@ -22196,7 +23134,6 @@
 	var testString = '<div>hello</div><p class="test">world</p>'
 	
 	describe('Template Parser', function () {
-	
 	  it('should return same if argument is already a fragment', function () {
 	    var frag = document.createDocumentFragment()
 	    var res = parse(frag)
@@ -22215,31 +23152,31 @@
 	
 	  it('should parse if argument is a template string', function () {
 	    var res = parse(testString)
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(2)
 	    expect(res.querySelector('.test').textContent).toBe('world')
 	  })
 	
 	  it('should work if the template string doesn\'t contain tags', function () {
 	    var res = parse('hello!')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.nodeType).toBe(3) // Text node
 	  })
 	
 	  it('should handle string that contains html entities', function () {
-	    var res = parse('hi&lt;hi')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    var res = parse('foo&lt;bar')
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
-	    expect(res.firstChild.nodeValue).toBe('hi<hi')
+	    expect(res.firstChild.nodeValue).toBe('foo<bar')
 	    // #1330
 	    res = parse('hello &#x2F; hello')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.nodeValue).toBe('hello / hello')
 	    // #2021
 	    res = parse('&#xe604;')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.nodeValue).toBe('')
 	  })
@@ -22248,7 +23185,7 @@
 	    var node = document.createElement('script')
 	    node.textContent = testString
 	    var res = parse(node)
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(2)
 	    expect(res.querySelector('.test').textContent).toBe('world')
 	  })
@@ -22257,7 +23194,7 @@
 	    var node = document.createElement('div')
 	    node.innerHTML = testString
 	    var res = parse(node)
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(2)
 	    expect(res.querySelector('.test').textContent).toBe('world')
 	  })
@@ -22269,7 +23206,7 @@
 	    node.textContent = testString
 	    document.head.appendChild(node)
 	    var res = parse('#template-test')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(2)
 	    expect(res.querySelector('.test').textContent).toBe('world')
 	    document.head.removeChild(node)
@@ -22277,7 +23214,7 @@
 	
 	  it('should work for table elements', function () {
 	    var res = parse('<td>hello</td>')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.tagName).toBe('TD')
 	    expect(res.firstChild.textContent).toBe('hello')
@@ -22285,7 +23222,7 @@
 	
 	  it('should work for option elements', function () {
 	    var res = parse('<option>hello</option>')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    expect(res.firstChild.tagName).toBe('OPTION')
 	    expect(res.firstChild.textContent).toBe('hello')
@@ -22293,7 +23230,7 @@
 	
 	  it('should work for svg elements', function () {
 	    var res = parse('<circle></circle>')
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.childNodes.length).toBe(1)
 	    // SVG tagNames should be lowercase because they are XML nodes not HTML
 	    expect(res.firstChild.tagName).toBe('circle')
@@ -22326,7 +23263,7 @@
 	
 	  it('should be able to not use id selectors', function () {
 	    var res = parse('#hi', false, true)
-	    expect(res instanceof DocumentFragment).toBeTruthy()
+	    expect(res.nodeType).toBe(11)
 	    expect(res.firstChild.nodeValue).toBe('#hi')
 	  })
 	
@@ -22380,7 +23317,7 @@
 
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var textParser = __webpack_require__(39)
@@ -22390,7 +23327,7 @@
 	var testCases = [
 	  {
 	    // no tags
-	    text: 'haha',
+	    text: 'foo',
 	    expected: null
 	  },
 	  {
@@ -22434,6 +23371,15 @@
 	    expected: [
 	      { tag: true, value: 'value', html: false, oneTime: false }
 	    ]
+	  },
+	  // new lines preserved outside of tags
+	  {
+	    text: 'hello\n{{value}}\nworld',
+	    expected: [
+	        { value: 'hello\n' },
+	        { tag: true, value: 'value', html: false, oneTime: false },
+	        { value: '\nworld' }
+	    ]
 	  }
 	]
 	
@@ -22454,7 +23400,6 @@
 	}
 	
 	describe('Text Parser', function () {
-	
 	  it('parse', function () {
 	    testCases.forEach(assertParse)
 	  })
@@ -22503,22 +23448,20 @@
 	        JSON.stringify(filters) +
 	      ',false)+" e"')
 	  })
-	
 	})
 
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
 	var _ = __webpack_require__(5)
 	var transition = __webpack_require__(45)
-	var Transition = __webpack_require__(88)
+	var Transition = __webpack_require__(89)
 	
 	if (!_.isIE9) {
 	  describe('Transition', function () {
-	
 	    // insert a test css
 	    function insertCSS (text) {
 	      var cssEl = document.createElement('style')
@@ -22526,20 +23469,20 @@
 	      document.head.appendChild(cssEl)
 	    }
 	
-	    var duration = '50ms'
+	    var duration = 100
 	    insertCSS(
 	      '.test {\
-	        transition: opacity ' + duration + ' ease;\
-	        -webkit-transition: opacity ' + duration + ' ease;}'
+	        transition: opacity ' + duration + 'ms ease;\
+	        -webkit-transition: opacity ' + duration + 'ms ease;}'
 	    )
 	    insertCSS('.test-enter, .test-leave { opacity: 0; }')
 	    insertCSS(
 	      '.test-anim-enter {\
-	        animation: test-enter ' + duration + ';\
-	        -webkit-animation: test-enter ' + duration + ';}\
+	        animation: test-enter ' + duration + 'ms;\
+	        -webkit-animation: test-enter ' + duration + 'ms;}\
 	      .test-anim-leave {\
-	        animation: test-leave ' + duration + ';\
-	        -webkit-animation: test-leave ' + duration + ';}\
+	        animation: test-leave ' + duration + 'ms;\
+	        -webkit-animation: test-leave ' + duration + 'ms;}\
 	      @keyframes test-enter {\
 	        from { opacity: 0 }\
 	        to { opacity: 1 }}\
@@ -22555,7 +23498,6 @@
 	    )
 	
 	    describe('Wrapper methods', function () {
-	
 	      var spy, el, target, parent, vm
 	      beforeEach(function () {
 	        el = document.createElement('div')
@@ -22585,11 +23527,9 @@
 	        expect(parent.childNodes.length).toBe(0)
 	        expect(spy).toHaveBeenCalled()
 	      })
-	
 	    })
 	
 	    describe('Skipping', function () {
-	
 	      var el, vm, op, cb
 	      beforeEach(function () {
 	        el = document.createElement('div')
@@ -22634,13 +23574,11 @@
 	        expect(cb).toHaveBeenCalled()
 	        _.transitionEndEvent = e
 	      })
-	
 	    })
 	
 	    describe('CSS transitions', function () {
-	
 	      var vm, el, op, cb, hooks
-	      beforeEach(function (done) {
+	      beforeEach(function () {
 	        el = document.createElement('div')
 	        el.textContent = 'hello'
 	        vm = new Vue({ el: el })
@@ -22657,7 +23595,9 @@
 	        }
 	        // !IMPORTANT!
 	        // this ensures we force a layout for every test.
-	        _.nextTick(done)
+	        /* eslint-disable no-unused-vars */
+	        var f = document.body.offsetHeight
+	        /* eslint-enable no-unused-vars */
 	      })
 	
 	      afterEach(function () {
@@ -22711,7 +23651,7 @@
 	              expect(el.classList.contains('test-no-trans-leave')).toBe(false)
 	              done()
 	            })
-	          }, 17)
+	          }, 50)
 	        })
 	      })
 	
@@ -22720,7 +23660,7 @@
 	        el.__v_trans = new Transition(el, 'test', hooks, vm)
 	        // inline style
 	        el.style.transition =
-	        el.style.WebkitTransition = 'opacity ' + duration + ' ease'
+	        el.style.WebkitTransition = 'opacity ' + duration + 'ms ease'
 	        transition.applyTransition(el, 1, function () {
 	          document.body.appendChild(el)
 	          op()
@@ -22740,12 +23680,42 @@
 	        })
 	      })
 	
+	      it('transition enter for svg', function (done) {
+	        el.innerHTML = '<svg><circle cx="0" cy="0" r="10"></circle></svg>'
+	        var svg = el.querySelector('svg')
+	        var circle = el.querySelector('circle')
+	        svg.removeChild(circle)
+	        circle.__v_trans = new Transition(circle, 'test', hooks, vm)
+	        // inline style
+	        circle.style.transition =
+	        circle.style.WebkitTransition = 'opacity ' + duration + 'ms ease'
+	        transition.applyTransition(circle, 1, function () {
+	          svg.appendChild(circle)
+	          op()
+	        }, vm, cb)
+	        expect(hooks.beforeEnter).toHaveBeenCalled()
+	        expect(hooks.enter).toHaveBeenCalled()
+	        expect(op).toHaveBeenCalled()
+	        expect(cb).not.toHaveBeenCalled()
+	        _.nextTick(function () {
+	          expect(circle.getAttribute('class').indexOf('test-enter') > -1).toBe(false)
+	          expect(hooks.afterEnter).not.toHaveBeenCalled()
+	          _.on(circle, _.transitionEndEvent, function () {
+	            expect(cb).toHaveBeenCalled()
+	            expect(hooks.afterEnter).toHaveBeenCalled()
+	            done()
+	          })
+	        })
+	      })
+	
 	      it('transition leave', function (done) {
 	        el.__v_trans = new Transition(el, 'test', hooks, vm)
 	        // cascaded class style
 	        el.classList.add('test')
 	        // force a layout here so the transition can be triggered
+	        /* eslint-disable no-unused-vars */
 	        var f = el.offsetHeight
+	        /* eslint-enable no-unused-vars */
 	        transition.applyTransition(el, -1, op, vm, cb)
 	        expect(hooks.beforeLeave).toHaveBeenCalled()
 	        expect(hooks.leave).toHaveBeenCalled()
@@ -22762,7 +23732,32 @@
 	            done()
 	          })
 	        })
-	        return f
+	      })
+	
+	      it('transition leave for svg', function (done) {
+	        el.innerHTML = '<svg><circle cx="0" cy="0" r="10" class="test"></circle></svg>'
+	        var circle = el.querySelector('circle')
+	        circle.__v_trans = new Transition(circle, 'test', hooks, vm)
+	        // force a layout here so the transition can be triggered
+	        /* eslint-disable no-unused-vars */
+	        var f = el.offsetHeight
+	        /* eslint-enable no-unused-vars */
+	        transition.applyTransition(circle, -1, op, vm, cb)
+	        expect(hooks.beforeLeave).toHaveBeenCalled()
+	        expect(hooks.leave).toHaveBeenCalled()
+	        _.nextTick(function () {
+	          expect(op).not.toHaveBeenCalled()
+	          expect(cb).not.toHaveBeenCalled()
+	          expect(hooks.afterLeave).not.toHaveBeenCalled()
+	          expect(circle.getAttribute('class').indexOf('test-leave') > -1).toBe(true)
+	          _.on(circle, _.transitionEndEvent, function () {
+	            expect(op).toHaveBeenCalled()
+	            expect(cb).toHaveBeenCalled()
+	            expect(circle.getAttribute('class').indexOf('test-leave') > -1).toBe(false)
+	            expect(hooks.afterLeave).toHaveBeenCalled()
+	            done()
+	          })
+	        })
 	      })
 	
 	      it('animation enter', function (done) {
@@ -22821,7 +23816,7 @@
 	          setTimeout(function () {
 	            enterDone()
 	            testDone()
-	          }, 100)
+	          }, duration * 1.5)
 	        }
 	
 	        el.__v_trans = new Transition(el, 'test', hooks, vm)
@@ -22864,7 +23859,7 @@
 	          setTimeout(function () {
 	            enterDone()
 	            testDone()
-	          }, 20)
+	          }, duration / 2)
 	        }
 	
 	        el.__v_trans = new Transition(el, 'test', hooks, vm)
@@ -22940,11 +23935,9 @@
 	          })
 	        })
 	      })
-	
 	    })
 	
 	    describe('JavaScript only transitions', function () {
-	
 	      var el, vm, op, cb, hooks
 	      beforeEach(function () {
 	        hooks = {}
@@ -23018,7 +24011,7 @@
 	        var leaveSpy = jasmine.createSpy('js leave')
 	        var timeout
 	        hooks.enter = function (el, done) {
-	          timeout = setTimeout(done, 30)
+	          timeout = setTimeout(done, duration / 2)
 	        }
 	        hooks.enterCancelled = function () {
 	          clearTimeout(timeout)
@@ -23037,8 +24030,8 @@
 	          setTimeout(function () {
 	            expect(cb).not.toHaveBeenCalled()
 	            done()
-	          }, 30)
-	        }, 15)
+	          }, duration / 2)
+	        }, duration / 4)
 	      })
 	    })
 	  })
@@ -23046,13 +24039,12 @@
 
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
 	
 	describe('Util - component', function () {
-	
 	  it('checkComponentAttr', function () {
 	    var el = document.createElement('component')
 	
@@ -23061,15 +24053,15 @@
 	    expect(res).toBeUndefined()
 	
 	    // static <component is="...">
-	    el.setAttribute('is', 'what')
+	    el.setAttribute('is', 'foo')
 	    res = _.checkComponentAttr(el)
-	    expect(res.id).toBe('what')
+	    expect(res.id).toBe('foo')
 	    expect(res.dynamic).toBeFalsy()
 	
 	    // <component :is="...">
-	    el.setAttribute(':is', 'what')
+	    el.setAttribute(':is', 'foo')
 	    res = _.checkComponentAttr(el)
-	    expect(res.id).toBe('what')
+	    expect(res.id).toBe('foo')
 	    expect(res.dynamic).toBe(true)
 	
 	    // custom element, not defined
@@ -23087,49 +24079,13 @@
 	
 	    // is on undefined custom element
 	    el = document.createElement('test2')
-	    el.setAttribute('is', 'what')
+	    el.setAttribute('is', 'foo')
 	    res = _.checkComponentAttr(el, {
 	      components: {}
 	    })
-	    expect(res.id).toBe('what')
+	    expect(res.id).toBe('foo')
 	  })
 	})
-
-
-/***/ },
-/* 155 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(5)
-	var config = __webpack_require__(36)
-	var warnPrefix = '[Vue warn]: '
-	
-	if (typeof console !== 'undefined') {
-	
-	  describe('Util - Debug', function () {
-	
-	    beforeEach(function () {
-	      spyOn(console, 'log')
-	      spyOn(console, 'warn')
-	      if (console.trace) {
-	        spyOn(console, 'trace')
-	      }
-	    })
-	
-	    it('warn when silent is false', function () {
-	      config.silent = false
-	      _.warn('oops')
-	      expect(console.warn).toHaveBeenCalledWith(warnPrefix + 'oops')
-	    })
-	
-	    it('not warn when silent is ture', function () {
-	      config.silent = true
-	      _.warn('oops')
-	      expect(console.warn).not.toHaveBeenCalled()
-	    })
-	
-	  })
-	}
 
 
 /***/ },
@@ -23137,9 +24093,49 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
+	var Vue = __webpack_require__(1)
+	var config = __webpack_require__(36)
+	var warnPrefix = '[Vue warn]: '
+	
+	if (typeof console !== 'undefined') {
+	  describe('Util - Debug', function () {
+	    beforeEach(function () {
+	      spyOn(console, 'error')
+	    })
+	
+	    it('warn when silent is false', function () {
+	      config.silent = false
+	      _.warn.and.callThrough()
+	      _.warn('oops')
+	      expect(console.error).toHaveBeenCalledWith(warnPrefix + 'oops')
+	    })
+	
+	    it('format component name', function () {
+	      config.silent = false
+	      _.warn.and.callThrough()
+	      _.warn('oops', new Vue({ name: 'foo' }))
+	      expect(console.error).toHaveBeenCalledWith(warnPrefix + 'oops (found in component: <foo>)')
+	      _.warn('oops', { name: 'bar' })
+	      expect(console.error).toHaveBeenCalledWith(warnPrefix + 'oops (found in component: <bar>)')
+	    })
+	
+	    it('not warn when silent is ture', function () {
+	      config.silent = true
+	      _.warn.and.callThrough()
+	      _.warn('oops')
+	      expect(console.error).not.toHaveBeenCalled()
+	    })
+	  })
+	}
+
+
+/***/ },
+/* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5)
 	
 	describe('Util - DOM', function () {
-	
 	  var parent, child, target
 	
 	  function div () {
@@ -23254,19 +24250,25 @@
 	    _.addClass(el, 'bb')
 	    expect(el.getAttribute('class')).toBe('cc bb')
 	  })
+	
+	  it('getOuterHTML for SVG', function () {
+	    var el = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+	    el.setAttribute('class', 'aa bb cc')
+	    var html = _.getOuterHTML(el)
+	    var re = /<circle (xmlns="http:\/\/www\.w3\.org\/2000\/svg"\s)?class="aa bb cc"(\s?\/>|><\/circle>)/
+	    expect(re.test(html)).toBe(true)
+	  })
 	})
 
 
 /***/ },
-/* 157 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
 	
 	describe('Util - Environment', function () {
-	
 	  describe('nextTick', function () {
-	
 	    it('should accept context', function (done) {
 	      var ctx = {}
 	      _.nextTick(function () {
@@ -23282,13 +24284,12 @@
 
 
 /***/ },
-/* 158 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
 	
 	describe('Util - Language Enhancement', function () {
-	
 	  it('hasOwn', function () {
 	    var obj1 = { a: 1 }
 	    expect(_.hasOwn(obj1, 'a')).toBe(true)
@@ -23302,14 +24303,14 @@
 	    expect(_.isLiteral('12.3')).toBe(true)
 	    expect(_.isLiteral('true')).toBe(true)
 	    expect(_.isLiteral(' false ')).toBe(true)
-	    expect(_.isLiteral('"hi"')).toBe(true)
-	    expect(_.isLiteral(" 'whatt' ")).toBe(true)
+	    expect(_.isLiteral('"foo"')).toBe(true)
+	    expect(_.isLiteral(" 'foo' ")).toBe(true)
 	    expect(_.isLiteral('a.b.c')).toBe(false)
 	    expect(_.isLiteral('1 + 1')).toBe(false)
 	  })
 	
 	  it('toString', function () {
-	    expect(_._toString('hi')).toBe('hi')
+	    expect(_._toString('foo')).toBe('foo')
 	    expect(_._toString(1.234)).toBe('1.234')
 	    expect(_._toString(null)).toBe('')
 	    expect(_._toString(undefined)).toBe('')
@@ -23336,16 +24337,16 @@
 	  })
 	
 	  it('hyphenate', function () {
-	    expect(_.hyphenate('whatsUp')).toBe('whats-up')
+	    expect(_.hyphenate('fooBar')).toBe('foo-bar')
 	    expect(_.hyphenate('a1BfC')).toBe('a1-bf-c')
 	    expect(_.hyphenate('already-With-Hyphen')).toBe('already-with-hyphen')
 	  })
 	
 	  it('classify', function () {
 	    expect(_.classify('abc')).toBe('Abc')
-	    expect(_.classify('some-long-name')).toBe('SomeLongName')
-	    expect(_.classify('what_about_this')).toBe('WhatAboutThis')
-	    expect(_.classify('how/about/that')).toBe('HowAboutThat')
+	    expect(_.classify('foo-bar')).toBe('FooBar')
+	    expect(_.classify('foo_bar')).toBe('FooBar')
+	    expect(_.classify('foo/bar')).toBe('FooBar')
 	  })
 	
 	  it('bind', function () {
@@ -23389,7 +24390,7 @@
 	    expect(_.isObject(null)).toBeFalsy()
 	    expect(_.isObject(123)).toBeFalsy()
 	    expect(_.isObject(true)).toBeFalsy()
-	    expect(_.isObject('hi')).toBeFalsy()
+	    expect(_.isObject('foo')).toBeFalsy()
 	    expect(_.isObject(undefined)).toBeFalsy()
 	    expect(_.isObject(function () {})).toBeFalsy()
 	  })
@@ -23401,7 +24402,7 @@
 	    expect(_.isPlainObject(null)).toBeFalsy()
 	    expect(_.isPlainObject(123)).toBeFalsy()
 	    expect(_.isPlainObject(true)).toBeFalsy()
-	    expect(_.isPlainObject('hi')).toBeFalsy()
+	    expect(_.isPlainObject('foo')).toBeFalsy()
 	    expect(_.isPlainObject(undefined)).toBeFalsy()
 	    expect(_.isPlainObject(function () {})).toBe(false)
 	    expect(_.isPlainObject(window)).toBe(false)
@@ -23454,7 +24455,7 @@
 
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(5)
@@ -23463,11 +24464,6 @@
 	var resolveAsset = _.resolveAsset
 	
 	describe('Util - Option merging', function () {
-	
-	  beforeEach(function () {
-	    spyWarns()
-	  })
-	
 	  it('default strat', function () {
 	    // child undefined
 	    var res = merge({replace: true}, {}).replace
@@ -23500,7 +24496,6 @@
 	  })
 	
 	  it('events', function () {
-	
 	    // no parent
 	    res = merge({}, {events: 1})
 	    expect(res.events).toBe(1)
@@ -23605,7 +24600,7 @@
 	      components: null
 	    }, {
 	      components: {
-	        test: { template: 'hi' }
+	        test: { template: 'foo' }
 	      }
 	    })
 	    expect(typeof res.components.test).toBe('function')
@@ -23617,18 +24612,18 @@
 	      components: null
 	    }, {
 	      components: {
-	        a: { template: 'hi' }
+	        a: { template: 'foo' }
 	      }
 	    })
-	    expect(hasWarned('Do not use built-in or reserved HTML elements as component id: a')).toBe(true)
+	    expect('Do not use built-in or reserved HTML elements as component id: a').toHaveBeenWarned()
 	    merge({
 	      components: null
 	    }, {
 	      components: {
-	        slot: { template: 'hi' }
+	        slot: { template: 'foo' }
 	      }
 	    })
-	    expect(hasWarned('Do not use built-in or reserved HTML elements as component id: slot')).toBe(true)
+	    expect('Do not use built-in or reserved HTML elements as component id: slot').toHaveBeenWarned()
 	  })
 	
 	  it('should ignore non-function el & data in class merge', function () {
@@ -23640,7 +24635,7 @@
 	  it('class el merge', function () {
 	    function fn1 () {}
 	    function fn2 () {}
-	    var res = merge({el: fn1}, {el: fn2})
+	    var res = merge({ el: fn1 }, { el: fn2 })
 	    expect(res.el).toBe(fn2)
 	  })
 	
@@ -23652,14 +24647,14 @@
 	      return { a: 2, b: 3, d: { f: 2 }}
 	    }
 	    // both present
-	    var res = merge({data: fn1}, {data: fn2}).data()
+	    var res = merge({ data: fn1 }, { data: fn2 }).data()
 	    expect(res.a).toBe(2)
 	    expect(res.b).toBe(3)
 	    expect(res.c).toBe(4)
 	    expect(res.d.e).toBe(1)
 	    expect(res.d.f).toBe(2)
 	    // only parent
-	    res = merge({data: fn1}, {}).data()
+	    res = merge({ data: fn1 }, {}).data()
 	    expect(res.a).toBe(1)
 	    expect(res.b).toBeUndefined()
 	    expect(res.c).toBe(4)
@@ -23678,16 +24673,16 @@
 	      return 2
 	    }
 	    // both functions
-	    var res = merge({el: fn1}, {el: fn2}, vm)
+	    var res = merge({ el: fn1 }, { el: fn2 }, vm)
 	    expect(res.el).toBe(2)
 	    // direct instance el
-	    res = merge({el: fn1}, {el: 2}, vm)
+	    res = merge({ el: fn1 }, { el: 2 }, vm)
 	    expect(res.el).toBe(2)
 	    // no parent
-	    res = merge({}, {el: 2}, vm)
+	    res = merge({}, { el: 2 }, vm)
 	    expect(res.el).toBe(2)
 	    // no child
-	    res = merge({el: fn1}, {}, vm)
+	    res = merge({ el: fn1 }, {}, vm)
 	    expect(res.el).toBe(1)
 	  })
 	
@@ -23728,7 +24723,9 @@
 	    observe(instanceData)
 	    var res = merge(
 	      {
-	        data: function () { return { b: 234} }
+	        data: function () {
+	          return { b: 234 }
+	        }
 	      },
 	      {
 	        data: instanceData
@@ -23794,7 +24791,7 @@
 	      components: [{}]
 	    }
 	    merge(a, b)
-	    expect(hasWarned('must provide a "name" or "id" field')).toBe(true)
+	    expect('must provide a "name" or "id" field').toHaveBeenWarned()
 	  })
 	
 	  it('warn Array async component without id', function () {
@@ -23807,26 +24804,24 @@
 	      components: [function () {}]
 	    }
 	    merge(a, b)
-	    expect(hasWarned('must provide a "name" or "id" field')).toBe(true)
+	    expect('must provide a "name" or "id" field').toHaveBeenWarned()
 	  })
-	
 	})
 	
 	describe('Util - Option resolveAsset', function () {
-	
 	  var vm
 	  beforeEach(function () {
 	    vm = new Vue({
 	      data: {},
 	      components: {
 	        'hyphenated-component': {
-	          template: 'hi'
+	          template: 'foo'
 	        },
 	        camelCasedComponent: {
-	          template: 'yo'
+	          template: 'bar'
 	        },
 	        PascalCasedComponent: {
-	          template: 'ho'
+	          template: 'baz'
 	        }
 	      }
 	    })
@@ -23837,12 +24832,11 @@
 	    expect(resolveAsset(vm.$options, 'components', 'camel-cased-component')).toBeTruthy()
 	    expect(resolveAsset(vm.$options, 'components', 'pascal-cased-component')).toBeTruthy()
 	  })
-	
 	})
 
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Vue = __webpack_require__(1)
@@ -23852,9 +24846,7 @@
 	var config = Vue.config
 	
 	describe('Watcher', function () {
-	
 	  var vm, spy
-	
 	  beforeEach(function () {
 	    vm = new Vue({
 	      filters: {},
@@ -23869,7 +24861,6 @@
 	      }
 	    })
 	    spy = jasmine.createSpy('watcher')
-	    spyWarns()
 	  })
 	
 	  it('simple path', function (done) {
@@ -24011,7 +25002,7 @@
 	    var watcher2 = new Watcher(vm, 'e', spy2)
 	    expect(watcher.value).toBe(2)
 	    expect(watcher2.value).toBeUndefined()
-	    vm.$data = { b: { c: 3}, e: 4 }
+	    vm.$data = { b: { c: 3 }, e: 4 }
 	    nextTick(function () {
 	      expect(watcher.value).toBe(3)
 	      expect(watcher2.value).toBe(4)
@@ -24028,7 +25019,7 @@
 	    nextTick(function () {
 	      expect(watcher.value).toBe(3)
 	      expect(spy).toHaveBeenCalledWith(3, 2)
-	      vm.$data = { b: {c: 4}}
+	      vm.$data = { b: { c: 4 }}
 	      nextTick(function () {
 	        expect(watcher.value).toBe(4)
 	        expect(spy).toHaveBeenCalledWith(4, 3)
@@ -24059,8 +25050,8 @@
 	    }
 	    var watcher = new Watcher(vm, 'b.c', spy, {
 	      filters: [
-	        { name: 'test', args: [{value: 3, dynamic: false}]},
-	        { name: 'test2', args: [{value: 'msg', dynamic: true}]}
+	        { name: 'test', args: [{ value: 3, dynamic: false }] },
+	        { name: 'test2', args: [{ value: 'msg', dynamic: true }] }
 	      ]
 	    })
 	    expect(watcher.value).toBe('6yo')
@@ -24122,7 +25113,7 @@
 	    nextTick(function () {
 	      expect(spy).toHaveBeenCalledWith(vm.b, vm.b)
 	      var oldB = vm.b
-	      vm.b = { c: [{a: 1}]}
+	      vm.b = { c: [{ a: 1 }]}
 	      nextTick(function () {
 	        expect(spy).toHaveBeenCalledWith(vm.b, oldB)
 	        expect(spy.calls.count()).toBe(2)
@@ -24213,15 +25204,14 @@
 	
 	  it('warn getter errors', function () {
 	    new Watcher(vm, 'd.e + c', spy)
-	    expect(hasWarned('Error when evaluating expression')).toBe(true)
+	    expect('Error when evaluating expression').toHaveBeenWarned()
 	  })
 	
 	  it('warn setter errors', function () {
 	    var watcher = new Watcher(vm, 'a + b', spy)
 	    watcher.set(123)
-	    expect(hasWarned('Error when evaluating setter')).toBe(true)
+	    expect('Error when evaluating setter').toHaveBeenWarned()
 	  })
-	
 	})
 
 

@@ -6,8 +6,8 @@
         <meta charset="utf-8">
         <meta name="description" content="Vue.js - Intuitive, Fast and Composable MVVM for building interactive interfaces.">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'> -->
-        <!-- <link href='http://fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'> -->
+        <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600|Roboto Mono' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Dosis:300,500&text=Vue.js' rel='stylesheet' type='text/css'>
         <link href="//cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" rel='stylesheet' type='text/css'>
         <link rel="icon" href="/images/logo.png" type="image/x-icon">
         <script>
@@ -86,6 +86,12 @@
 
     </ul>
     <div class="list">
+        <div id="donate" style="margin-bottom: 20px">
+            <span class="wrapper" style="width: 110px">
+              <img src="/images/patreon.png">
+              <a href="/support-vuejs">支持 Vue.js</a>
+            </span>
+        </div>
         <h2>
 			
 			教程
@@ -177,21 +183,25 @@
                 </li>
             
         </ul>
-        <div id="donate">
+<!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
               <img src="/images/weixinpay.png">
               <a>打个赏</a>
             </span>
-        </div>
+        </div> -->
     </div>
 </div>
 
 
 <div class="content guide with-sidebar">
-    <h1>构建大型应用</h1>
     <div id="ad">
-        <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=vuejs" id="_carbonads_js"></script>
-    </div>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
+    <span>Proudly sponsored by</span><br>
+    <img src="/images/strikingly.png">
+  </a>
+</div>
+
+    <h1>构建大型应用</h1>
     <blockquote>
 <p><strong>新：</strong> 使用脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a> 可以快速地构建项目：单文件 Vue 组件，热加载，保存时检查代码，单元测试等。</p>
 </blockquote>
@@ -204,11 +214,12 @@
 <p><img src="/images/vue-component.png"></p>
 <p>如果你喜欢预处理器，甚至可以这么做：</p>
 <p><img src="/images/vue-component-with-pre-processors.png"></p>
-<p>你可以使用 Webpack + <a href="https://github.com/vuejs/vue-loader" target="_blank" rel="external">vue-loader</a> 或 Browserify + <a href="https://github.com/vuejs/vueify" target="_blank" rel="external">vueify</a> 构建这些单文件 Vue 组件。推荐使用 Webpack，因为它的加载器 API 提供更好的文件依赖追踪/缓存以及一些 Browserify 没有的转换功能。</p>
-<p>最快的构建方式是使用官方出品的脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a>。你也可以在 GitHub 上找到一些构建示例：</p>
+<p>你可以使用 Webpack + <a href="https://github.com/vuejs/vue-loader" target="_blank" rel="external">vue-loader</a> 或 Browserify + <a href="https://github.com/vuejs/vueify" target="_blank" rel="external">vueify</a> 构建这些单文件 Vue 组件。你也可以在 <a href="http://www.webpackbin.com/vue" target="_blank" rel="external">Webpackbin.com</a> 上在线尝试！</p>
+<p>选择哪种构建工具取决于你的经验和需求。Webpack 的功能更强大，如代码分割，将静态资源当作模块，提取组件的 CSS 到单独的一个文件等，不过它的配置相对复杂一点。如果你不需要 Webpack 的那些功能，使用 Browserify 更简单，</p>
+<p>最快的构建方式是使用官方出品的脚手架工具 <a href="https://github.com/vuejs/vue-cli" target="_blank" rel="external">vue-cli</a>。你也可以在 GitHub 上查看官方的构建模板：</p>
 <ul>
-<li><a href="https://github.com/vuejs/vue-loader-example" target="_blank" rel="external">Webpack + vue-loader</a></li>
-<li><a href="https://github.com/vuejs/vueify-example" target="_blank" rel="external">Browserify + vueify</a></li>
+<li><a href="https://github.com/vuejs-templates/webpack" target="_blank" rel="external">Webpack + vue-loader</a></li>
+<li><a href="https://github.com/vuejs-templates/browserify" target="_blank" rel="external">Browserify + vueify</a></li>
 </ul>
 <h2 id="u8DEF_u7531"><a href="#u8DEF_u7531" class="headerlink" title="路由"></a>路由</h2><p>对于单页应用，推荐使用<a href="https://github.com/vuejs/vue-router" target="_blank" rel="external">官方库 vue-router</a>。详细请查看它的<a href="http://vuejs.github.io/vue-router/" target="_blank" rel="external">文档</a>。</p>
 <p>如果你只需要非常简单的路由逻辑，可以这么做，监听 <code>hashchange</code> 事件并使用动态组件：</p>
@@ -228,7 +239,7 @@
 <p>Flux 架构常用于 React 应用中，但它的核心理念也可以适用于 Vue.js 应用。比如 <a href="https://github.com/vuejs/vuex/" target="_blank" rel="external">Vuex</a> 就是一个借鉴于 Flux，但是专门为 Vue.js 所设计的状态管理方案。React 生态圈中最流行的 Flux 实现 <a href="https://github.com/rackt/redux/" target="_blank" rel="external">Redux</a> 也可以通过<a href="https://github.com/egoist/revue" target="_blank" rel="external">简单的绑定</a>和 Vue 一起使用。</p>
 <h2 id="u5355_u5143_u6D4B_u8BD5"><a href="#u5355_u5143_u6D4B_u8BD5" class="headerlink" title="单元测试"></a>单元测试</h2><p>任何支持模块构建系统的单元测试工具都可以。推荐使用 <a href="http://karma-runner.github.io/0.12/index.html" target="_blank" rel="external">Karma</a>。它有许多插件，支持 <a href="https://github.com/webpack/karma-webpack" target="_blank" rel="external">Webpack</a> 和 <a href="https://github.com/Nikku/karma-browserify" target="_blank" rel="external">Browserify</a>。用法见它们的文档。</p>
 <p>代码测试的最佳实践是导出组件模块的选项/函数。例如：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// my-component.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  template: <span class="string">'&lt;span&gt;&#123;&#123;msg&#125;&#125;&lt;/span&gt;'</span>,</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello!'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'my-component created!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// my-component.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  template: <span class="string">'&lt;span&gt;&#123;&#123;msg&#125;&#125;&lt;/span&gt;'</span>,</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello!'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'my-component created!'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在入口模块中使用这个模块：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">var</span> Vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</span><br><span class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  data: &#123; <span class="comment">/* ... */</span> &#125;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    <span class="string">'my-component'</span>: <span class="built_in">require</span>(<span class="string">'./my-component'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>测试这个模块：</p>
@@ -268,18 +279,11 @@
             <script src="/js/common.js"></script>
         
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 FastClick.attach(document.body);
             }, false);
         </script>
-
-        <!-- 打赏 -->
-        <div id="qrcode" class="hidden">
-            <h2>微信扫一扫，支持 Vue.js :)</h2>
-            <img src="/images/qrcode.png">
-        </div>
-        <script src="/js/money.js"></script>
     </body>
 </html>
