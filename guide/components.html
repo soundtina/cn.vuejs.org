@@ -182,6 +182,10 @@
                     <a href="/guide/comparison.html" class="sidebar-link">对比其它框架</a>
                 </li>
             
+                <li>
+                    <a href="/guide/join.html" class="sidebar-link">加入 Vue 社区！</a>
+                </li>
+            
         </ul>
 <!--         <div id="donate">
             <span class="wrapper" style="width: 72px">
@@ -406,13 +410,13 @@ var parent = new Vue({
 </ol>
 <p>为了让组件可以组合，我们需要一种方式来混合父组件的内容与子组件自己的模板。这个处理称为<strong>内容分发</strong>（或 “transclusion”，如果你熟悉 Angular）。Vue.js 实现了一个内容分发 API，参照了当前 <a href="https://github.com/w3c/webcomponents/blob/gh-pages/proposals/Slots-Proposal.md" target="_blank" rel="external">Web 组件规范草稿</a>，使用特殊的 <code>&lt;slot&gt;</code> 元素作为原始内容的插槽。</p>
 <h3 id="u7F16_u8BD1_u4F5C_u7528_u57DF"><a href="#u7F16_u8BD1_u4F5C_u7528_u57DF" class="headerlink" title="编译作用域"></a>编译作用域</h3><p>在深入内容分发 API 之前，我们先明确内容的编译作用域。假定模板为：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">child</span>&gt;</span></span><br><span class="line">  &#123;&#123; msg &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="title">child</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">child-component</span>&gt;</span></span><br><span class="line">  &#123;&#123; msg &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="title">child-component</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p><code>msg</code> 应该绑定到父组件的数据，还是绑定到子组件的数据？答案是父组件。组件作用域简单地说是：</p>
 <blockquote>
 <p>父组件模板的内容在父组件作用域内编译；子组件模板的内容在子组件作用域内编译</p>
 </blockquote>
 <p>一个常见错误是试图在父组件模板内将一个指令绑定到子组件属性/方法：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 无效 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">child</span> <span class="attribute">v-show</span>=<span class="value">"someChildProperty"</span>&gt;</span><span class="tag">&lt;/<span class="title">child</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 无效 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">child-component</span> <span class="attribute">v-show</span>=<span class="value">"someChildProperty"</span>&gt;</span><span class="tag">&lt;/<span class="title">child-component</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>假定 <code>someChildProperty</code> 是子组件的属性，上例不能如预期工作。父组件模板不知道子组件的状态。</p>
 <p>如果要绑定子组件内的指令到一个组件的根节点，应当在它的模板内这么做：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.component(<span class="string">'child-component'</span>, &#123;</span><br><span class="line">  <span class="comment">// 有效，因为是在正确的作用域内</span></span><br><span class="line">  template: <span class="string">'&lt;div v-show="someChildProperty"&gt;Child&lt;/div&gt;'</span>,</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      someChildProperty: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>

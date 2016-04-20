@@ -236,11 +236,14 @@ a.button:hover {
 #nav .nav-dropdown-container:hover .nav-dropdown {
   display: block;
 }
+#nav .nav-dropdown-container li {
+  white-space: nowrap;
+}
 #nav .nav-dropdown {
   display: none;
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -30%;
   background-color: #fff;
   padding: 10px 0;
   border: 1px solid #ddd;
@@ -252,6 +255,7 @@ a.button:hover {
   line-height: 1.8em;
   margin: 0;
   display: block;
+  white-space: nowrap;
 }
 #nav .nav-dropdown a {
   color: #7f8c8d;
@@ -546,7 +550,7 @@ ul.demo li {
   left: 60px;
   bottom: 0;
   padding: 2.2em 0;
-  width: 260px;
+  width: 250px;
   margin-right: 20px;
   overflow-x: hidden;
   overflow-y: auto;

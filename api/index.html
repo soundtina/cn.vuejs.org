@@ -1419,7 +1419,8 @@
 <h3 id="currency"><a href="#currency" class="headerlink" title="currency"></a>currency</h3><ul>
 <li><p><strong>参数：</strong></p>
 <ul>
-<li><code>{String} [symbol] - default: &#39;$&#39;</code></li>
+<li><code>{String} [货币符号] - 默认值: &#39;$&#39;</code></li>
+<li><code>{Number} [小数位] - 默认值: 2</code></li>
 </ul>
 </li>
 <li><p><strong>示例：</strong></p>
@@ -1428,6 +1429,9 @@
 <p>使用其它符号：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;&#123; amount | currency '£' &#125;&#125;</span><br></pre></td></tr></table></figure>
 <p><em>12345 =&gt; £12,345.00</em></p>
+<p>一些货币使用 3 或 4 个小数位，而一些货币不会，例如日元（¥）、越南盾（₫）：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;&#123; amount | currency '₫' 0 &#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><em>12345 =&gt; ₫12,345</em></p>
 </li>
 </ul>
 <h3 id="pluralize"><a href="#pluralize" class="headerlink" title="pluralize"></a>pluralize</h3><ul>
