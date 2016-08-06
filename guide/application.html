@@ -199,8 +199,10 @@
 
 <div class="content guide with-sidebar">
     <div id="ad">
-  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
-    <span>Proudly sponsored by</span><br>
+  <span>Proudly sponsored by</span>
+  <br>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank"
+    style="display:inline-block;padding-top:8px">
     <img src="/images/strikingly.png">
   </a>
 </div>
@@ -231,7 +233,7 @@
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"app"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">component</span> <span class="attribute">:is</span>=<span class="value">"currentView"</span>&gt;</span><span class="tag">&lt;/<span class="title">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.component(<span class="string">'home'</span>, &#123; <span class="comment">/* ... */</span> &#125;)</span><br><span class="line">Vue.component(<span class="string">'page1'</span>, &#123; <span class="comment">/* ... */</span> &#125;)</span><br><span class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#app'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    currentView: <span class="string">'home'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 在路由处理器中切换页面</span></span><br><span class="line">app.currentView = <span class="string">'page1'</span></span><br></pre></td></tr></table></figure>
 <p>利用这种机制也可以非常容易地配合其它路由库，如 <a href="https://github.com/visionmedia/page.js" target="_blank" rel="external">Page.js</a> 或 <a href="https://github.com/flatiron/director" target="_blank" rel="external">Director</a>。</p>
-<h2 id="u4E0E_u670D_u52A1_u5668_u901A_u4FE1"><a href="#u4E0E_u670D_u52A1_u5668_u901A_u4FE1" class="headerlink" title="与服务器通信"></a>与服务器通信</h2><p>Vue 实例的原始数据 <code>$data</code> 能直接用 <code>JSON.stringify()</code> 序列化。社区贡献了一个插件 <a href="https://github.com/vuejs/vue-resource" target="_blank" rel="external">vue-resource</a>，提供一种容易的方式与 RESTful APIs 配合。也可以使用任何自己喜欢的 Ajax 库，如 <code>$.ajax</code> 或 <a href="https://github.com/visionmedia/superagent" target="_blank" rel="external">SuperAgent</a>。Vue.js 也能很好地与无后端服务配合，如 Firebase 和 Parse。</p>
+<h2 id="u4E0E_u670D_u52A1_u5668_u901A_u4FE1"><a href="#u4E0E_u670D_u52A1_u5668_u901A_u4FE1" class="headerlink" title="与服务器通信"></a>与服务器通信</h2><p>Vue 实例的原始数据 <code>$data</code> 能直接用 <code>JSON.stringify()</code> 序列化。社区贡献了一个插件 <a href="https://github.com/vuejs/vue-resource" target="_blank" rel="external">vue-resource</a>，提供一种容易的方式与 RESTful APIs 配合。也可以使用任何自己喜欢的 Ajax 库，如 <code>$.ajax</code> 或 <a href="https://github.com/visionmedia/superagent" target="_blank" rel="external">SuperAgent</a>。Vue.js 也能很好地与无后端服务配合，如 Firebase、Parse 和 Hoodie。</p>
 <h2 id="u72B6_u6001_u7BA1_u7406"><a href="#u72B6_u6001_u7BA1_u7406" class="headerlink" title="状态管理"></a>状态管理</h2><p>在大型应用中，状态管理常常变得复杂，因为状态分散在许多组件内。常常忽略 Vue.js 应用的来源是原生的数据对象—— Vue 实例代理访问它。因此，如果一个状态要被多个实例共享，应避免复制它：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> sourceOfTruth = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vmA = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: sourceOfTruth</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vmB = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: sourceOfTruth</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>现在每当 <code>sourceOfTruth</code> 被修改后，<code>vmA</code> 与 <code>vmB</code> 将自动更新它们的视图。扩展这个思路，我们可以实现 <strong>store 模式</strong>：</p>

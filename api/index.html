@@ -115,8 +115,10 @@
 
 <div class="content api with-sidebar">
     <div id="ad">
-  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
-    <span>Proudly sponsored by</span><br>
+  <span>Proudly sponsored by</span>
+  <br>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank"
+    style="display:inline-block;padding-top:8px">
     <img src="/images/strikingly.png">
   </a>
 </div>
@@ -240,7 +242,7 @@
 <li><p><strong>用法：</strong></p>
 <p>设置对象的属性。如果对象是响应的，将触发视图更新。这个方法主要用于解决 不能检测到属性添加的限制。</p>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应</a></p>
+<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应式原理</a></p>
 </li>
 </ul>
 <h3 id="Vue-delete">Vue.delete( object, key )</h3>
@@ -255,7 +257,7 @@
 <li><p><strong>用法：</strong></p>
 <p>删除对象的属性。如果对象是响应的，将触发视图更新。这个方法主要用于解决 不能检测到属性删除的限制。</p>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应</a></p>
+<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应式原理</a></p>
 </li>
 </ul>
 <h3 id="Vue-directive">Vue.directive( id, [definition] )</h3>
@@ -319,7 +321,7 @@
 <p>注册或获取全局组件。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注册组件，传入一个扩展的构造器</span></span><br><span class="line">Vue.component(<span class="string">'my-component'</span>, Vue.extend(&#123; <span class="comment">/* ... */</span>&#125;))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册组件，传入一个选项对象（自动调用 Vue.extend）</span></span><br><span class="line">Vue.component(<span class="string">'my-component'</span>, &#123; <span class="comment">/* ... */</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取注册的组件（始终返回构造器）</span></span><br><span class="line"><span class="keyword">var</span> MyComponent = Vue.component(<span class="string">'my-component'</span>)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/components.html">组件</a>.</p>
+<li><p><strong>另见：</strong> <a href="/guide/components.html">组件</a></p>
 </li>
 </ul>
 <h3 id="Vue-transition">Vue.transition( id, [hooks] )</h3>
@@ -335,7 +337,7 @@
 <p>注册或获取全局的过渡钩子对象。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注册</span></span><br><span class="line">Vue.transition(<span class="string">'fade'</span>, &#123;</span><br><span class="line">  enter: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;,</span><br><span class="line">  leave: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取注册的钩子</span></span><br><span class="line"><span class="keyword">var</span> fadeTransition = Vue.transition(<span class="string">'fade'</span>)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/transitions.html">过渡</a>.</p>
+<li><p><strong>另见：</strong> <a href="/guide/transitions.html">过渡</a></p>
 </li>
 </ul>
 <h3 id="Vue-partial">Vue.partial( id, [partial] )</h3>
@@ -351,7 +353,7 @@
 <p>注册或获取全局的 partial。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注册</span></span><br><span class="line">Vue.partial(<span class="string">'my-partial'</span>, <span class="string">'&lt;div&gt;Hi&lt;/div&gt;'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取注册的 partial</span></span><br><span class="line"><span class="keyword">var</span> myPartial = Vue.partial(<span class="string">'my-partial'</span>)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>另见：</strong> <a href="#partial">特殊元素 - &lt;partial&gt;</a>。</p>
+<li><p><strong>另见：</strong> <a href="#partial">特殊元素 - &lt;partial&gt;</a></p>
 </li>
 </ul>
 <h3 id="Vue-use">Vue.use( plugin, [options] )</h3>
@@ -366,7 +368,7 @@
 <li><p><strong>用法：</strong></p>
 <p>安装 Vue.js 插件。如果插件是一个对象，必须有一个 <code>install</code> 方法。如果它是一个函数，它会被作为安装方法。安装方法以 Vue 为参数。</p>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/plugins.html">插件</a>.</p>
+<li><p><strong>另见：</strong> <a href="/guide/plugins.html">插件</a></p>
 </li>
 </ul>
 <h3 id="Vue-mixin">Vue.mixin( mixin )</h3>
@@ -400,7 +402,7 @@
 <li><p><strong>示例：</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123; a: <span class="number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接创建一个实例</span></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: data</span><br><span class="line">&#125;)</span><br><span class="line">vm.a <span class="comment">// -&gt; 1</span></span><br><span class="line">vm.$data === data <span class="comment">// -&gt; true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 Vue.extend() 中必须是函数</span></span><br><span class="line"><span class="keyword">var</span> Component = Vue.extend(&#123;</span><br><span class="line">  data: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; a: <span class="number">1</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应</a>.</p>
+<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应式原理</a></p>
 </li>
 </ul>
 <h3 id="props"><a href="#props" class="headerlink" title="props"></a>props</h3><ul>
@@ -410,9 +412,24 @@
 <p>包含一些特性——期望使用的父组件数据的属性。可以是数组或对象。对象用于高级配置，如类型检查，自定义验证，默认值等。</p>
 </li>
 <li><p><strong>示例：</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 简单语法</span></span><br><span class="line">Vue.component(<span class="string">'props-demo-simple'</span>, &#123;</span><br><span class="line">  props: [<span class="string">'size'</span>, <span class="string">'myMessage'</span>]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象语法，指定验证要求</span></span><br><span class="line">Vue.component(<span class="string">'props-demo-advanced'</span>, &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    <span class="comment">// 只检测类型</span></span><br><span class="line">    size: <span class="built_in">Number</span>,</span><br><span class="line">    <span class="comment">// 检测类型 + 其它验证</span></span><br><span class="line">    name: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      required: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 简单语法</span></span><br><span class="line">Vue.component(<span class="string">'props-demo-simple'</span>, &#123;</span><br><span class="line">  props: [<span class="string">'size'</span>, <span class="string">'myMessage'</span>]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象语法，指定验证要求</span></span><br><span class="line">Vue.component(<span class="string">'props-demo-advanced'</span>, &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    <span class="comment">// 只检测类型</span></span><br><span class="line">    size: <span class="built_in">Number</span>,</span><br><span class="line">    <span class="comment">// 检测类型 + 其它验证</span></span><br><span class="line">    name: &#123;</span><br><span class="line">      type: <span class="built_in">String</span>,</span><br><span class="line">      required: <span class="literal">true</span>,</span><br><span class="line">      <span class="comment">// 双向绑定</span></span><br><span class="line">      twoWay: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>另见：</strong> <a href="/guide/components.html#Props">Props</a></p>
+</li>
+</ul>
+<h3 id="propsData"><a href="#propsData" class="headerlink" title="propsData"></a>propsData</h3><blockquote>
+<p>1.0.22+</p>
+</blockquote>
+<ul>
+<li><p><strong>类型：</strong> <code>Object</code></p>
+</li>
+<li><p><strong>限制：</strong> 只用于 <code>new</code> 创建实例中。</p>
+</li>
+<li><p><strong>详细：</strong></p>
+<p>在创建实例的过程传递 props。主要作用是方便测试。</p>
+</li>
+<li><p><strong>示例：</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Comp = Vue.extend(&#123;</span><br><span class="line">  props: [<span class="string">'msg'</span>],</span><br><span class="line">  template: <span class="string">'&lt;div&gt;&#123;&#123; msg &#125;&#125;&lt;/div&gt;'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Comp(&#123;</span><br><span class="line">  propsData: &#123;</span><br><span class="line">    msg: <span class="string">'hello'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h3 id="computed"><a href="#computed" class="headerlink" title="computed"></a>computed</h3><ul>
@@ -427,7 +444,7 @@
 <li><p><strong>另见：</strong></p>
 <ul>
 <li><a href="/guide/computed.html">计算属性</a></li>
-<li><a href="/guide/reactivity.html#计算属性">深入响应：计算属性</a></li>
+<li><a href="/guide/reactivity.html#计算属性的奥秘">深入响应式原理：计算属性的奥秘</a></li>
 </ul>
 </li>
 </ul>
@@ -492,18 +509,18 @@
 <li><p><strong>限制：</strong> 只能与 <strong>template</strong> 选项一起用</p>
 </li>
 <li><p><strong>详细：</strong></p>
-<p>决定是否替换模板的挂载元素。如果设为 <code>false</code> 模板将覆盖元素的内容，不会替换元素本身。</p>
+<p>决定是否用模板替换挂载元素。如果设为 <code>true</code>（这是默认值），模板将覆盖挂载元素，并合并挂载元素和模板根节点的 attributes。如果设为 <code>false</code> 模板将覆盖挂载元素的内容，不会替换挂载元素自身。</p>
 </li>
 <li><p><strong>示例：</strong></p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"replace"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#replace'</span>,</span><br><span class="line">  template: <span class="string">'&lt;p&gt;replaced&lt;/p&gt;'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"replace"</span> <span class="attribute">class</span>=<span class="value">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#replace'</span>,</span><br><span class="line">  template: <span class="string">'&lt;p class="bar"&gt;replaced&lt;/p&gt;'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>结果：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">p</span>&gt;</span>replaced<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">p</span> <span class="attribute">class</span>=<span class="value">"foo bar"</span> <span class="attribute">id</span>=<span class="value">"replace"</span>&gt;</span>replaced<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p><code>replace</code> 设为 <code>false</code>：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"insert"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#insert'</span>,</span><br><span class="line">  replace: <span class="literal">false</span>,</span><br><span class="line">  template: <span class="string">'&lt;p&gt;inserted&lt;/p&gt;'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"insert"</span> <span class="attribute">class</span>=<span class="value">"foo"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#insert'</span>,</span><br><span class="line">  replace: <span class="literal">false</span>,</span><br><span class="line">  template: <span class="string">'&lt;p class="bar"&gt;inserted&lt;/p&gt;'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>结果：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"insert"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">p</span>&gt;</span>inserted<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"insert"</span> <span class="attribute">class</span>=<span class="value">"foo"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">p</span> <span class="attribute">class</span>=<span class="value">"bar"</span>&gt;</span>inserted<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="u9009_u9879_/__u751F_u547D_u5468_u671F_u94A9_u5B50"><a href="#u9009_u9879_/__u751F_u547D_u5468_u671F_u94A9_u5B50" class="headerlink" title="选项 / 生命周期钩子"></a>选项 / 生命周期钩子</h2><h3 id="init"><a href="#init" class="headerlink" title="init"></a>init</h3><ul>
@@ -679,7 +696,7 @@
 </li>
 <li><p><strong>另见：</strong></p>
 <ul>
-<li><a href="#Instance_Methods_/_Events">实例方法 - 事件</a></li>
+<li><a href="#实例方法-事件">实例方法 - 事件</a></li>
 <li><a href="/guide/components.html#父子组件通信">父子组件通信</a></li>
 </ul>
 </li>
@@ -708,6 +725,20 @@
 </li>
 <li><p><strong>示例：</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Ctor = Vue.extend(&#123;</span><br><span class="line">  name: <span class="string">'stack-overflow'</span>,</span><br><span class="line">  template:</span><br><span class="line">    <span class="string">'&lt;div&gt;'</span> +</span><br><span class="line">      <span class="comment">// 递归地调用自己</span></span><br><span class="line">      <span class="string">'&lt;stack-overflow&gt;&lt;/stack-overflow&gt;'</span> +</span><br><span class="line">    <span class="string">'&lt;/div&gt;'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将导致错误：Maximum call stack size exceeded</span></span><br><span class="line"><span class="comment">// 不过我们假定没问题...</span></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Ctor()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(vm) <span class="comment">// -&gt; StackOverflow &#123;$el: null, ...&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="extends"><a href="#extends" class="headerlink" title="extends"></a>extends</h3><blockquote>
+<p>1.0.22+</p>
+</blockquote>
+<ul>
+<li><p><strong>类型：</strong> <code>Object | Function</code></p>
+</li>
+<li><p><strong>详细：</strong></p>
+<p>声明式的扩展另一个组件（可以是选项对象或者构造器），而不必使用 <code>Vue.extend</code>。主要作用是更容易的扩展单文件组件。</p>
+<p>这类似于 <code>mixins</code>，不同的是组件的选项比待扩展的源组件的选项优先。</p>
+</li>
+<li><p><em>示例：*</em></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> CompA = &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩展 CompA，不用调用 Vue.extend</span></span><br><span class="line"><span class="keyword">var</span> CompB = &#123;</span><br><span class="line">  extends: CompA,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h2 id="u5B9E_u4F8B_u5C5E_u6027"><a href="#u5B9E_u4F8B_u5C5E_u6027" class="headerlink" title="实例属性"></a>实例属性</h2><h3 id="vm-_24data"><a href="#vm-_24data" class="headerlink" title="vm.$data"></a>vm.$data</h3><ul>
@@ -862,9 +893,9 @@
 <p>如果 keypath 不存在，将递归地创建并建立追踪。如果用它创建一个顶级属性，实例将被强制进入“ digest 循环”，在此过程中重新计算所有的 watcher。</p>
 </li>
 <li><p><strong>示例：</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: &#123;</span><br><span class="line">      b: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// keypath 存在</span></span><br><span class="line">vm.$set(<span class="string">'a.b'</span>, <span class="number">2</span>)</span><br><span class="line">vm.a.b <span class="comment">// -&gt; 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// keypath 不存在</span></span><br><span class="line">vm.$set(<span class="string">'c'</span>, <span class="number">3</span>)</span><br><span class="line">vm.c <span class="comment">// -&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: &#123;</span><br><span class="line">      b: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// keypath 存在</span></span><br><span class="line">vm.$set(<span class="string">'a.b'</span>, <span class="number">2</span>)</span><br><span class="line">vm.a.b <span class="comment">// -&gt; 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// keypath 不存在</span></span><br><span class="line">vm.$set(<span class="string">'c'</span>, <span class="number">3</span>)</span><br><span class="line">vm.c <span class="comment">// -&gt; 3</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应</a></p>
+<li><p><strong>另见：</strong> <a href="/guide/reactivity.html">深入响应式原理</a></p>
 </li>
 </ul>
 <h3 id="vm-delete">vm.$delete( key )</h3>
@@ -922,7 +953,7 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">vm.$log() <span class="comment">// 打印整个 ViewModel 的数据</span></span><br><span class="line">vm.$log(<span class="string">'item'</span>) <span class="comment">// 打印 vm.item</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h2 id="u5B9E_u4F8B_u5C5E_u6027_/__u4E8B_u4EF6"><a href="#u5B9E_u4F8B_u5C5E_u6027_/__u4E8B_u4EF6" class="headerlink" title="实例属性 / 事件"></a>实例属性 / 事件</h2><h3 id="vm-on">vm.$on( event, callback )</h3>
+<h2 id="u5B9E_u4F8B_u65B9_u6CD5_/__u4E8B_u4EF6"><a href="#u5B9E_u4F8B_u65B9_u6CD5_/__u4E8B_u4EF6" class="headerlink" title="实例方法 / 事件"></a>实例方法 / 事件</h2><h3 id="vm-on">vm.$on( event, callback )</h3>
 
 <ul>
 <li><p><strong>参数：</strong></p>
@@ -1187,6 +1218,7 @@
 </li>
 <li><p><strong>另见：</strong> <a href="/guide/conditional.html#v-else">条件渲染 - v-else</a></p>
 </li>
+<li><strong>另见：</strong> <a href="/guide/conditional.html#组件警告">条件渲染 - 组件警告</a></li>
 </ul>
 <h3 id="v-for"><a href="#v-for" class="headerlink" title="v-for"></a>v-for</h3><ul>
 <li><p><strong>类型：</strong> <code>Array | Object | Number | String</code></p>
@@ -1379,7 +1411,7 @@
 </li>
 <li><p><strong>用法：</strong></p>
 <p><code>&lt;slot&gt;</code> 元素作为组件模板之中的内容分发插槽。这个元素自身将被替换。</p>
-<p>有 <code>name</code> 特性的 slot 称为命名 slot。 有 <code>slot</code> 特性的内容将分发到名字相匹配的命名 slot。</p>
+<p>有 <code>name</code> 特性的 slot 称为具名 slot。 有 <code>slot</code> 特性的内容将分发到名字相匹配的具名 slot。</p>
 </li>
 <li><p><strong>另见：</strong> <a href="/guide/components.html#使用-Slot-分发内容">使用 slot 分发内容</a></p>
 </li>
@@ -1420,7 +1452,7 @@
 <li><p><strong>参数：</strong></p>
 <ul>
 <li><code>{String} [货币符号] - 默认值: &#39;$&#39;</code></li>
-<li><code>{Number} [小数位] - 默认值: 2</code></li>
+<li><strong>1.0.22+</strong> <code>{Number} [小数位] - 默认值: 2</code></li>
 </ul>
 </li>
 <li><p><strong>示例：</strong></p>
@@ -1589,7 +1621,7 @@
   </script>
   
 <p>使用一个函数排序：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"orderby-compare-example"</span> <span class="attribute">class</span>=<span class="value">"demo"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">button</span> @<span class="attribute">click</span>=<span class="value">"order = order * -1"</span>&gt;</span>Reverse Sort Order<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">v-for</span>=<span class="value">"user in users | orderBy ageByTen"</span>&gt;</span></span><br><span class="line">      &#123;&#123; user.name &#125;&#125; - &#123;&#123; user.age &#125;&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">"orderby-compare-example"</span> <span class="attribute">class</span>=<span class="value">"demo"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">button</span> @<span class="attribute">click</span>=<span class="value">"order = order * -1"</span>&gt;</span>Reverse Sort Order<span class="tag">&lt;/<span class="title">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">li</span> <span class="attribute">v-for</span>=<span class="value">"user in users | orderBy ageByTen order"</span>&gt;</span></span><br><span class="line">      &#123;&#123; user.name &#125;&#125; - &#123;&#123; user.age &#125;&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#orderby-compare-example'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    order: <span class="number">1</span>,</span><br><span class="line">    users: [</span><br><span class="line">      &#123;</span><br><span class="line">        name: <span class="string">'Jackie'</span>,</span><br><span class="line">        age: <span class="number">62</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        name: <span class="string">'Chuck'</span>,</span><br><span class="line">        age: <span class="number">76</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        name: <span class="string">'Bruce'</span>,</span><br><span class="line">        age: <span class="number">61</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    ageByTen: <span class="function"><span class="keyword">function</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Math</span>.floor(a.age / <span class="number">10</span>) - <span class="built_in">Math</span>.floor(b.age / <span class="number">10</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
   <div id="orderby-compare-example" class="demo">

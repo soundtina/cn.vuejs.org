@@ -199,14 +199,16 @@
 
 <div class="content guide with-sidebar">
     <div id="ad">
-  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
-    <span>Proudly sponsored by</span><br>
+  <span>Proudly sponsored by</span>
+  <br>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank"
+    style="display:inline-block;padding-top:8px">
     <img src="/images/strikingly.png">
   </a>
 </div>
 
     <h1>Class 与 Style 绑定</h1>
-    <p>数据绑定一个常见需求是操作元素的 class 列表和它的内联样式。因为它们都是属性，我们可以用 <code>v-bind</code> 处理它们：我们只需要计算出表达式最终的字符串。不过，字符串拼接麻烦又易错。因此，在<code>v-bind</code> 用于 <code>class</code> 和 <code>style</code> 时，Vue.js 专门增强了它。表达式的结果类型除了字符串之外，还可以是对象或数组。</p>
+    <p>数据绑定一个常见需求是操作元素的 class 列表和它的内联样式。因为它们都是 attribute，我们可以用 <code>v-bind</code> 处理它们：只需要计算出表达式最终的字符串。不过，字符串拼接麻烦又易错。因此，在 <code>v-bind</code> 用于 <code>class</code> 和 <code>style</code> 时，Vue.js 专门增强了它。表达式的结果类型除了字符串之外，还可以是对象或数组。</p>
 <h2 id="u7ED1_u5B9A_HTML_Class"><a href="#u7ED1_u5B9A_HTML_Class" class="headerlink" title="绑定 HTML Class"></a>绑定 HTML Class</h2><p class="tip">尽管可以用 Mustache 标签绑定 class，比如 <code>class="{{ className }}"</code>，但是我们不推荐这种写法和 <code>v-bind:class</code> 混用。两者只能选其一！</p>
 
 <h3 id="u5BF9_u8C61_u8BED_u6CD5"><a href="#u5BF9_u8C61_u8BED_u6CD5" class="headerlink" title="对象语法"></a>对象语法</h3><p>我们可以传给 <code>v-bind:class</code> 一个对象，以动态地切换 class。注意  <code>v-bind:class</code> 指令可以与普通的 <code>class</code> 特性共存：</p>

@@ -132,19 +132,35 @@ p {
 }
 a.button {
   display: inline-block;
-  font-family: 'Roboto Mono', Monaco, courier, monospace;
   font-weight: 700;
   color: #fff;
   background-color: #4fc08d;
+  transition: all 0.15s ease;
+  font-family: 'Roboto Mono', Monaco, courier, monospace;
   border-bottom: 2px solid #3aa373;
   padding: 12px 14px;
   border-radius: 4px;
-  transition: all 0.15s ease;
 }
 a.button:hover {
   background-color: #5dc596;
-  -webkit-transform: translate(0, -2px);
-  transform: translate(0, -2px);
+  -webkit-transform: scale(1.03);
+  transform: scale(1.03);
+}
+a.small-button {
+  display: inline-block;
+  font-weight: 700;
+  color: #fff;
+  background-color: #4fc08d;
+  transition: all 0.15s ease;
+  padding: 4px 8px 5px;
+  border-radius: 4px;
+  width: 140px;
+  margin: 0 5px;
+}
+a.small-button:hover {
+  background-color: #5dc596;
+  -webkit-transform: scale(1.03);
+  transform: scale(1.03);
 }
 .highlight {
   overflow-x: auto;
@@ -360,7 +376,9 @@ body {
   margin-right: 0;
 }
 #translations {
-  margin-bottom: 3em;
+  position: fixed;
+  right: 1em;
+  bottom: 0.5em;
 }
 #translations .delimiter {
   color: #7f8c8d;
@@ -396,6 +414,7 @@ body {
   position: relative;
 }
 #hero .inner {
+  z-index: 2;
   height: 640px;
   width: 100%;
   position: absolute;
@@ -421,6 +440,7 @@ body {
 }
 #hero .down {
   position: absolute;
+  z-index: 1;
   bottom: 0;
   width: 100%;
   left: 0;
@@ -637,12 +657,42 @@ body {
 #donate {
   margin-left: -2px !important;
 }
+#sponsors {
+  padding-top: 20px;
+}
+#sponsors span,
+#sponsors-mobile span {
+  color: #7f8c8d;
+  font-size: 0.85em;
+}
+#sponsors a,
+#sponsors-mobile a,
+#sponsors img,
+#sponsors-mobile img {
+  position: relative;
+  width: 100px;
+  display: inline-block;
+  vertical-align: middle;
+}
+#sponsors a,
+#sponsors-mobile a {
+  margin: 5px 10px 0;
+}
+#sponsors-mobile {
+  display: none;
+  text-align: center;
+  margin-bottom: 2em;
+  padding: 0 1em;
+}
+#sponsors-mobile a {
+  margin: 20px 10px 0;
+}
 @media screen and (max-width: 480px) {
   body {
     font-size: 14px;
   }
   #nav {
-    margin: 2em 1.8em 0;
+    margin: 1.5em 1.2em 0;
   }
   #translations {
     margin-bottom: 2em;
@@ -678,13 +728,16 @@ body {
     font-size: 0.8em;
     margin: 0.5em 0;
   }
+  #hero a.small-button {
+    margin: 0.3em 0;
+  }
   #hero .desc {
     max-width: 300px;
   }
   #hero .warning,
   #hero .desc {
     font-size: 0.85em;
-    margin: 1em auto;
+    margin: 0.8em auto;
   }
   #hero .warning br,
   #hero .desc br {
@@ -713,19 +766,17 @@ body {
   #why h2 {
     font-size: 1.4em;
   }
-  #ad {
-    position: static;
-  }
-  #ad .carbon-img,
-  #ad .carbon-text,
-  #ad .carbon-poweredby {
-    display: inline-bloc;
-  }
 }
-@media screen and (max-width: 860px) {
+@media screen and (max-width: 960px) {
   #features,
   #hero {
     font-size: 16px;
+  }
+  #sponsors {
+    display: none;
+  }
+  #sponsors-mobile {
+    display: block;
   }
   #example .block {
     display: block;
@@ -741,9 +792,9 @@ body {
     line-height: 1em;
     padding: 0.5em 0;
   }
-  #ad {
+  #translations {
     position: relative;
-    text-align: center;
-    width: 100%;
+    right: 0;
+    bottom: 0;
   }
 }

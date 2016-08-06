@@ -199,8 +199,10 @@
 
 <div class="content guide with-sidebar">
     <div id="ad">
-  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
-    <span>Proudly sponsored by</span><br>
+  <span>Proudly sponsored by</span>
+  <br>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank"
+    style="display:inline-block;padding-top:8px">
     <img src="/images/strikingly.png">
   </a>
 </div>
@@ -216,6 +218,22 @@
 <script>
 new Vue({
   el: '#example-1',
+  data: {
+    message: ''
+  }
+})
+</script>
+
+<h3 id="Multiline_text"><a href="#Multiline_text" class="headerlink" title="Multiline text"></a>Multiline text</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">span</span>&gt;</span>Multiline message is:<span class="tag">&lt;/<span class="title">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">p</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">textarea</span> <span class="attribute">v-model</span>=<span class="value">"message"</span> <span class="attribute">placeholder</span>=<span class="value">"add multiple lines"</span>&gt;</span><span class="tag">&lt;/<span class="title">textarea</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<div id="example-textarea" class="demo">
+  <span>Message is:</span>
+  <p style="white-space: pre">{{ message }}</p><br>
+  <textarea v-model="message" placeholder="add multiple lines"></textarea>
+</div>
+<script>
+new Vue({
+  el: '#example-textarea',
   data: {
     message: ''
   }
@@ -348,18 +366,18 @@ new Vue({
 })
 </script>
 
-<h2 id="u503C_u7ED1_u5B9A"><a href="#u503C_u7ED1_u5B9A" class="headerlink" title="值绑定"></a>值绑定</h2><p>对于单选按钮，勾选框及选择框选项，<code>v-model</code> 绑定的值通常是静态字符串（对于勾选框是逻辑值）：</p>
+<h2 id="u7ED1_u5B9A_value"><a href="#u7ED1_u5B9A_value" class="headerlink" title="绑定 value"></a>绑定 value</h2><p>对于单选按钮，勾选框及选择框选项，<code>v-model</code> 绑定的 value 通常是静态字符串（对于勾选框是逻辑值）：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 当选中时，`picked` 为字符串 "a" --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"radio"</span> <span class="attribute">v-model</span>=<span class="value">"picked"</span> <span class="attribute">value</span>=<span class="value">"a"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- `toggle` 为 true 或 false --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"checkbox"</span> <span class="attribute">v-model</span>=<span class="value">"toggle"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 当选中时，`selected` 为字符串 "abc" --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">select</span> <span class="attribute">v-model</span>=<span class="value">"selected"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">option</span> <span class="attribute">value</span>=<span class="value">"abc"</span>&gt;</span>ABC<span class="tag">&lt;/<span class="title">option</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>但是有时我们想绑定值到 Vue 实例一个动态属性上。可以用 <code>v-bind</code> 做到。 而且 <code>v-bind</code> 允许绑定输入框的值到非字符串值。</p>
+<p>但是有时我们想绑定 value 到 Vue 实例的一个动态属性上，这时可以用 <code>v-bind</code> 实现，并且这个属性的值可以不是字符串。</p>
 <h3 id="Checkbox-1"><a href="#Checkbox-1" class="headerlink" title="Checkbox"></a>Checkbox</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span></span><br><span class="line">  <span class="attribute">type</span>=<span class="value">"checkbox"</span></span><br><span class="line">  <span class="attribute">v-model</span>=<span class="value">"toggle"</span></span><br><span class="line">  <span class="attribute">v-bind:true-value</span>=<span class="value">"a"</span></span><br><span class="line">  <span class="attribute">v-bind:false-value</span>=<span class="value">"b"</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 选中</span></span><br><span class="line">vm.toggle === vm.a</span><br><span class="line"><span class="comment">// 取消选中</span></span><br><span class="line">vm.toggle === vm.b</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 当选中时</span></span><br><span class="line">vm.toggle === vm.a</span><br><span class="line"><span class="comment">// 当没有选中时</span></span><br><span class="line">vm.toggle === vm.b</span><br></pre></td></tr></table></figure>
 <h3 id="Radio-1"><a href="#Radio-1" class="headerlink" title="Radio"></a>Radio</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"radio"</span> <span class="attribute">v-model</span>=<span class="value">"pick"</span> <span class="attribute">v-bind:value</span>=<span class="value">"a"</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 选中</span></span><br><span class="line">vm.pick === vm.a</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 当选中时</span></span><br><span class="line">vm.pick === vm.a</span><br></pre></td></tr></table></figure>
 <h3 id="Select_Options"><a href="#Select_Options" class="headerlink" title="Select Options"></a>Select Options</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">select</span> <span class="attribute">v-model</span>=<span class="value">"selected"</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 对象字面量 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">option</span> <span class="attribute">v-bind:value</span>=<span class="value">"&#123; number: 123 &#125;"</span>&gt;</span>123<span class="tag">&lt;/<span class="title">option</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 选中</span></span><br><span class="line"><span class="keyword">typeof</span> vm.selected <span class="comment">// -&gt; 'object'</span></span><br><span class="line">vm.selected.number <span class="comment">// -&gt; 123</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 当选中时</span></span><br><span class="line"><span class="keyword">typeof</span> vm.selected <span class="comment">// -&gt; 'object'</span></span><br><span class="line">vm.selected.number <span class="comment">// -&gt; 123</span></span><br></pre></td></tr></table></figure>
 <h2 id="u53C2_u6570_u7279_u6027"><a href="#u53C2_u6570_u7279_u6027" class="headerlink" title="参数特性"></a>参数特性</h2><h3 id="lazy"><a href="#lazy" class="headerlink" title="lazy"></a>lazy</h3><p>在默认情况下，<code>v-model</code> 在<code>input</code> 事件中同步输入框值与数据，可以添加一个特性 <code>lazy</code>，从而改到在 <code>change</code> 事件中同步：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 在 "change" 而不是 "input" 事件中更新 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">v-model</span>=<span class="value">"msg"</span> <span class="attribute">lazy</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="number"><a href="#number" class="headerlink" title="number"></a>number</h3><p>如果想自动将用户的输入保持为数字，可以添加一个特性 <code>number</code>：</p>
+<h3 id="number"><a href="#number" class="headerlink" title="number"></a>number</h3><p>如果想自动将用户的输入转为 Number 类型（如果原值的转换结果为 NaN 则返回原值），可以添加一个特性 <code>number</code>：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">v-model</span>=<span class="value">"age"</span> <span class="attribute">number</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h3 id="debounce"><a href="#debounce" class="headerlink" title="debounce"></a>debounce</h3><p><code>debounce</code> 设置一个最小的延时，在每次敲击之后延时同步输入框的值与数据。如果每次更新都要进行高耗操作（例如在输入提示中 Ajax 请求），它较为有用。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">v-model</span>=<span class="value">"msg"</span> <span class="attribute">debounce</span>=<span class="value">"500"</span>&gt;</span></span><br></pre></td></tr></table></figure>

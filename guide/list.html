@@ -199,8 +199,10 @@
 
 <div class="content guide with-sidebar">
     <div id="ad">
-  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank">
-    <span>Proudly sponsored by</span><br>
+  <span>Proudly sponsored by</span>
+  <br>
+  <a href="https://strikingly.com/s/careers?utm_source=v" target="_blank"
+    style="display:inline-block;padding-top:8px">
     <img src="/images/strikingly.png">
   </a>
 </div>
@@ -302,6 +304,7 @@ var example2 = new Vue({
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> index = <span class="keyword">this</span>.items.indexOf(item)</span><br><span class="line"><span class="keyword">if</span> (index !== -<span class="number">1</span>) &#123;</span><br><span class="line">  <span class="keyword">this</span>.items.splice(index, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>只用这样：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.items.$remove(item)</span><br></pre></td></tr></table></figure>
+<h4 id="u4F7F_u7528_Object-freeze_28_29"><a href="#u4F7F_u7528_Object-freeze_28_29" class="headerlink" title="使用 Object.freeze()"></a>使用 <code>Object.freeze()</code></h4><p>在遍历一个数组时，如果数组元素是对象并且对象用 <code>Object.freeze()</code> 冻结，你需要明确指定 <code>track-by</code>。在这种情况下如果 Vue.js 不能自动追踪对象，将给出一条警告。</p>
 <h2 id="u5BF9_u8C61_v-for"><a href="#u5BF9_u8C61_v-for" class="headerlink" title="对象 v-for"></a>对象 v-for</h2><p>也可以使用 <code>v-for</code> 遍历对象。除了 <code>$index</code> 之外，作用域内还可以访问另外一个特殊变量 <code>$key</code>。</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ul</span> <span class="attribute">id</span>=<span class="value">"repeat-object"</span> <span class="attribute">class</span>=<span class="value">"demo"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">li</span> <span class="attribute">v-for</span>=<span class="value">"value in object"</span>&gt;</span></span><br><span class="line">    &#123;&#123; $key &#125;&#125; : &#123;&#123; value &#125;&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="title">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#repeat-object'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    object: &#123;</span><br><span class="line">      FirstName: <span class="string">'John'</span>,</span><br><span class="line">      LastName: <span class="string">'Doe'</span>,</span><br><span class="line">      Age: <span class="number">30</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
