@@ -4,22 +4,27 @@ type: guide
 order: 10
 ---
 
+<<<<<<< HEAD
 ## 基础用法
+=======
+## Basic Usage
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
 可以用 `v-model` 指令在表单控件元素上创建双向数据绑定。根据控件类型它自动选取正确的方法更新元素。尽管有点神奇，`v-model` 不过是语法糖，在用户输入事件中更新数据，以及特别处理一些极端例子。
+
+<p class="tip">`v-model` doesn't care about the initial value provided to an input or a textarea. It will always treat the Vue instance data as the source of truth.</p>
 
 ### Text
 
 ``` html
-<span>Message is: {{ message }}</span>
-<br>
-<input type="text" v-model="message" placeholder="edit me">
+<input v-model="message" placeholder="edit me">
+<p>Message is: {{ message }}</p>
 ```
 
 {% raw %}
 <div id="example-1" class="demo">
-  <span>Message is: {{ message }}</span><br>
-  <input type="text" v-model="message" placeholder="edit me">
+  <input v-model="message" placeholder="edit me">
+  <p>Message is: {{ message }}</p>
 </div>
 <script>
 new Vue({
@@ -56,6 +61,11 @@ new Vue({
 </script>
 {% endraw %}
 
+
+{% raw %}
+<p class="tip">Interpolation on textareas (<code>&lt;textarea&gt;{{text}}&lt;/textarea&gt;</code>) won't work. Use <code>v-model</code> instead.</p>
+{% endraw %}
+
 ### Checkbox
 
 单个勾选框，逻辑值：
@@ -79,7 +89,11 @@ new Vue({
 </script>
 {% endraw %}
 
+<<<<<<< HEAD
 多个勾选框，绑定到同一个数组：
+=======
+Multiple checkboxes, bound to the same Array:
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
 ``` html
 <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
@@ -89,7 +103,7 @@ new Vue({
 <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
 <label for="mike">Mike</label>
 <br>
-<span>Checked names: {{ checkedNames | json }}</span>
+<span>Checked names: {{ checkedNames }}</span>
 ```
 
 ``` js
@@ -110,7 +124,7 @@ new Vue({
   <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
   <label for="mike">Mike</label>
   <br>
-  <span>Checked names: {{ checkedNames | json }}</span>
+  <span>Checked names: {{ checkedNames }}</span>
 </div>
 <script>
 new Vue({
@@ -160,7 +174,7 @@ new Vue({
 
 ``` html
 <select v-model="selected">
-  <option selected>A</option>
+  <option>A</option>
   <option>B</option>
   <option>C</option>
 </select>
@@ -169,7 +183,7 @@ new Vue({
 {% raw %}
 <div id="example-5" class="demo">
   <select v-model="selected">
-    <option selected>A</option>
+    <option>A</option>
     <option>B</option>
     <option>C</option>
   </select>
@@ -189,22 +203,22 @@ new Vue({
 
 ``` html
 <select v-model="selected" multiple>
-  <option selected>A</option>
+  <option>A</option>
   <option>B</option>
   <option>C</option>
 </select>
 <br>
-<span>Selected: {{ selected | json }}</span>
+<span>Selected: {{ selected }}</span>
 ```
 {% raw %}
 <div id="example-6" class="demo">
   <select v-model="selected" multiple style="width: 50px">
-    <option selected>A</option>
+    <option>A</option>
     <option>B</option>
     <option>C</option>
   </select>
   <br>
-  <span>Selected: {{ selected | json }}</span>
+  <span>Selected: {{ selected }}</span>
 </div>
 <script>
 new Vue({
@@ -325,44 +339,56 @@ typeof vm.selected // -> 'object'
 vm.selected.number // -> 123
 ```
 
+<<<<<<< HEAD
 ## 参数特性
+=======
+## Modifiers
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
-### lazy
+### `.lazy`
 
+<<<<<<< HEAD
 在默认情况下，`v-model` 在`input` 事件中同步输入框值与数据，可以添加一个特性 `lazy`，从而改到在 `change` 事件中同步：
 
 ``` html
 <!-- 在 "change" 而不是 "input" 事件中更新 -->
 <input v-model="msg" lazy>
+=======
+By default, `v-model` syncs the input with the data after each `input` event. You can add the `lazy` modifier to instead sync after `change` events:
+
+``` html
+<!-- synced after "change" instead of "input" -->
+<input v-model.lazy="msg" >
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 ```
 
-### number
+### `.number`
 
+<<<<<<< HEAD
 如果想自动将用户的输入转为 Number 类型（如果原值的转换结果为 NaN 则返回原值），可以添加一个特性 `number`：
+=======
+If you want user input to be automatically typecast as a number, you can add the `number` modifier to your `v-model` managed inputs:
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
 ``` html
-<input v-model="age" number>
+<input v-model.number="age" type="number">
 ```
 
-### debounce
+This is often useful, because even with `type="number"`, the value of HTML input elements always returns a string.
 
+<<<<<<< HEAD
 `debounce` 设置一个最小的延时，在每次敲击之后延时同步输入框的值与数据。如果每次更新都要进行高耗操作（例如在输入提示中 Ajax 请求），它较为有用。
+=======
+### `.trim`
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
-``` html
-<input v-model="msg" debounce="500">
-```
- {% raw %}
-<div id="debounce-demo" class="demo">
-  {{ msg }}<br>
-  <input v-model="msg" debounce="500">
-</div>
-<script>
-new Vue({
-  el:'#debounce-demo',
-  data: { msg: 'edit me' }
-})
-</script>
-{% endraw %}
+If you want user input to be trimmed automatically, you can add the `trim` modifier to your `v-model` managed inputs:
 
+<<<<<<< HEAD
 注意 `debounce` 参数不会延迟 input 事件：它延迟“写入”底层数据。因此在使用 `debounce` 时应当用 `vm.$watch()` 响应数据的变化。若想延迟 DOM 事件，应当使用 [debounce 过滤器](/api/#debounce)。
 
+=======
+```html
+<input v-model.trim="msg">
+```
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7

@@ -1,7 +1,7 @@
 ---
 title: 混合
 type: guide
-order: 16
+order: 17
 ---
 
 ## 基础
@@ -107,7 +107,11 @@ new Vue({
 // -> "hello!"
 ```
 
+<<<<<<< HEAD
 <p class="tip">慎用全局混合，因为它影响到每个创建的 Vue 实例，包括第三方组件。在大多数情况下，它应当只用于自定义选项，就像上面示例一样。</p>
+=======
+<p class="tip">Use global mixins sparsely and carefully, because it affects every single Vue instance created, including third party components. In most cases, you should only use it for custom option handling like demonstrated in the example above. It's also a good idea to ship them as [Plugins](/guide/plugins.html) to avoid duplicate application.</p>
+>>>>>>> 4960c14f24457b6dff5547c06bac85709005e4b7
 
 ## 自定义选项合并策略
 
@@ -124,4 +128,19 @@ Vue.config.optionMergeStrategies.myOption = function (toVal, fromVal) {
 ``` js
 var strategies = Vue.config.optionMergeStrategies
 strategies.myOption = strategies.methods
+```
+
+A more advanced example can be found on [Vuex](https://github.com/vuejs/vuex)'s 1.x merging strategy:
+
+``` js
+const merge = Vue.config.optionMergeStrategies.computed
+Vue.config.optionMergeStrategies.vuex = function (toVal, fromVal) {
+  if (!toVal) return fromVal
+  if (!fromVal) return toVal
+  return {
+    getters: merge(toVal.getters, fromVal.getters),
+    state: merge(toVal.state, fromVal.state),
+    actions: merge(toVal.actions, fromVal.actions)
+  }
+}
 ```
